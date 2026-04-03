@@ -10,7 +10,7 @@ const prisma = new PrismaClient({ adapter });
 /** Título curto + descrição completa (texto do questionário) */
 const QUESTIONS: { title: string; description: string }[] = [
   {
-    title: '1 — Termo de consentimento livre e esclarecido (TCLE)',
+    title: 'Termo de consentimento livre e esclarecido (TCLE)',
     description: `Você está sendo convidado a participar de uma pesquisa acadêmica sobre as percepções sociais e o uso de cigarros eletrônicos entre jovens da Geração Z. Esta pesquisa está sendo realizada por estudantes da faculdade ESAMC Uberlândia, por meio da disciplina Pesquisa de Mercado, para fins exclusivamente acadêmicos.
 
 A participação consiste em responder a um questionário rápido, que leva aproximadamente 3 a 5 minutos para ser concluído.
@@ -24,50 +24,50 @@ Ao selecionar a opção "Sim, eu concordo", você declara que leu e compreendeu 
 Você concorda em participar desta pesquisa?`,
   },
   {
-    title: '2 — Em que ano você nasceu?',
+    title: 'Em que ano você nasceu?',
     description: '',
   },
   {
-    title: '3 — Qual o gênero que você se identifica?',
-    description: '',
-  },
-  {
-    title:
-      '4 — Você já ouviu falar em cigarros eletrônicos/vapes/pods/narguile/juul?',
+    title: 'Qual o gênero que você se identifica?',
     description: '',
   },
   {
     title:
-      '5 — Você acha que o cigarro eletrônico é considerado uma droga no Brasil de acordo com a ANVISA (Agência Nacional de Vigilância Sanitária)?',
+      'Você já ouviu falar em cigarros eletrônicos/vapes/pods/narguile/juul?',
     description: '',
   },
   {
     title:
-      '6 — Você acha que o cigarro eletrônico é considerado um produto ilícito no Brasil de acordo com a ANVISA (Agência Nacional de Vigilância Sanitária)?',
-    description: '',
-  },
-  {
-    title: '7 — O uso de cigarro eletrônico é comum no seu grupo social?',
+      'Você acha que o cigarro eletrônico é considerado uma droga no Brasil de acordo com a ANVISA (Agência Nacional de Vigilância Sanitária)?',
     description: '',
   },
   {
     title:
-      '8 — Você já foi influenciado de alguma forma direta a usar cigarro eletrônico?',
+      'Você acha que o cigarro eletrônico é considerado um produto ilícito no Brasil de acordo com a ANVISA (Agência Nacional de Vigilância Sanitária)?',
+    description: '',
+  },
+  {
+    title: 'O uso de cigarro eletrônico é comum no seu grupo social?',
     description: '',
   },
   {
     title:
-      '9 — Você já fez uso de cigarro eletrônico? (pergunta de base — define o fluxo)',
+      'Você já foi influenciado de alguma forma direta a usar cigarro eletrônico?',
+    description: '',
+  },
+  {
+    title:
+      'Você já fez uso de cigarro eletrônico? (pergunta de basdefine o fluxo)',
     description:
       'As próximas perguntas marcadas no roteiro original só aparecem para quem respondeu "Sim" aqui.',
   },
   {
-    title: '10 — Com que frequência você utiliza cigarro eletrônico?',
+    title: '1Com que frequência você utiliza cigarro eletrônico?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '11 — Com que idade você fez o primeiro uso de cigarro eletrônico?',
+      '1Com que idade você fez o primeiro uso de cigarro eletrônico?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
@@ -81,102 +81,102 @@ Você concorda em participar desta pesquisa?`,
   },
   {
     title:
-      '12 — Você percebe que o seu uso ocorre com maior frequência quando você…',
+      'Você percebe que o seu uso ocorre com maior frequência quando você…',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '13 — Você percebe que o seu uso ocorre com maior frequência quando você…',
+      'Você percebe que o seu uso ocorre com maior frequência quando você…',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '14 — Você percebe que o seu uso ocorre com maior frequência quando você…',
+      'Você percebe que o seu uso ocorre com maior frequência quando você…',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '15 — Você já gastou dinheiro na compra de um cigarro eletrônico?',
+      'Você já gastou dinheiro na compra de um cigarro eletrônico?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '16 — Você já usou um cigarro eletrônico emprestado de outra pessoa?',
+      'Você já usou um cigarro eletrônico emprestado de outra pessoa?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '17 — O seu uso ocorre em maior frequência por meio de um produto próprio ou por meio de um produto emprestado de outra pessoa?',
+      'O seu uso ocorre em maior frequência por meio de um produto próprio ou por meio de um produto emprestado de outra pessoa?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '18 — Você já fez uso de cigarro eletrônico acompanhado de bebidas alcoólicas?',
+      'Você já fez uso de cigarro eletrônico acompanhado de bebidas alcoólicas?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '19 — Você já fez uso de cigarro eletrônico acompanhado de outras substâncias ilícitas?',
+      'Você já fez uso de cigarro eletrônico acompanhado de outras substâncias ilícitas?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '20 — Você já se sentiu julgado de alguma forma por alguém por fazer uso de cigarro eletrônico?',
+      'Você já se sentiu julgado de alguma forma por alguém por fazer uso de cigarro eletrônico?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '21 — Você já teve que omitir ou mentir que você faz uso de cigarro eletrônico?',
+      'Você já teve que omitir ou mentir que você faz uso de cigarro eletrônico?',
     description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
   },
   {
     title:
-      '22 — Você já viu conteúdos sobre cigarro eletrônico em redes sociais?',
+      'Você já viu conteúdos sobre cigarro eletrônico em redes sociais?',
     description: '',
   },
   {
     title:
-      '23 — Esses conteúdos influenciaram sua opinião (positivamente ou negativamente) sobre o cigarro eletrônico?',
+      'Esses conteúdos influenciaram sua opinião (positivamente ou negativamente) sobre o cigarro eletrônico?',
     description: '',
   },
   {
     title:
-      '24 — A opinião de influenciadores digitais impactam sua visão (positivamente ou negativamente) sobre o uso do cigarro eletrônico?',
+      'A opinião de influenciadores digitais impactam sua visão (positivamente ou negativamente) sobre o uso do cigarro eletrônico?',
     description: '',
   },
   {
     title:
-      '25 — Você considera o cigarro eletrônico prejudicial à saúde?',
+      'Você considera o cigarro eletrônico prejudicial à saúde?',
     description: '',
   },
   {
     title:
-      '26 — Comparado ao cigarro tradicional, você acha o cigarro eletrônico:',
+      'Comparado ao cigarro tradicional, você acha o cigarro eletrônico:',
     description: '',
   },
   {
     title:
-      '27 — Você acredita que o cigarro eletrônico está associado à estilos de vida específicos?',
+      'Você acredita que o cigarro eletrônico está associado à estilos de vida específicos?',
     description: '',
   },
   {
     title:
-      '28 — Você seria próximo de uma pessoa que usa cigarro eletrônico?',
+      'Você seria próximo de uma pessoa que usa cigarro eletrônico?',
     description: '',
   },
   {
     title:
-      '29 — Você seria próximo de uma pessoa que julga o uso de cigarro eletrônico?',
+      'Você seria próximo de uma pessoa que julga o uso de cigarro eletrônico?',
     description: '',
   },
   {
     title:
-      '30 — Você acredita que o uso de cigarro eletrônico pode influenciar a aceitação de alguém em grupos sociais?',
+      'Você acredita que o uso de cigarro eletrônico pode influenciar a aceitação de alguém em grupos sociais?',
     description: '',
   },
   {
     title:
-      '31 — Você acredita que alguém pode usar cigarro eletrônico por pressão social?',
+      'Você acredita que alguém pode usar cigarro eletrônico por pressão social?',
     description: '',
   },
 ];
@@ -184,7 +184,7 @@ Você concorda em participar desta pesquisa?`,
 const QUIZ_TITLE =
   'Pesquisa Gen Z — Percepções e uso de cigarro eletrônico (ESAMC Uberlândia)';
 const QUIZ_DESCRIPTION =
-  'Pesquisa acadêmica da disciplina Pesquisa de Mercado. Questionário com ramificação: perguntas 10–21 apenas para quem respondeu "Sim" na pergunta 9.';
+  'Pesquisa acadêmica da disciplina Pesquisa de Mercado.';
 
 /** ID fixo para testar sempre a mesma URL após rodar o seed. */
 const SEED_QUIZ_ID = 'cafebabe-0000-4000-8000-00000000a001';
