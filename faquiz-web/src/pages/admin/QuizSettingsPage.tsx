@@ -42,12 +42,26 @@ export function QuizSettingsPage() {
             {quiz?.title ?? (loading ? 'Carregando…' : '—')}
           </p>
         </div>
-        <Link
-          to={`/admin/quizzes/${id}/build`}
-          className="text-sm text-brand-300 hover:underline"
-        >
-          ← Builder
-        </Link>
+        <div className="flex flex-wrap gap-3 text-sm">
+          <Link
+            to={`/admin/quizzes/${id}/build`}
+            className="text-zinc-400 hover:text-zinc-200"
+          >
+            Builder
+          </Link>
+          <Link
+            to={`/admin/quizzes/${id}/responses`}
+            className="text-zinc-400 hover:text-zinc-200"
+          >
+            Sessões
+          </Link>
+          <Link
+            to={`/admin/quizzes/${id}/insights`}
+            className="text-zinc-400 hover:text-zinc-200"
+          >
+            Insights
+          </Link>
+        </div>
       </div>
 
       {loading ? (

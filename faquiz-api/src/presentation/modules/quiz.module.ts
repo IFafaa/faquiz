@@ -3,6 +3,8 @@ import {
   GetQuizAnalyticsUseCase,
   ListQuizSessionsUseCase,
 } from '../../application/use-cases/analytics/quiz-analytics.use-cases.js';
+import { ExportResponsesExcelUseCase } from '../../application/use-cases/analytics/export-responses-excel.use-case.js';
+import { GetResponseAggregatesUseCase } from '../../application/use-cases/analytics/get-response-aggregates.use-case.js';
 import { GetPublicQuizUseCase } from '../../application/use-cases/quiz/get-public-quiz.use-case.js';
 import {
   CreateQuizUseCase,
@@ -18,11 +20,13 @@ import {
 import { GetShareUseCase } from '../../application/use-cases/share/get-share.use-case.js';
 import { StartSessionUseCase } from '../../application/use-cases/session/start-session.use-case.js';
 import { AuthModule } from './auth.module.js';
+import { RepositoriesModule } from '../../infrastructure/repositories.module.js';
 import { QuizController } from '../controllers/quiz.controller.js';
+import { QuizInsightsController } from '../controllers/quiz-insights.controller.js';
 
 @Module({
-  imports: [AuthModule],
-  controllers: [QuizController],
+  imports: [AuthModule, RepositoriesModule],
+  controllers: [QuizController, QuizInsightsController],
   providers: [
     CreateQuizUseCase,
     ListQuizzesUseCase,
@@ -36,6 +40,8 @@ import { QuizController } from '../controllers/quiz.controller.js';
     GetShareUseCase,
     GetQuizAnalyticsUseCase,
     ListQuizSessionsUseCase,
+    GetResponseAggregatesUseCase,
+    ExportResponsesExcelUseCase,
   ],
 })
 export class QuizModule {}

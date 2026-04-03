@@ -8,6 +8,7 @@ import { DashboardPage } from '@/pages/admin/DashboardPage'
 import { LoginPage } from '@/pages/admin/LoginPage'
 import { QuizBuilderPage } from '@/pages/admin/QuizBuilderPage'
 import { QuizListPage } from '@/pages/admin/QuizListPage'
+import { QuizInsightsPage } from '@/pages/admin/QuizInsightsPage'
 import { QuizSettingsPage } from '@/pages/admin/QuizSettingsPage'
 import { ResponsesPage } from '@/pages/admin/ResponsesPage'
 import { SessionDetailPage } from '@/pages/admin/SessionDetailPage'
@@ -38,6 +39,7 @@ export default function App() {
             <Route path="quizzes/:id/build" element={<QuizBuilderPage />} />
             <Route path="quizzes/:id/settings" element={<QuizSettingsPage />} />
             <Route path="quizzes/:id/responses" element={<ResponsesPage />} />
+            <Route path="quizzes/:id/insights" element={<QuizInsightsPage />} />
             <Route path="sessions/:id" element={<SessionDetailPage />} />
           </Route>
         </Route>

@@ -1,10 +1,12 @@
 import type {
+  AggregatesResponse,
   AnalyticsResponse,
   PublicQuizPayload,
   QuestionType,
   QuizSessionRow,
   QuizSummary,
   QuizTreeSnapshot,
+  ResponseFilters,
   ShareResponse,
 } from '@/types/api'
 import { api } from './client'
@@ -86,6 +88,29 @@ export async function getQuizAnalytics(id: string) {
 export async function listQuizSessions(quizId: string) {
   const { data } = await api.get<QuizSessionRow[]>(
     `/quizzes/${quizId}/sessions`,
+  )
+  return data
+}
+
+export async function postQuizAggregates(
+  quizId: string,
+  body: { filters?: ResponseFilters },
+) {
+  const { data } = await api.post<AggregatesResponse>(
+    `/quizzes/${quizId}/analytics/aggregates`,
+    body,
+  )
+  return data
+}
+
+export async function exportQuizResponses(
+  quizId: string,
+  body: { filters?: ResponseFilters },
+) {
+  const { data } = await api.post<Blob>(
+    `/quizzes/${quizId}/export/responses`,
+    body,
+    { responseType: 'blob' },
   )
   return data
 }

@@ -52,6 +52,12 @@ export function ResponsesPage() {
             Builder
           </Link>
           <Link
+            to={`/admin/quizzes/${id}/insights`}
+            className="text-zinc-400 hover:text-zinc-200"
+          >
+            Insights
+          </Link>
+          <Link
             to={`/admin/quizzes/${id}/settings`}
             className="text-brand-300 hover:underline"
           >

@@ -1,3 +1,4 @@
+@import 'react-day-picker/style.css';
 @import 'tailwindcss';
 
 @theme {
@@ -18,4 +19,12 @@
   body {
     @apply bg-zinc-950 text-zinc-100 min-h-screen font-sans;
   }
+}
+
+/* Calendário (Insights): tema escuro alinhado ao admin */
+.insights-day-picker.rdp-root {
+  --rdp-accent-color: oklch(0.55 0.18 250);
+  --rdp-accent-background-color: oklch(0.25 0.08 260);
+  --rdp-range_middle-color: oklch(0.92 0 0);
+  color: oklch(0.88 0 0);
 }

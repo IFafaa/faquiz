@@ -233,12 +233,26 @@ function BuilderCanvas() {
         <div>
           <p className="text-xs text-zinc-500">Quiz</p>
           <p className="font-medium text-zinc-200">{quiz?.title}</p>
-          <Link
-            to={`/admin/quizzes/${quizId}/settings`}
-            className="mt-1 inline-block text-xs text-brand-300 hover:underline"
-          >
-            Configurações e QR
-          </Link>
+          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+            <Link
+              to={`/admin/quizzes/${quizId}/responses`}
+              className="text-brand-300 hover:underline"
+            >
+              Sessões
+            </Link>
+            <Link
+              to={`/admin/quizzes/${quizId}/insights`}
+              className="text-brand-300 hover:underline"
+            >
+              Insights
+            </Link>
+            <Link
+              to={`/admin/quizzes/${quizId}/settings`}
+              className="text-brand-300 hover:underline"
+            >
+              Configurações e QR
+            </Link>
+          </div>
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-zinc-400">

@@ -109,3 +109,30 @@ export interface SessionDetailResponse {
     answeredAt: string
   }>
 }
+
+export interface QuestionAnswerFilter {
+  questionNodeId: string
+  answerValues: string[]
+}
+
+export interface ResponseFilters {
+  respondentNameContains?: string
+  status?: string[]
+  startedAtFrom?: string
+  startedAtTo?: string
+  completedAtFrom?: string
+  completedAtTo?: string
+  questionFilters?: QuestionAnswerFilter[]
+}
+
+export interface AggregatesResponse {
+  quizId: string
+  filteredSessionCount: number
+  questions: Array<{
+    questionNodeId: string
+    title: string
+    questionType: string
+    distribution: Array<{ label: string; value: string; count: number }>
+  }>
+  timeline: Array<{ date: string; count: number }>
+}
