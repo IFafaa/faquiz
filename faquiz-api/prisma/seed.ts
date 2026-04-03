@@ -186,8 +186,8 @@ const QUIZ_TITLE =
 const QUIZ_DESCRIPTION =
   'Pesquisa acadêmica da disciplina Pesquisa de Mercado. Questionário com ramificação: perguntas 10–21 apenas para quem respondeu "Sim" na pergunta 9.';
 
-/** ID fixo para você testar sempre a mesma URL após rodar o seed. */
-export const SEED_QUIZ_ID = 'cafebabe-0000-4000-8000-00000000a001';
+/** ID fixo para testar sempre a mesma URL após rodar o seed. */
+const SEED_QUIZ_ID = 'cafebabe-0000-4000-8000-00000000a001';
 
 async function main() {
   const hashedPassword = await bcrypt.hash('admin123', 10);
