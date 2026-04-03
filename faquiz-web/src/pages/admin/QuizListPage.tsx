@@ -1,12 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  createQuiz,
-  deleteQuiz,
-  listQuizzes,
-  updateQuiz,
-} from '@/api/quiz'
+import { createQuiz, deleteQuiz, listQuizzes } from '@/api/quiz'
 import type { QuizSummary } from '@/types/api'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
@@ -36,10 +31,6 @@ export function QuizListPage() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
 
-  const [editing, setEditing] = useState<QuizSummary | null>(null)
-  const [editTitle, setEditTitle] = useState('')
-  const [editDescription, setEditDescription] = useState('')
-
   const createMut = useMutation({
     mutationFn: () =>
       createQuiz({
@@ -54,47 +45,12 @@ export function QuizListPage() {
     },
   })
 
-  const updateMut = useMutation({
-    mutationFn: (args: {
-      id: string
-      body: { title?: string; description?: string; isPublished?: boolean }
-    }) => updateQuiz(args.id, args.body),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['quizzes'] })
-      setEditing(null)
-    },
-  })
-
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteQuiz(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['quizzes'] })
     },
   })
-
-  const openEdit = (q: QuizSummary) => {
-    setEditing(q)
-    setEditTitle(q.title)
-    setEditDescription(q.description ?? '')
-  }
-
-  const saveEdit = () => {
-    if (!editing) return
-    updateMut.mutate({
-      id: editing.id,
-      body: {
-        title: editTitle.trim() || editing.title,
-        description: editDescription,
-      },
-    })
-  }
-
-  const togglePublish = (q: QuizSummary) => {
-    updateMut.mutate({
-      id: q.id,
-      body: { isPublished: !q.isPublished },
-    })
-  }
 
   const confirmDelete = (q: QuizSummary) => {
     if (
@@ -122,8 +78,8 @@ export function QuizListPage() {
           Quizzes
         </h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Clique numa linha para abrir respostas, compartilhamento, builder e
-          insights.
+          Clique numa linha para abrir o quiz. Edição e publicação ficam em
+          Compartilhamento dentro do quiz.
         </p>
       </div>
 
@@ -175,8 +131,8 @@ export function QuizListPage() {
               <th className="hidden w-[150px] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-zinc-500 lg:table-cell">
                 Atualizado
               </th>
-              <th className="w-[200px] px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                Ações
+              <th className="w-[100px] px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Excluir
               </th>
             </tr>
           </thead>
@@ -234,29 +190,9 @@ export function QuizListPage() {
                   </td>
                   <td className="px-4 py-3 align-middle text-right">
                     <div
-                      className="inline-flex flex-wrap items-center justify-end gap-1.5"
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        className="whitespace-nowrap"
-                        onClick={() => openEdit(q)}
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        className="whitespace-nowrap"
-                        onClick={() => togglePublish(q)}
-                        disabled={updateMut.isPending}
-                      >
-                        {q.isPublished ? 'Despublicar' : 'Publicar'}
-                      </Button>
                       <Button
                         type="button"
                         variant="danger"
@@ -275,55 +211,6 @@ export function QuizListPage() {
           </tbody>
         </table>
       </div>
-
-      {editing ? (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="edit-quiz-title"
-        >
-          <Card className="w-full max-w-md border-zinc-800">
-            <CardHeader>
-              <CardTitle id="edit-quiz-title">Editar quiz</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Input
-                label="Título"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-              />
-              <div className="space-y-1.5">
-                <label className="block text-sm font-medium text-zinc-300">
-                  Descrição
-                </label>
-                <textarea
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  rows={3}
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-900/80 px-4 py-2.5 text-sm text-zinc-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setEditing(null)}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="button"
-                  onClick={saveEdit}
-                  disabled={updateMut.isPending}
-                >
-                  {updateMut.isPending ? 'Salvando…' : 'Salvar'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      ) : null}
     </div>
   )
 }
