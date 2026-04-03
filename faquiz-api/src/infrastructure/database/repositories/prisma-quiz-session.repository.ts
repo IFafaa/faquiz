@@ -109,9 +109,12 @@ export class PrismaQuizSessionRepository implements IQuizSessionRepository {
     quizId: string,
     days: number,
   ): Promise<Array<{ date: string; count: number }>> {
-    const since = new Date();
-    since.setUTCDate(since.getUTCDate() - days);
-    since.setUTCHours(0, 0, 0, 0);
+    // Últimos `days` dias em UTC **incluindo hoje** (antes: janela terminava em "ontem").
+    const endUtc = new Date();
+    endUtc.setUTCHours(0, 0, 0, 0);
+
+    const since = new Date(endUtc);
+    since.setUTCDate(since.getUTCDate() - (days - 1));
 
     const sessions = await this.prisma.quizSession.findMany({
       where: { quizId, startedAt: { gte: since } },
