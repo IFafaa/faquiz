@@ -234,7 +234,7 @@ function BuilderCanvas() {
           <p className="text-xs text-zinc-500">Quiz</p>
           <p className="font-medium text-zinc-200">{quiz?.title}</p>
           <p className="mt-1 text-xs text-zinc-600">
-            Use as abas acima para Respostas, Compartilhamento ou Insights.
+            Use as abas acima para Configuração, Compartilhamento ou Insights.
           </p>
         </div>
         <div>

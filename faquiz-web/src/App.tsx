@@ -10,6 +10,7 @@ import { LoginPage } from '@/pages/admin/LoginPage'
 import { QuizBuilderPage } from '@/pages/admin/QuizBuilderPage'
 import { QuizListPage } from '@/pages/admin/QuizListPage'
 import { QuizInsightsPage } from '@/pages/admin/QuizInsightsPage'
+import { QuizConfigPage } from '@/pages/admin/QuizConfigPage'
 import { QuizSettingsPage } from '@/pages/admin/QuizSettingsPage'
 import { ResponsesPage } from '@/pages/admin/ResponsesPage'
 import { SessionDetailPage } from '@/pages/admin/SessionDetailPage'
@@ -38,8 +39,9 @@ export default function App() {
             <Route index element={<DashboardPage />} />
             <Route path="quizzes" element={<QuizListPage />} />
             <Route path="quizzes/:id" element={<QuizDetailLayout />}>
-              <Route index element={<Navigate to="responses" replace />} />
+              <Route index element={<Navigate to="config" replace />} />
               <Route path="responses" element={<ResponsesPage />} />
+              <Route path="config" element={<QuizConfigPage />} />
               <Route path="settings" element={<QuizSettingsPage />} />
               <Route path="build" element={<QuizBuilderPage />} />
               <Route path="insights" element={<QuizInsightsPage />} />

@@ -78,8 +78,8 @@ export function QuizListPage() {
           Quizzes
         </h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Clique numa linha para abrir o quiz. Edição e publicação ficam em
-          Compartilhamento dentro do quiz.
+          Clique numa linha para abrir o quiz. Edição e publicação ficam na aba
+          Configuração.
         </p>
       </div>
 
@@ -153,11 +153,11 @@ export function QuizListPage() {
                   role="link"
                   tabIndex={0}
                   className="cursor-pointer bg-zinc-950/20 transition-colors hover:bg-zinc-900/40"
-                  onClick={() => void navigate(`/admin/quizzes/${q.id}/responses`)}
+                  onClick={() => void navigate(`/admin/quizzes/${q.id}`)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
-                      void navigate(`/admin/quizzes/${q.id}/responses`)
+                      void navigate(`/admin/quizzes/${q.id}`)
                     }
                   }}
                 >

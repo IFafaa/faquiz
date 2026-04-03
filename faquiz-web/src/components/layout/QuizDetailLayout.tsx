@@ -57,14 +57,17 @@ export function QuizDetailLayout() {
           className="-mb-px flex gap-1 overflow-x-auto border-t border-zinc-800/80"
           aria-label="Seções do quiz"
         >
-          <NavLink to={`/admin/quizzes/${id}/responses`} className={tabClass} end>
-            Respostas
+          <NavLink to={`/admin/quizzes/${id}/config`} className={tabClass} end>
+            Configuração
+          </NavLink>
+          <NavLink to={`/admin/quizzes/${id}/build`} className={tabClass}>
+            Builder
           </NavLink>
           <NavLink to={`/admin/quizzes/${id}/settings`} className={tabClass}>
             Compartilhamento
           </NavLink>
-          <NavLink to={`/admin/quizzes/${id}/build`} className={tabClass}>
-            Builder
+          <NavLink to={`/admin/quizzes/${id}/responses`} className={tabClass}>
+            Respostas
           </NavLink>
           <NavLink to={`/admin/quizzes/${id}/insights`} className={tabClass}>
             Insights
