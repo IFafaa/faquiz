@@ -1,11 +1,13 @@
+import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import bcrypt from 'bcryptjs';
 
-const adapter = new PrismaBetterSqlite3({
-  url: './dev.db',
-});
-const prisma = new PrismaClient({ adapter });
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL é obrigatório para o seed');
+}
+const prisma = new PrismaClient({ adapter: new PrismaPg(databaseUrl) });
 
 /** Título curto + descrição completa (texto do questionário) */
 const QUESTIONS: { title: string; description: string }[] = [
@@ -190,7 +192,27 @@ const QUIZ_DESCRIPTION =
 const SEED_QUIZ_ID = 'cafebabe-0000-4000-8000-00000000a001';
 
 async function main() {
-  const hashedPassword = await bcrypt.hash('admin123', 10);
+  const alreadySeeded = await prisma.quiz.findUnique({
+    where: { id: SEED_QUIZ_ID },
+  });
+  if (alreadySeeded) {
+    console.log(
+      'Seed ignorado: banco já contém o quiz inicial (execução única).',
+    );
+    return;
+  }
+
+  const isProd = process.env.NODE_ENV === 'production';
+  const adminSeedPassword = process.env.ADMIN_SEED_PASSWORD;
+  if (isProd && !adminSeedPassword) {
+    console.warn(
+      'Seed ignorado em produção: defina ADMIN_SEED_PASSWORD (segredo forte) para criar o admin e o quiz na primeira execução.',
+    );
+    return;
+  }
+
+  const plainPassword = adminSeedPassword ?? 'admin123';
+  const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
   const admin = await prisma.admin.upsert({
     where: { email: 'admin@faquiz.com' },
@@ -631,7 +653,11 @@ async function main() {
   ]);
 
   console.log('Seed OK.');
-  console.log('Admin:', admin.email, '(senha seed: admin123)');
+  if (isProd) {
+    console.log('Admin criado:', admin.email, '(senha definida por ADMIN_SEED_PASSWORD)');
+  } else {
+    console.log('Admin:', admin.email, '(senha seed local: admin123)');
+  }
   console.log('Quiz título:', QUIZ_TITLE);
   console.log('Quiz ID (use na URL pública):', quiz.id);
 }
