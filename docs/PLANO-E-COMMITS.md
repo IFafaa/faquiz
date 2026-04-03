@@ -16,9 +16,9 @@ Exemplos:
 
 ## Steps e histórico de commits
 
-| Step | Descrição | Commit |
-|------|-----------|--------|
-| Fase 1.1 | Backend: NestJS, Prisma SQLite, schema, migrate, estrutura de pastas, seed | `db3e6a2` |
+| Step | Descrição | Referência Git |
+|------|-----------|----------------|
+| Fase 1.1 | Backend: NestJS, Prisma SQLite, schema, migrate, estrutura de pastas, seed | tag `fase-1.1-api-setup` |
 | Fase 1.2 | Domain: entidades, VOs, interfaces de repositório, erros | pendente |
 | Fase 1.3 | Infrastructure: PrismaService, repos, mappers, JWT, QR | pendente |
 | Fase 1.4 | Application: use cases | pendente |
