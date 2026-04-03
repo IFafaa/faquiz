@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
-import { getQuiz, listQuizSessions } from '@/api/quiz'
+import { listQuizSessions } from '@/api/quiz'
 import { Badge } from '@/components/ui/Badge'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Spinner } from '@/components/ui/Spinner'
@@ -19,51 +19,23 @@ function formatDt(iso: string) {
 export function ResponsesPage() {
   const { id = '' } = useParams<{ id: string }>()
 
-  const { data: quiz, isLoading: loadingQuiz } = useQuery({
-    queryKey: ['quiz', id],
-    queryFn: () => getQuiz(id),
-    enabled: !!id,
-  })
-
-  const { data: sessions, isLoading: loadingSessions } = useQuery({
+  const { data: sessions, isLoading: loading } = useQuery({
     queryKey: ['quiz-sessions', id],
     queryFn: () => listQuizSessions(id),
     enabled: !!id,
   })
 
-  const loading = loadingQuiz || loadingSessions
-
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="font-display text-2xl font-bold text-zinc-50">
-            Respostas e sessões
-          </h1>
-          <p className="mt-1 text-sm text-zinc-400">
-            {quiz?.title ?? (loading ? 'Carregando…' : '—')}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3 text-sm">
-          <Link
-            to={`/admin/quizzes/${id}/build`}
-            className="text-zinc-400 hover:text-zinc-200"
-          >
-            Builder
-          </Link>
-          <Link
-            to={`/admin/quizzes/${id}/insights`}
-            className="text-zinc-400 hover:text-zinc-200"
-          >
-            Insights
-          </Link>
-          <Link
-            to={`/admin/quizzes/${id}/settings`}
-            className="text-brand-300 hover:underline"
-          >
-            URL e QR
-          </Link>
-        </div>
+      <div>
+        <h2 className="font-display text-lg font-semibold text-zinc-100">
+          Sessões de resposta
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500">
+          {loading
+            ? 'Carregando…'
+            : 'Lista de respondentes e status. Abra uma sessão para ver o detalhe.'}
+        </p>
       </div>
 
       {loading ? (

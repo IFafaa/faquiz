@@ -231,17 +231,10 @@ export function DashboardPage() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link
-                        to={`/admin/quizzes/${q.id}/build`}
+                        to={`/admin/quizzes/${q.id}/responses`}
                         className="text-brand-300 hover:underline"
                       >
-                        Builder
-                      </Link>
-                      <span className="mx-2 text-zinc-600">·</span>
-                      <Link
-                        to={`/admin/quizzes/${q.id}/responses`}
-                        className="text-zinc-400 hover:text-zinc-200 hover:underline"
-                      >
-                        Respostas
+                        Abrir quiz
                       </Link>
                     </td>
                   </tr>

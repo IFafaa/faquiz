@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { QuizDetailLayout } from '@/components/layout/QuizDetailLayout'
 import { createQueryClient } from '@/lib/query-client'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
@@ -36,10 +37,13 @@ export default function App() {
           <Route path="admin" element={<AdminLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="quizzes" element={<QuizListPage />} />
-            <Route path="quizzes/:id/build" element={<QuizBuilderPage />} />
-            <Route path="quizzes/:id/settings" element={<QuizSettingsPage />} />
-            <Route path="quizzes/:id/responses" element={<ResponsesPage />} />
-            <Route path="quizzes/:id/insights" element={<QuizInsightsPage />} />
+            <Route path="quizzes/:id" element={<QuizDetailLayout />}>
+              <Route index element={<Navigate to="responses" replace />} />
+              <Route path="responses" element={<ResponsesPage />} />
+              <Route path="settings" element={<QuizSettingsPage />} />
+              <Route path="build" element={<QuizBuilderPage />} />
+              <Route path="insights" element={<QuizInsightsPage />} />
+            </Route>
             <Route path="sessions/:id" element={<SessionDetailPage />} />
           </Route>
         </Route>

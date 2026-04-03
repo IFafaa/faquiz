@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import type { DateRange } from 'react-day-picker'
 import { endOfDay, startOfDay } from 'date-fns'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import {
   Bar,
   BarChart,
@@ -17,7 +17,6 @@ import {
 } from 'recharts'
 import {
   exportQuizResponses,
-  getQuiz,
   getQuizTree,
   postQuizAggregates,
 } from '@/api/quiz'
@@ -97,12 +96,6 @@ export function QuizInsightsPage() {
   const [compareA, setCompareA] = useState<string>('')
   const [compareB, setCompareB] = useState<string>('')
 
-  const { data: quiz, isLoading: loadingQuiz } = useQuery({
-    queryKey: ['quiz', id],
-    queryFn: () => getQuiz(id),
-    enabled: !!id,
-  })
-
   const { data: tree, isLoading: loadingTree } = useQuery({
     queryKey: ['quiz-tree', id],
     queryFn: () => getQuizTree(id),
@@ -158,7 +151,7 @@ export function QuizInsightsPage() {
     })
   }
 
-  const loading = loadingQuiz || loadingTree
+  const loading = loadingTree
   const aggLoading = loadingAgg || fetchingAgg
 
   const qCompareA = aggregates?.questions.find((q) => q.questionNodeId === compareA)
@@ -166,35 +159,15 @@ export function QuizInsightsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="font-display text-2xl font-bold text-zinc-50">
-            Insights e exportação
-          </h1>
-          <p className="mt-1 text-sm text-zinc-400">
-            {quiz?.title ?? (loading ? 'Carregando…' : '—')}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3 text-sm">
-          <Link
-            to={`/admin/quizzes/${id}/build`}
-            className="text-zinc-400 hover:text-zinc-200"
-          >
-            Builder
-          </Link>
-          <Link
-            to={`/admin/quizzes/${id}/responses`}
-            className="text-zinc-400 hover:text-zinc-200"
-          >
-            Sessões
-          </Link>
-          <Link
-            to={`/admin/quizzes/${id}/settings`}
-            className="text-brand-300 hover:underline"
-          >
-            URL e QR
-          </Link>
-        </div>
+      <div>
+        <h2 className="font-display text-lg font-semibold text-zinc-100">
+          Insights e exportação
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500">
+          {loading
+            ? 'Carregando…'
+            : 'Filtre sessões, veja gráficos por pergunta e exporte para Excel.'}
+        </p>
       </div>
 
       {loading ? (

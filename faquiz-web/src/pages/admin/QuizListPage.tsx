@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   createQuiz,
   deleteQuiz,
@@ -50,7 +50,7 @@ export function QuizListPage() {
       void queryClient.invalidateQueries({ queryKey: ['quizzes'] })
       setTitle('')
       setDescription('')
-      void navigate(`/admin/quizzes/${quiz.id}/build`)
+      void navigate(`/admin/quizzes/${quiz.id}`)
     },
   })
 
@@ -122,15 +122,16 @@ export function QuizListPage() {
           Quizzes
         </h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Crie, edite, publique e abra o builder ou as respostas.
+          Clique numa linha para abrir respostas, compartilhamento, builder e
+          insights.
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Novo quiz</CardTitle>
+      <Card className="border-zinc-800/80">
+        <CardHeader className="border-b border-zinc-800/80 pb-4">
+          <CardTitle className="text-base">Novo quiz</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
               label="Título"
@@ -156,85 +157,101 @@ export function QuizListPage() {
             onClick={() => createMut.mutate()}
             disabled={createMut.isPending}
           >
-            {createMut.isPending ? 'Criando…' : 'Criar e ir ao builder'}
+            {createMut.isPending ? 'Criando…' : 'Criar quiz'}
           </Button>
         </CardContent>
       </Card>
 
-      <div className="overflow-hidden rounded-2xl border border-zinc-800">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-zinc-800 bg-zinc-900/80">
-            <tr>
-              <th className="px-4 py-3 font-medium text-zinc-400">Título</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
-              <th className="hidden px-4 py-3 font-medium text-zinc-400 md:table-cell">
+      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/30 shadow-sm">
+        <table className="w-full table-fixed text-left text-sm">
+          <thead>
+            <tr className="border-b border-zinc-800 bg-zinc-900/60">
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Título
+              </th>
+              <th className="hidden w-[120px] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:table-cell">
+                Status
+              </th>
+              <th className="hidden w-[150px] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-zinc-500 lg:table-cell">
                 Atualizado
               </th>
-              <th className="px-4 py-3 font-medium text-zinc-400 text-right">
+              <th className="w-[200px] px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 Ações
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800">
+          <tbody className="divide-y divide-zinc-800/80">
             {(!quizzes || quizzes.length === 0) ? (
               <tr>
                 <td
                   colSpan={4}
-                  className="px-4 py-10 text-center text-zinc-500"
+                  className="px-4 py-12 text-center text-zinc-500"
                 >
                   Nenhum quiz cadastrado.
                 </td>
               </tr>
             ) : (
               quizzes.map((q) => (
-                <tr key={q.id} className="bg-zinc-950/40">
-                  <td className="px-4 py-3 align-top">
-                    <p className="font-medium text-zinc-200">{q.title}</p>
+                <tr
+                  key={q.id}
+                  role="link"
+                  tabIndex={0}
+                  className="cursor-pointer bg-zinc-950/20 transition-colors hover:bg-zinc-900/40"
+                  onClick={() => void navigate(`/admin/quizzes/${q.id}/responses`)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      void navigate(`/admin/quizzes/${q.id}/responses`)
+                    }
+                  }}
+                >
+                  <td className="px-4 py-3 align-middle">
+                    <p className="font-medium leading-snug text-zinc-200">
+                      {q.title}
+                    </p>
                     {q.description ? (
-                      <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500">
+                      <p className="mt-1 line-clamp-2 text-xs text-zinc-500">
                         {q.description}
                       </p>
                     ) : null}
+                    <div className="mt-2 sm:hidden">
+                      {q.isPublished ? (
+                        <Badge tone="success">Publicado</Badge>
+                      ) : (
+                        <Badge tone="muted">Rascunho</Badge>
+                      )}
+                    </div>
                   </td>
-                  <td className="px-4 py-3 align-top">
+                  <td className="hidden px-4 py-3 align-middle sm:table-cell">
                     {q.isPublished ? (
                       <Badge tone="success">Publicado</Badge>
                     ) : (
                       <Badge tone="muted">Rascunho</Badge>
                     )}
                   </td>
-                  <td className="hidden px-4 py-3 align-top text-zinc-500 md:table-cell">
+                  <td className="hidden align-middle text-zinc-500 lg:table-cell">
                     {formatUpdated(q.updatedAt)}
                   </td>
-                  <td className="px-4 py-3 align-top text-right">
-                    <div className="flex flex-wrap justify-end gap-2">
+                  <td className="px-4 py-3 align-middle text-right">
+                    <div
+                      className="inline-flex flex-wrap items-center justify-end gap-1.5"
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    >
                       <Button
                         type="button"
                         variant="secondary"
                         size="sm"
+                        className="whitespace-nowrap"
                         onClick={() => openEdit(q)}
                       >
                         Editar
                       </Button>
-                      <Link to={`/admin/quizzes/${q.id}/build`}>
-                        <Button type="button" variant="secondary" size="sm">
-                          Builder
-                        </Button>
-                      </Link>
-                      <Link to={`/admin/quizzes/${q.id}/settings`}>
-                        <Button type="button" variant="ghost" size="sm">
-                          Share
-                        </Button>
-                      </Link>
-                      <Link to={`/admin/quizzes/${q.id}/responses`}>
-                        <Button type="button" variant="ghost" size="sm">
-                          Respostas
-                        </Button>
-                      </Link>
                       <Button
                         type="button"
                         variant="secondary"
                         size="sm"
+                        className="whitespace-nowrap"
                         onClick={() => togglePublish(q)}
                         disabled={updateMut.isPending}
                       >
@@ -244,6 +261,7 @@ export function QuizListPage() {
                         type="button"
                         variant="danger"
                         size="sm"
+                        className="whitespace-nowrap"
                         onClick={() => confirmDelete(q)}
                         disabled={deleteMut.isPending}
                       >
@@ -265,7 +283,7 @@ export function QuizListPage() {
           aria-modal="true"
           aria-labelledby="edit-quiz-title"
         >
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md border-zinc-800">
             <CardHeader>
               <CardTitle id="edit-quiz-title">Editar quiz</CardTitle>
             </CardHeader>

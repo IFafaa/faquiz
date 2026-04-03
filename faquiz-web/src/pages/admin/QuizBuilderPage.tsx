@@ -16,7 +16,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getQuiz, getQuizTree, saveQuizTree } from '@/api/quiz'
 import { BuilderInspector } from '@/components/builder/BuilderInspector'
 import { flowToSavePayload, getLayoutedElements, treeToFlow } from '@/components/builder/flow-utils'
@@ -189,7 +189,7 @@ function BuilderCanvas() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] min-h-[480px] flex-col gap-4 md:flex-row">
+    <div className="flex min-h-[min(720px,calc(100vh-13rem))] flex-col gap-4 md:flex-row">
       <div className="relative min-h-[360px] flex-1 rounded-xl border border-zinc-800 bg-zinc-950">
         <ReactFlow
           nodes={nodes}
@@ -233,26 +233,9 @@ function BuilderCanvas() {
         <div>
           <p className="text-xs text-zinc-500">Quiz</p>
           <p className="font-medium text-zinc-200">{quiz?.title}</p>
-          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-            <Link
-              to={`/admin/quizzes/${quizId}/responses`}
-              className="text-brand-300 hover:underline"
-            >
-              Sessões
-            </Link>
-            <Link
-              to={`/admin/quizzes/${quizId}/insights`}
-              className="text-brand-300 hover:underline"
-            >
-              Insights
-            </Link>
-            <Link
-              to={`/admin/quizzes/${quizId}/settings`}
-              className="text-brand-300 hover:underline"
-            >
-              Configurações e QR
-            </Link>
-          </div>
+          <p className="mt-1 text-xs text-zinc-600">
+            Use as abas acima para Respostas, Compartilhamento ou Insights.
+          </p>
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-zinc-400">
@@ -298,16 +281,14 @@ export function QuizBuilderPage() {
   const { id } = useParams<{ id: string }>()
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-display text-2xl font-bold text-zinc-50">
-          Builder
-        </h1>
-        <Link
-          to="/admin/quizzes"
-          className="text-sm text-zinc-500 hover:text-zinc-300"
-        >
-          ← Voltar à lista
-        </Link>
+      <div>
+        <h2 className="font-display text-lg font-semibold text-zinc-100">
+          Fluxo de perguntas
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500">
+          Arraste conexões entre perguntas, defina a raiz e salve. As abas no topo
+          levam às outras áreas do quiz.
+        </p>
       </div>
       <ReactFlowProvider key={id}>
         <BuilderCanvas />
