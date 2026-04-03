@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-faquiz}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-faquiz}
+      POSTGRES_DB: ${POSTGRES_DB:-faquiz}
+    volumes:
+      - faquiz-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-faquiz} -d ${POSTGRES_DB:-faquiz}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./faquiz-api
+      dockerfile: Dockerfile
+    ports:
+      - "${API_PORT:-3333}:3333"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-faquiz}:${POSTGRES_PASSWORD:-faquiz}@db:5432/${POSTGRES_DB:-faquiz}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-7d}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
+      PORT: "3333"
+      # Obrigatório na primeira subida para criar admin + quiz; depois pode remover do ficheiro.
+      ADMIN_SEED_PASSWORD: ${ADMIN_SEED_PASSWORD:-}
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./faquiz-web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  faquiz-pgdata:
