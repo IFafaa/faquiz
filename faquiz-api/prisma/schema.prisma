@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quizzes   Quiz[]
+}
+
+model Quiz {
+  id            String         @id @default(uuid())
+  title         String
+  description   String         @default("")
+  isPublished   Boolean        @default(false)
+  rootNodeId    String?
+  adminId       String
+  admin         Admin          @relation(fields: [adminId], references: [id])
+  questionNodes QuestionNode[]
+  sessions      QuizSession[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([adminId])
+}
+
+model QuestionNode {
+  id            String         @id @default(uuid())
+  quizId        String
+  quiz          Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  title         String
+  description   String         @default("")
+  questionType  String         @default("multiple_choice")
+  positionX     Float          @default(0)
+  positionY     Float          @default(0)
+  answerOptions AnswerOption[] @relation("QuestionOptions")
+  incomingEdges AnswerOption[] @relation("NextQuestion")
+  answers       SessionAnswer[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([quizId])
+}
+
+model AnswerOption {
+  id                 String        @id @default(uuid())
+  questionNodeId     String
+  questionNode       QuestionNode  @relation("QuestionOptions", fields: [questionNodeId], references: [id], onDelete: Cascade)
+  label              String
+  value              String
+  order              Int           @default(0)
+  nextQuestionNodeId String?
+  nextQuestionNode   QuestionNode? @relation("NextQuestion", fields: [nextQuestionNodeId], references: [id], onDelete: SetNull)
+  sessionAnswers     SessionAnswer[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([questionNodeId])
+  @@index([nextQuestionNodeId])
+}
+
+model QuizSession {
+  id             String          @id @default(uuid())
+  quizId         String
+  quiz           Quiz            @relation(fields: [quizId], references: [id])
+  respondentName String          @default("")
+  status         String          @default("in_progress")
+  pathTaken      String          @default("[]")
+  startedAt      DateTime        @default(now())
+  completedAt    DateTime?
+  answers        SessionAnswer[]
+
+  @@index([quizId])
+  @@index([status])
+}
+
+model SessionAnswer {
+  id             String        @id @default(uuid())
+  sessionId      String
+  session        QuizSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questionNodeId String
+  questionNode   QuestionNode  @relation(fields: [questionNodeId], references: [id])
+  answerOptionId String?
+  answerOption   AnswerOption? @relation(fields: [answerOptionId], references: [id])
+  answerValue    String
+  answeredAt     DateTime      @default(now())
+
+  @@index([sessionId])
+  @@index([questionNodeId])
+}
