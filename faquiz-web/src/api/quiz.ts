@@ -1,6 +1,7 @@
 import type {
   AnalyticsResponse,
   PublicQuizPayload,
+  QuestionType,
   QuizSessionRow,
   QuizSummary,
   QuizTreeSnapshot,
@@ -40,13 +41,26 @@ export async function getQuizTree(id: string) {
   return data
 }
 
-export async function saveQuizTree(
-  id: string,
-  body: {
-    rootNodeId: string | null
-    nodes: QuizTreeSnapshot['nodes']
-  },
-) {
+export type SaveQuizTreeBody = {
+  rootNodeId: string | null
+  nodes: Array<{
+    id: string
+    title: string
+    description: string
+    questionType: QuestionType
+    positionX: number
+    positionY: number
+    answerOptions: Array<{
+      id: string
+      label: string
+      value: string
+      order: number
+      nextQuestionNodeId: string | null
+    }>
+  }>
+}
+
+export async function saveQuizTree(id: string, body: SaveQuizTreeBody) {
   await api.put(`/quizzes/${id}/tree`, body)
 }
 
