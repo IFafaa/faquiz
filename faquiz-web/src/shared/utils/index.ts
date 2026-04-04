@@ -5,3 +5,4 @@ export {
   richTextIsEmpty,
   richTextToPlainText,
 } from './richText'
+export { isValidUuid } from './validation'

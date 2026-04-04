@@ -87,6 +87,18 @@ export interface IFaquizApi {
 const baseURL =
   import.meta.env.VITE_API_URL ?? 'http://localhost:3333/api'
 
+const trustedOrigin = new URL(baseURL).origin
+
+function isTrustedUrl(url: string | undefined): boolean {
+  if (!url) return true
+  if (url.startsWith('/')) return true
+  try {
+    return new URL(url, baseURL).origin === trustedOrigin
+  } catch {
+    return false
+  }
+}
+
 export class FaquizApi implements IFaquizApi {
   private readonly client: AxiosInstance
 
@@ -95,13 +107,27 @@ export class FaquizApi implements IFaquizApi {
       baseURL,
       headers: { 'Content-Type': 'application/json' },
     })
+
     this.client.interceptors.request.use((config) => {
       const token = useAuthStore.getState().token
-      if (token) {
+      if (token && isTrustedUrl(config.url)) {
         config.headers.Authorization = `Bearer ${token}`
       }
       return config
     })
+
+    this.client.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        if (axios.isAxiosError(err) && err.response?.status === 401) {
+          const url = err.config?.url ?? ''
+          if (!url.includes('/auth/login')) {
+            useAuthStore.getState().clearAuth()
+          }
+        }
+        return Promise.reject(err)
+      },
+    )
   }
 
   async login(email: string, password: string) {
@@ -227,7 +253,11 @@ export class FaquizApi implements IFaquizApi {
   ) {
     const { data } = await this.client.post<StartSessionResponse>(
       `/quizzes/${quizId}/sessions`,
-      { ...body },
+      {
+        respondentName: body.respondentName,
+        respondentEmail: body.respondentEmail,
+        respondentPhone: body.respondentPhone,
+      },
     )
     return data
   }

@@ -4,9 +4,11 @@ import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { faquizApi } from '@/app/api'
 import { useQuizSessionStore } from '@/app/store/quizSessionStore'
+import { isValidUuid } from '@/shared/utils/validation'
 
 export function useQuizStartFlow() {
-  const { id: quizId = '' } = useParams<{ id: string }>()
+  const { id: rawId = '' } = useParams<{ id: string }>()
+  const quizId = isValidUuid(rawId) ? rawId : ''
   const navigate = useNavigate()
   const setPhase = useQuizSessionStore((s) => s.setPhase)
   const setError = useQuizSessionStore((s) => s.setError)
@@ -109,7 +111,8 @@ export function useQuizStartFlow() {
 }
 
 export function useQuizPlayFlow() {
-  const { id: quizId = '' } = useParams<{ id: string }>()
+  const { id: rawPlayId = '' } = useParams<{ id: string }>()
+  const quizId = isValidUuid(rawPlayId) ? rawPlayId : ''
   const navigate = useNavigate()
   const sessionId = useQuizSessionStore((s) => s.sessionId)
   const storeQuizId = useQuizSessionStore((s) => s.quizId)

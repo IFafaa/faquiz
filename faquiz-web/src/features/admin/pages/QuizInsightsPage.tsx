@@ -98,7 +98,7 @@ export function QuizInsightsPage() {
       a.href = url
       a.download = `faquiz-${id.slice(0, 8)}-respostas.xlsx`
       a.click()
-      URL.revokeObjectURL(url)
+      setTimeout(() => URL.revokeObjectURL(url), 60_000)
     },
   })
 

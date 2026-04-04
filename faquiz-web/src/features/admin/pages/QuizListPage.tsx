@@ -48,9 +48,10 @@ export function QuizListPage() {
   })
 
   const confirmDelete = (q: QuizSummary) => {
+    const safeTitle = q.title.slice(0, 80).replace(/[\n\r]/g, ' ')
     if (
       !window.confirm(
-        `Excluir o quiz "${q.title}"? Esta ação não pode ser desfeita.`,
+        `Excluir o quiz "${safeTitle}"? Esta ação não pode ser desfeita.`,
       )
     )
       return

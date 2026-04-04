@@ -16,8 +16,10 @@ export function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const from =
+  const rawFrom =
     (location.state as { from?: string } | null)?.from ?? '/admin'
+  const from =
+    rawFrom.startsWith('/admin') && !rawFrom.includes('//') ? rawFrom : '/admin'
 
   const mutation = useMutation({
     mutationFn: () => faquizApi.login(email, password),
