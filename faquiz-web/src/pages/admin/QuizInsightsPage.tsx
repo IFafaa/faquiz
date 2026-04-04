@@ -7,7 +7,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -55,6 +54,17 @@ function rangeToIsoBounds(range: DateRange | undefined) {
     range.to != null ? endOfDay(range.to) : endOfDay(range.from)
   return { from: from.toISOString(), to: to.toISOString() }
 }
+
+/** Cores por cartão — contraste no fundo zinc escuro */
+const CHART_PALETTE = [
+  '#a78bfa',
+  '#34d399',
+  '#fbbf24',
+  '#fb7185',
+  '#38bdf8',
+  '#c084fc',
+  '#2dd4bf',
+] as const
 
 function formToFilters(form: FormState): ResponseFilters {
   const f: ResponseFilters = {}
@@ -158,16 +168,22 @@ export function QuizInsightsPage() {
   const qCompareB = aggregates?.questions.find((q) => q.questionNodeId === compareB)
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-lg font-semibold text-zinc-100">
-          Insights e exportação
-        </h2>
-        <p className="mt-1 text-sm text-zinc-500">
-          {loading
-            ? 'Carregando…'
-            : 'Filtre sessões, veja gráficos por pergunta e exporte para Excel.'}
-        </p>
+    <div className="space-y-5">
+      <div className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900/80 via-zinc-950 to-zinc-950 px-5 py-4">
+        <div
+          className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-brand-500/10 blur-3xl"
+          aria-hidden
+        />
+        <div className="relative">
+          <h2 className="font-display text-xl font-semibold tracking-tight text-zinc-50">
+            Insights e exportação
+          </h2>
+          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-zinc-400">
+            {loading
+              ? 'Carregando…'
+              : 'Filtre sessões, compare perguntas e leia distribuições em grelha densa — mais contexto por ecrã.'}
+          </p>
+        </div>
       </div>
 
       {loading ? (
@@ -326,54 +342,63 @@ export function QuizInsightsPage() {
             </div>
           ) : aggregates ? (
             <>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Sessões filtradas</CardTitle>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <Card className="border-zinc-800/80 bg-zinc-950/40 lg:row-span-1">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-zinc-400">
+                      Sessões filtradas
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-3xl font-semibold text-zinc-100">
+                    <p className="font-display text-4xl font-bold tabular-nums tracking-tight text-zinc-50">
                       {aggregates.filteredSessionCount}
                     </p>
-                    <p className="mt-1 text-sm text-zinc-500">
-                      Total de sessões que passam nos filtros atuais.
+                    <p className="mt-2 text-xs leading-snug text-zinc-500">
+                      Total que passa nos filtros atuais.
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Sessões por dia (filtrado)</CardTitle>
+                <Card className="border-zinc-800/80 bg-zinc-950/40 lg:col-span-2">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-zinc-400">
+                      Sessões por dia
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     {aggregates.timeline.length === 0 ? (
-                      <p className="py-8 text-center text-sm text-zinc-500">
+                      <p className="py-10 text-center text-sm text-zinc-500">
                         Sem dados no período.
                       </p>
                     ) : (
-                      <div className="h-[220px] w-full">
+                      <div className="h-[min(14rem,28vh)] w-full min-h-[180px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={aggregates.timeline}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
                             <XAxis
                               dataKey="date"
                               tick={{ fill: '#a1a1aa', fontSize: 10 }}
+                              stroke="#3f3f46"
                             />
                             <YAxis
                               allowDecimals={false}
                               tick={{ fill: '#a1a1aa', fontSize: 10 }}
+                              stroke="#3f3f46"
+                              width={36}
                             />
                             <Tooltip
                               contentStyle={{
                                 backgroundColor: '#18181b',
                                 border: '1px solid #3f3f46',
+                                borderRadius: '8px',
                               }}
                             />
                             <Line
                               type="monotone"
                               dataKey="count"
                               stroke="#a78bfa"
-                              strokeWidth={2}
-                              dot={false}
+                              strokeWidth={2.5}
+                              dot={{ r: 3, fill: '#a78bfa', strokeWidth: 0 }}
+                              activeDot={{ r: 5 }}
                             />
                           </LineChart>
                         </ResponsiveContainer>
@@ -383,18 +408,21 @@ export function QuizInsightsPage() {
                 </Card>
               </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Comparar duas perguntas</CardTitle>
+              <Card className="border-zinc-800/80 bg-zinc-950/40">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Comparar duas perguntas</CardTitle>
+                  <p className="text-xs text-zinc-500">
+                    Escolha A e B — os gráficos ficam lado a lado.
+                  </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex flex-wrap gap-4">
-                    <label className="text-sm">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="block text-sm">
                       <span className="text-zinc-400">Pergunta A</span>
                       <select
                         value={compareA}
                         onChange={(e) => setCompareA(e.target.value)}
-                        className="mt-1 block w-56 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
+                        className="mt-1.5 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100"
                       >
                         <option value="">—</option>
                         {aggregates.questions.map((q) => (
@@ -405,12 +433,12 @@ export function QuizInsightsPage() {
                         ))}
                       </select>
                     </label>
-                    <label className="text-sm">
+                    <label className="block text-sm">
                       <span className="text-zinc-400">Pergunta B</span>
                       <select
                         value={compareB}
                         onChange={(e) => setCompareB(e.target.value)}
-                        className="mt-1 block w-56 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
+                        className="mt-1.5 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100"
                       >
                         <option value="">—</option>
                         {aggregates.questions.map((q) => (
@@ -422,111 +450,202 @@ export function QuizInsightsPage() {
                       </select>
                     </label>
                   </div>
-                  {compareA && qCompareA && (
-                    <div className="h-[240px]">
-                      <p className="mb-2 text-xs text-zinc-500">A: {qCompareA.title}</p>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={qCompareA.distribution} layout="vertical">
-                          <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                          <XAxis type="number" tick={{ fill: '#a1a1aa', fontSize: 10 }} />
-                          <YAxis
-                            type="category"
-                            dataKey="label"
-                            width={120}
-                            tick={{ fill: '#a1a1aa', fontSize: 10 }}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: '#18181b',
-                              border: '1px solid #3f3f46',
-                            }}
-                          />
-                          <Bar dataKey="count" fill="#a78bfa" name="Respostas" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
-                  {compareB && qCompareB && (
-                    <div className="h-[240px]">
-                      <p className="mb-2 text-xs text-zinc-500">B: {qCompareB.title}</p>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={qCompareB.distribution} layout="vertical">
-                          <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                          <XAxis type="number" tick={{ fill: '#a1a1aa', fontSize: 10 }} />
-                          <YAxis
-                            type="category"
-                            dataKey="label"
-                            width={120}
-                            tick={{ fill: '#a1a1aa', fontSize: 10 }}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: '#18181b',
-                              border: '1px solid #3f3f46',
-                            }}
-                          />
-                          <Bar dataKey="count" fill="#34d399" name="Respostas" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
+                  <div className="grid min-h-0 gap-4 md:grid-cols-2">
+                    {compareA && qCompareA ? (
+                      <div className="flex min-h-[260px] flex-col rounded-xl border border-zinc-800/60 bg-black/20 p-3">
+                        <p className="mb-2 line-clamp-2 text-xs font-medium text-brand-200/90">
+                          A · {qCompareA.title}
+                        </p>
+                        <div className="min-h-[220px] flex-1">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={qCompareA.distribution}
+                              layout="vertical"
+                              margin={{ left: 4, right: 8, top: 4, bottom: 4 }}
+                            >
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#27272a"
+                                horizontal={false}
+                              />
+                              <XAxis
+                                type="number"
+                                tick={{ fill: '#a1a1aa', fontSize: 10 }}
+                                stroke="#3f3f46"
+                              />
+                              <YAxis
+                                type="category"
+                                dataKey="label"
+                                width={108}
+                                tick={{ fill: '#a1a1aa', fontSize: 9 }}
+                                stroke="#3f3f46"
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: '#18181b',
+                                  border: '1px solid #3f3f46',
+                                  borderRadius: '8px',
+                                }}
+                              />
+                              <Bar
+                                dataKey="count"
+                                fill="#a78bfa"
+                                name="Respostas"
+                                maxBarSize={28}
+                                radius={[0, 4, 4, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex min-h-[120px] items-center justify-center rounded-xl border border-dashed border-zinc-800 bg-zinc-950/30 text-xs text-zinc-600">
+                        Selecione a pergunta A
+                      </div>
+                    )}
+                    {compareB && qCompareB ? (
+                      <div className="flex min-h-[260px] flex-col rounded-xl border border-zinc-800/60 bg-black/20 p-3">
+                        <p className="mb-2 line-clamp-2 text-xs font-medium text-emerald-300/90">
+                          B · {qCompareB.title}
+                        </p>
+                        <div className="min-h-[220px] flex-1">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={qCompareB.distribution}
+                              layout="vertical"
+                              margin={{ left: 4, right: 8, top: 4, bottom: 4 }}
+                            >
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#27272a"
+                                horizontal={false}
+                              />
+                              <XAxis
+                                type="number"
+                                tick={{ fill: '#a1a1aa', fontSize: 10 }}
+                                stroke="#3f3f46"
+                              />
+                              <YAxis
+                                type="category"
+                                dataKey="label"
+                                width={108}
+                                tick={{ fill: '#a1a1aa', fontSize: 9 }}
+                                stroke="#3f3f46"
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: '#18181b',
+                                  border: '1px solid #3f3f46',
+                                  borderRadius: '8px',
+                                }}
+                              />
+                              <Bar
+                                dataKey="count"
+                                fill="#34d399"
+                                name="Respostas"
+                                maxBarSize={28}
+                                radius={[0, 4, 4, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex min-h-[120px] items-center justify-center rounded-xl border border-dashed border-zinc-800 bg-zinc-950/30 text-xs text-zinc-600">
+                        Selecione a pergunta B
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
-              <div className="space-y-6">
-                <h2 className="font-display text-lg font-semibold text-zinc-100">
-                  Distribuição por pergunta
-                </h2>
+              <div>
+                <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <h2 className="font-display text-lg font-semibold text-zinc-100">
+                      Distribuição por pergunta
+                    </h2>
+                    <p className="mt-0.5 text-sm text-zinc-500">
+                      Grelha responsiva — até três gráficos por linha em ecrãs largos.
+                    </p>
+                  </div>
+                  <span className="rounded-full border border-zinc-700/80 bg-zinc-900/80 px-3 py-1 text-xs tabular-nums text-zinc-400">
+                    {aggregates.questions.length} perguntas
+                  </span>
+                </div>
                 {aggregates.questions.length === 0 ? (
                   <p className="text-sm text-zinc-500">Nenhuma pergunta no quiz.</p>
                 ) : (
-                  aggregates.questions.map((q) => (
-                    <Card key={q.questionNodeId}>
-                      <CardHeader>
-                        <CardTitle className="text-base">{q.title}</CardTitle>
-                        <p className="text-xs text-zinc-500">{q.questionType}</p>
-                      </CardHeader>
-                      <CardContent>
-                        {q.distribution.length === 0 ? (
-                          <p className="py-6 text-center text-sm text-zinc-500">
-                            Sem respostas nos filtros atuais.
-                          </p>
-                        ) : (
-                          <div className="h-[280px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={q.distribution}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                                <XAxis
-                                  dataKey="label"
-                                  tick={{ fill: '#a1a1aa', fontSize: 10 }}
-                                  interval={0}
-                                  angle={-35}
-                                  textAnchor="end"
-                                  height={80}
-                                />
-                                <YAxis
-                                  allowDecimals={false}
-                                  tick={{ fill: '#a1a1aa', fontSize: 10 }}
-                                />
-                                <Tooltip
-                                  contentStyle={{
-                                    backgroundColor: '#18181b',
-                                    border: '1px solid #3f3f46',
-                                  }}
-                                />
-                                <Legend />
-                                <Bar
-                                  dataKey="count"
-                                  fill="#818cf8"
-                                  name="Respostas"
-                                />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+                    {aggregates.questions.map((q, i) => (
+                      <Card
+                        key={q.questionNodeId}
+                        className={cn(
+                          'group border-zinc-800/80 bg-zinc-950/50 transition-colors',
+                          'hover:border-zinc-700/90 hover:bg-zinc-950/80',
                         )}
-                      </CardContent>
-                    </Card>
-                  ))
+                      >
+                        <CardHeader className="space-y-1 pb-2">
+                          <CardTitle className="line-clamp-2 text-left text-sm font-medium leading-snug text-zinc-100">
+                            {q.title}
+                          </CardTitle>
+                          <p className="text-[10px] uppercase tracking-wider text-zinc-600">
+                            {q.questionType}
+                          </p>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          {q.distribution.length === 0 ? (
+                            <p className="py-8 text-center text-xs text-zinc-500">
+                              Sem respostas nos filtros atuais.
+                            </p>
+                          ) : (
+                            <div className="h-[240px] w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                  data={q.distribution}
+                                  layout="vertical"
+                                  margin={{ left: 4, right: 12, top: 4, bottom: 4 }}
+                                >
+                                  <CartesianGrid
+                                    strokeDasharray="3 3"
+                                    stroke="#27272a"
+                                    horizontal={false}
+                                  />
+                                  <XAxis
+                                    type="number"
+                                    tick={{ fill: '#a1a1aa', fontSize: 9 }}
+                                    stroke="#3f3f46"
+                                  />
+                                  <YAxis
+                                    type="category"
+                                    dataKey="label"
+                                    width={100}
+                                    tick={{ fill: '#a1a1aa', fontSize: 8 }}
+                                    stroke="#3f3f46"
+                                  />
+                                  <Tooltip
+                                    contentStyle={{
+                                      backgroundColor: '#18181b',
+                                      border: '1px solid #3f3f46',
+                                      borderRadius: '8px',
+                                      fontSize: '12px',
+                                    }}
+                                  />
+                                  <Bar
+                                    dataKey="count"
+                                    fill={CHART_PALETTE[i % CHART_PALETTE.length]}
+                                    name="Respostas"
+                                    maxBarSize={26}
+                                    radius={[0, 3, 3, 0]}
+                                  />
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 )}
               </div>
             </>
