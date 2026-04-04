@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useQuizPlayFlow } from '@/hooks/useQuizSession'
 import { QuestionPresenter } from '@/components/quiz/QuestionPresenter'
 import { Button } from '@/components/ui/Button'
+import { IconArrowLeft, IconArrowRightOnRectangle } from '@/icons'
 import { useQuizSessionStore } from '@/stores/quizSessionStore'
 
 export function QuizPlayPage() {
@@ -44,27 +45,29 @@ function QuizPlayPageInner() {
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <header className="space-y-3">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1 flex justify-start">
+            {canGoBack ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="shrink-0 gap-2"
+                disabled={isSubmitting}
+                onClick={() => goToPreviousQuestion()}
+              >
+                <IconArrowLeft className="h-4 w-4 shrink-0" />
+                Questão anterior
+              </Button>
+            ) : null}
+          </div>
           <Link
             to="/"
-            className="shrink-0 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
+            className="inline-flex shrink-0 items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
           >
-            ← Sair
+            <IconArrowRightOnRectangle className="h-4 w-4 shrink-0" />
+            Sair
           </Link>
-          {canGoBack ? (
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="shrink-0"
-              disabled={isSubmitting}
-              onClick={() => goToPreviousQuestion()}
-            >
-              Questão anterior
-            </Button>
-          ) : (
-            <span className="shrink-0 sm:w-[140px]" aria-hidden />
-          )}
         </div>
         {quizTitle ? (
           <h2 className="text-balance px-1 text-center text-sm font-medium leading-snug text-zinc-300 sm:text-base">
