@@ -149,8 +149,8 @@ export function DashboardPage() {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="fillSessions" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#a78bfa" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="#a78bfa" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#B366FF" stopOpacity={0.35} />
+                      <stop offset="100%" stopColor="#8000CB" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
@@ -176,7 +176,7 @@ export function DashboardPage() {
                     type="monotone"
                     dataKey="count"
                     name="Sessões"
-                    stroke="#a78bfa"
+                    stroke="#8000CB"
                     strokeWidth={2}
                     fill="url(#fillSessions)"
                   />
