@@ -12,17 +12,14 @@ const prisma = new PrismaClient({ adapter: new PrismaPg(databaseUrl) });
 const QUESTIONS: { title: string; description: string }[] = [
   {
     title: 'Termo de consentimento livre e esclarecido (TCLE)',
-    description: `Você está sendo convidado a participar de uma pesquisa acadêmica sobre as percepções sociais e o uso de cigarros eletrônicos entre jovens da Geração Z. Esta pesquisa está sendo realizada por estudantes da faculdade ESAMC Uberlândia, por meio da disciplina Pesquisa de Mercado, para fins exclusivamente acadêmicos.
-
-A participação consiste em responder a um questionário rápido, que leva aproximadamente 3 a 5 minutos para ser concluído.
-
-Sua participação é voluntária e anônima, ou seja, nenhuma informação que permita sua identificação será coletada. Você pode optar por encerrar sua participação a qualquer momento, sem qualquer prejuízo.
-
-As respostas serão utilizadas apenas para análise acadêmica e elaboração de trabalho científico, podendo ser apresentadas de forma agrupada e sem identificação individual.
-
-Ao selecionar a opção "Sim, eu concordo", você declara que leu e compreendeu as informações acima e aceita participar da pesquisa.
-
-Você concorda em participar desta pesquisa?`,
+    description: [
+      '<p>Você está sendo convidado a participar de uma <strong>pesquisa acadêmica</strong> sobre as percepções sociais e o uso de <strong>cigarros eletrônicos</strong> entre jovens da <strong>Geração Z</strong>. Esta pesquisa está sendo realizada por estudantes da faculdade <strong>ESAMC Uberlândia</strong>, por meio da disciplina <strong>Pesquisa de Mercado</strong>, para fins <strong>exclusivamente acadêmicos</strong>.</p>',
+      '<p>A participação consiste em responder a um questionário rápido, que leva aproximadamente <strong>3 a 5 minutos</strong> para ser concluído.</p>',
+      '<p>Sua participação é <strong>voluntária</strong> e <strong>anônima</strong>, ou seja, nenhuma informação que permita sua identificação será coletada. Você pode optar por encerrar sua participação a qualquer momento, sem qualquer prejuízo.</p>',
+      '<p>As respostas serão utilizadas apenas para <strong>análise acadêmica</strong> e elaboração de trabalho científico, podendo ser apresentadas de forma agrupada e sem identificação individual.</p>',
+      '<p>Ao selecionar a opção <strong>&quot;Sim, eu concordo&quot;</strong>, você declara que leu e compreendeu as informações acima e aceita participar da pesquisa.</p>',
+      '<p>Você concorda em participar desta pesquisa?</p>',
+    ].join(''),
   },
   {
     title: 'Em que ano você nasceu?',
