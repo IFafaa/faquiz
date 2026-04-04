@@ -8,6 +8,9 @@ export interface IQuizRepository {
     title: string;
     description: string;
     adminId: string;
+    collectName: boolean;
+    collectEmail: boolean;
+    collectPhone: boolean;
   }): Promise<QuizEntity>;
   update(
     id: string,

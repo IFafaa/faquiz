@@ -15,12 +15,18 @@ export class PrismaQuizRepository implements IQuizRepository {
     title: string;
     description: string;
     adminId: string;
+    collectName: boolean;
+    collectEmail: boolean;
+    collectPhone: boolean;
   }): Promise<QuizEntity> {
     const row = await this.prisma.quiz.create({
       data: {
         title: data.title,
         description: data.description,
         adminId: data.adminId,
+        collectName: data.collectName,
+        collectEmail: data.collectEmail,
+        collectPhone: data.collectPhone,
       },
     });
     return mapQuiz(row);
@@ -159,7 +165,9 @@ export class PrismaQuizRepository implements IQuizRepository {
             positionY: node.positionY,
           },
         });
+      }
 
+      for (const node of tree.nodes) {
         const optIds = new Set(node.answerOptions.map((o) => o.id));
         const existingOpts = await tx.answerOption.findMany({
           where: { questionNodeId: node.id },
@@ -186,6 +194,7 @@ export class PrismaQuizRepository implements IQuizRepository {
               nextQuestionNodeId: opt.nextQuestionNodeId,
             },
             update: {
+              questionNodeId: node.id,
               label: opt.label,
               value: opt.value,
               order: opt.order,

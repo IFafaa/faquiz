@@ -23,6 +23,10 @@ model Quiz {
   title         String
   description   String         @default("")
   isPublished   Boolean        @default(false)
+  /** Coletar nome antes do quiz (definido só na criação). */
+  collectName   Boolean        @default(false)
+  collectEmail  Boolean        @default(false)
+  collectPhone  Boolean        @default(false)
   rootNodeId    String?
   adminId       String
   admin         Admin          @relation(fields: [adminId], references: [id])
@@ -74,6 +78,8 @@ model QuizSession {
   quizId         String
   quiz           Quiz            @relation(fields: [quizId], references: [id])
   respondentName String          @default("")
+  respondentEmail String         @default("")
+  respondentPhone String         @default("")
   status         String          @default("in_progress")
   pathTaken      String          @default("[]")
   startedAt      DateTime        @default(now())

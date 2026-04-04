@@ -20,6 +20,19 @@ export class CreateQuizDto {
   @IsString()
   @MaxLength(1000)
   description?: string;
+
+  /** Definidos só na criação; não podem ser alterados depois. */
+  @IsOptional()
+  @IsBoolean()
+  collectName?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  collectEmail?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  collectPhone?: boolean;
 }
 
 export class UpdateQuizDto {

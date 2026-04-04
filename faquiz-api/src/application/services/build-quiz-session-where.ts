@@ -27,6 +27,20 @@ export function buildQuizSessionWhere(
     });
   }
 
+  const email = filters.respondentEmailContains?.trim();
+  if (email) {
+    and.push({
+      respondentEmail: { contains: email, mode: 'insensitive' },
+    });
+  }
+
+  const phone = filters.respondentPhoneContains?.trim();
+  if (phone) {
+    and.push({
+      respondentPhone: { contains: phone, mode: 'insensitive' },
+    });
+  }
+
   if (filters.status?.length) {
     and.push({ status: { in: filters.status } });
   }

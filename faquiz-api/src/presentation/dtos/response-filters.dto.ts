@@ -24,6 +24,14 @@ export class ResponseFiltersDto {
   respondentNameContains?: string;
 
   @IsOptional()
+  @IsString()
+  respondentEmailContains?: string;
+
+  @IsOptional()
+  @IsString()
+  respondentPhoneContains?: string;
+
+  @IsOptional()
   @IsArray()
   @IsIn(['in_progress', 'completed', 'abandoned'], { each: true })
   status?: string[];

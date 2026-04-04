@@ -13,11 +13,15 @@ export class PrismaQuizSessionRepository implements IQuizSessionRepository {
   async create(data: {
     quizId: string;
     respondentName: string;
+    respondentEmail: string;
+    respondentPhone: string;
   }): Promise<import('../../../domain/entities/quiz-session.entity.js').QuizSessionEntity> {
     const row = await this.prisma.quizSession.create({
       data: {
         quizId: data.quizId,
         respondentName: data.respondentName ?? '',
+        respondentEmail: data.respondentEmail ?? '',
+        respondentPhone: data.respondentPhone ?? '',
       },
     });
     return mapQuizSession(row);

@@ -39,7 +39,14 @@ export class StartSessionUseCase {
     private readonly sessions: IQuizSessionRepository,
   ) {}
 
-  async execute(quizId: string, respondentName: string) {
+  async execute(
+    quizId: string,
+    input: {
+      respondentName?: string;
+      respondentEmail?: string;
+      respondentPhone?: string;
+    },
+  ) {
     const data = await this.queries.findPublishedWithRootNode(quizId);
     if (!data) {
       throw new NotFoundError('Quiz', quizId);
@@ -47,9 +54,36 @@ export class StartSessionUseCase {
     if (!data.quiz.rootNodeId) {
       throw new ValidationError('Quiz sem pergunta inicial configurada');
     }
+    const q = data.quiz;
+    let name = (input.respondentName ?? '').trim();
+    let email = (input.respondentEmail ?? '').trim();
+    let phone = (input.respondentPhone ?? '').trim();
+
+    if (!q.collectName) name = '';
+    else if (name.length === 0) {
+      throw new ValidationError('Nome é obrigatório para este quiz.');
+    }
+
+    if (!q.collectEmail) email = '';
+    else {
+      if (!email) {
+        throw new ValidationError('E-mail é obrigatório para este quiz.');
+      }
+      if (!isValidEmail(email)) {
+        throw new ValidationError('E-mail inválido.');
+      }
+    }
+
+    if (!q.collectPhone) phone = '';
+    else if (phone.length === 0) {
+      throw new ValidationError('Telefone é obrigatório para este quiz.');
+    }
+
     const session = await this.sessions.create({
       quizId,
-      respondentName: respondentName ?? '',
+      respondentName: name,
+      respondentEmail: email,
+      respondentPhone: phone,
     });
     const question = await this.queries.findQuestionWithOptions(
       quizId,
@@ -76,4 +110,8 @@ export class StartSessionUseCase {
       currentQuestionNumber,
     };
   }
+}
+
+function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }

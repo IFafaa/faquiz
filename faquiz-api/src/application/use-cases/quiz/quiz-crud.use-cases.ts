@@ -14,12 +14,21 @@ export class CreateQuizUseCase {
 
   execute(
     adminId: string,
-    data: { title: string; description: string },
+    data: {
+      title: string;
+      description: string;
+      collectName: boolean;
+      collectEmail: boolean;
+      collectPhone: boolean;
+    },
   ): Promise<QuizEntity> {
     return this.quizzes.create({
       title: data.title,
       description: data.description ?? '',
       adminId,
+      collectName: data.collectName,
+      collectEmail: data.collectEmail,
+      collectPhone: data.collectPhone,
     });
   }
 }

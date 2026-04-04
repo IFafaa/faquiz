@@ -239,6 +239,9 @@ async function main() {
       title: QUIZ_TITLE,
       description: QUIZ_DESCRIPTION,
       isPublished: true,
+      collectName: false,
+      collectEmail: false,
+      collectPhone: false,
       adminId: admin.id,
     },
   });

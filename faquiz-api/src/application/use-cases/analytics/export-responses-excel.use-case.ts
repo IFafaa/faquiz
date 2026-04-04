@@ -42,6 +42,8 @@ export class ExportResponsesExcelUseCase {
       workbook.addWorksheet('Sessões').addRow([
         'id',
         'respondente',
+        'email',
+        'telefone',
         'status',
         'iniciadoEm',
         'concluidoEm',
@@ -49,6 +51,8 @@ export class ExportResponsesExcelUseCase {
       workbook.addWorksheet('Respostas').addRow([
         'sessionId',
         'respondente',
+        'email',
+        'telefone',
         'pergunta',
         'valor',
         'label',
@@ -74,7 +78,13 @@ export class ExportResponsesExcelUseCase {
       include: {
         questionNode: { select: { title: true } },
         answerOption: { select: { label: true } },
-        session: { select: { respondentName: true } },
+        session: {
+          select: {
+            respondentName: true,
+            respondentEmail: true,
+            respondentPhone: true,
+          },
+        },
       },
     });
 
@@ -84,6 +94,8 @@ export class ExportResponsesExcelUseCase {
     wsSess.addRow([
       'id',
       'respondente',
+      'email',
+      'telefone',
       'status',
       'iniciadoEm',
       'concluidoEm',
@@ -92,6 +104,8 @@ export class ExportResponsesExcelUseCase {
       wsSess.addRow([
         s.id,
         s.respondentName,
+        s.respondentEmail,
+        s.respondentPhone,
         s.status,
         s.startedAt.toISOString(),
         s.completedAt?.toISOString() ?? '',
@@ -102,6 +116,8 @@ export class ExportResponsesExcelUseCase {
     wsAns.addRow([
       'sessionId',
       'respondente',
+      'email',
+      'telefone',
       'pergunta',
       'valor',
       'label',
@@ -111,6 +127,8 @@ export class ExportResponsesExcelUseCase {
       wsAns.addRow([
         a.sessionId,
         a.session.respondentName,
+        a.session.respondentEmail,
+        a.session.respondentPhone,
         a.questionNode.title,
         a.answerValue,
         a.answerOption?.label ?? '',

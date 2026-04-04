@@ -95,6 +95,9 @@ export class QuizController {
     return this.createQuiz.execute(req.user.sub, {
       title: dto.title,
       description: dto.description ?? '',
+      collectName: dto.collectName ?? false,
+      collectEmail: dto.collectEmail ?? false,
+      collectPhone: dto.collectPhone ?? false,
     });
   }
 
@@ -118,6 +121,9 @@ export class QuizController {
         id: data.quiz.id,
         title: data.quiz.title,
         description: data.quiz.description,
+        collectName: data.quiz.collectName,
+        collectEmail: data.quiz.collectEmail,
+        collectPhone: data.quiz.collectPhone,
       },
       rootQuestion: data.rootNode
         ? this.toPublicQuestion(data.rootNode)
@@ -130,7 +136,11 @@ export class QuizController {
     @Param('id') quizId: string,
     @Body() dto: StartSessionDto,
   ) {
-    return this.startSession.execute(quizId, dto.respondentName ?? '');
+    return this.startSession.execute(quizId, {
+      respondentName: dto.respondentName,
+      respondentEmail: dto.respondentEmail,
+      respondentPhone: dto.respondentPhone,
+    });
   }
 
   @Get(':id/tree')

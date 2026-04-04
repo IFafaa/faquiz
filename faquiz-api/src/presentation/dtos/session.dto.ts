@@ -5,6 +5,16 @@ export class StartSessionDto {
   @IsString()
   @MaxLength(255)
   respondentName?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(320)
+  respondentEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(40)
+  respondentPhone?: string;
 }
 
 export class SubmitAnswerDto {

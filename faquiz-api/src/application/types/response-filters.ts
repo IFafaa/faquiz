@@ -6,6 +6,8 @@ export interface QuestionAnswerFilterInput {
 /** Entrada de filtros para sessões (agregações / export). */
 export interface ResponseFiltersInput {
   respondentNameContains?: string;
+  respondentEmailContains?: string;
+  respondentPhoneContains?: string;
   status?: string[];
   startedAtFrom?: string;
   startedAtTo?: string;

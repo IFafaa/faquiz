@@ -7,6 +7,8 @@ export interface IQuizSessionRepository {
   create(data: {
     quizId: string;
     respondentName: string;
+    respondentEmail: string;
+    respondentPhone: string;
   }): Promise<QuizSessionEntity>;
   findById(id: string): Promise<QuizSessionEntity | null>;
   findByIdAndQuizId(
