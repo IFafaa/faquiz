@@ -4,17 +4,7 @@ import { faquizApi } from '@/app/api'
 import { Badge } from '@/shared/ui/Badge'
 import { Card, CardContent } from '@/shared/ui/Card'
 import { Spinner } from '@/shared/ui/Spinner'
-
-function formatDt(iso: string) {
-  try {
-    return new Date(iso).toLocaleString('pt-BR', {
-      dateStyle: 'short',
-      timeStyle: 'short',
-    })
-  } catch {
-    return iso
-  }
-}
+import { formatDateTimePtBr } from '@/shared/utils/date'
 
 export function ResponsesPage() {
   const { id = '' } = useParams<{ id: string }>()
@@ -139,10 +129,10 @@ export function ResponsesPage() {
                           </Badge>
                         </td>
                         <td className="px-4 py-3 text-zinc-500">
-                          {formatDt(s.startedAt)}
+                          {formatDateTimePtBr(s.startedAt)}
                         </td>
                         <td className="px-4 py-3 text-zinc-500">
-                          {s.completedAt ? formatDt(s.completedAt) : '—'}
+                          {s.completedAt ? formatDateTimePtBr(s.completedAt) : '—'}
                         </td>
                         <td className="px-4 py-3 text-right">
                           <Link

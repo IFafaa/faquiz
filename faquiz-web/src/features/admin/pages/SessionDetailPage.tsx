@@ -5,17 +5,7 @@ import { faquizApi } from '@/app/api'
 import { Badge } from '@/shared/ui/Badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card'
 import { Spinner } from '@/shared/ui/Spinner'
-
-function formatDt(iso: string) {
-  try {
-    return new Date(iso).toLocaleString('pt-BR', {
-      dateStyle: 'short',
-      timeStyle: 'short',
-    })
-  } catch {
-    return iso
-  }
-}
+import { formatDateTimePtBr } from '@/shared/utils/date'
 
 export function SessionDetailPage() {
   const { id: sessionId = '' } = useParams<{ id: string }>()
@@ -142,12 +132,12 @@ export function SessionDetailPage() {
           </div>
           <div>
             <p className="text-xs text-zinc-500">Início</p>
-            <p className="text-zinc-300">{formatDt(session.startedAt)}</p>
+            <p className="text-zinc-300">{formatDateTimePtBr(session.startedAt)}</p>
           </div>
           <div>
             <p className="text-xs text-zinc-500">Conclusão</p>
             <p className="text-zinc-300">
-              {session.completedAt ? formatDt(session.completedAt) : '—'}
+              {session.completedAt ? formatDateTimePtBr(session.completedAt) : '—'}
             </p>
           </div>
           <div className="sm:col-span-2">
@@ -211,7 +201,7 @@ export function SessionDetailPage() {
                             {displayValue || '—'}
                           </td>
                           <td className="px-4 py-3 text-zinc-500">
-                            {formatDt(a.answeredAt)}
+                            {formatDateTimePtBr(a.answeredAt)}
                           </td>
                         </tr>
                       )
