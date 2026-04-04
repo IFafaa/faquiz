@@ -1,6 +1,7 @@
 import type {
   AggregatesResponse,
   AnalyticsResponse,
+  PublishedQuizCard,
   PublicQuizPayload,
   QuestionType,
   QuizSessionRow,
@@ -69,6 +70,13 @@ export async function saveQuizTree(id: string, body: SaveQuizTreeBody) {
 export async function getPublicQuiz(id: string) {
   const { data } = await api.get<PublicQuizPayload>(
     `/quizzes/${id}/public`,
+  )
+  return data
+}
+
+export async function getPublishedQuizzes() {
+  const { data } = await api.get<PublishedQuizCard[]>(
+    '/quizzes/published',
   )
   return data
 }

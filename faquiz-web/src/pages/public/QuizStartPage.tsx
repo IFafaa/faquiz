@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useQuizStartFlow } from '@/hooks/useQuizSession'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
@@ -19,18 +18,6 @@ export function QuizStartPage() {
 
   return (
     <div className="mx-auto max-w-lg space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <Link
-          to="/"
-          className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-        >
-          ← Início
-        </Link>
-      </motion.div>
-
       {loading ? (
         <div className="flex flex-col items-center gap-4 py-16">
           <Spinner />

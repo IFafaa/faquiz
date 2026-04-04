@@ -11,14 +11,6 @@ export function PublicLayout() {
           >
             FAQuiz
           </Link>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link
-              to="/admin/login"
-              className="text-zinc-400 hover:text-zinc-200 transition-colors"
-            >
-              Admin
-            </Link>
-          </nav>
         </div>
       </header>
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">

@@ -47,11 +47,36 @@ export interface StartSessionResponse {
     description: string
   }
   question: PublicQuestion | null
+  /** Total de nós de pergunta no quiz (ex.: 30). */
+  totalQuestions: number
+  /** Quantas perguntas já foram respondidas nesta sessão. */
+  answeredCount: number
+  /**
+   * Posição global da pergunta atual (1…totalQuestions), pela ordem de criação
+   * dos nós. Barra = currentQuestionNumber / totalQuestions (ex.: 20/30 ou 11/30).
+   */
+  currentQuestionNumber: number
 }
 
 export interface SubmitAnswerResponse {
   completed: boolean
   question: PublicQuestion | null
+  totalQuestions: number
+  answeredCount: number
+  currentQuestionNumber: number
+}
+
+export interface PublishedQuizCard {
+  id: string
+  title: string
+  description: string
+}
+
+export interface UndoLastAnswerResponse {
+  question: PublicQuestion
+  totalQuestions: number
+  answeredCount: number
+  currentQuestionNumber: number
 }
 
 export interface QuizTreeSnapshot {

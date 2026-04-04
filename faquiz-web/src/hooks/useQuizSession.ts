@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getPublicQuiz } from '@/api/quiz'
-import { startSession, submitAnswer } from '@/api/session'
+import { startSession, submitAnswer, undoLastAnswer } from '@/api/session'
 import { useQuizSessionStore } from '@/stores/quizSessionStore'
 
 /**
@@ -52,6 +52,9 @@ export function useQuizStartFlow() {
         quizDescription: data.quiz.description,
         respondentName: variables.respondentName,
         question: data.question,
+        totalQuestions: data.totalQuestions,
+        answeredCount: data.answeredCount,
+        currentQuestionNumber: data.currentQuestionNumber,
       })
       void navigate(`/quiz/${quizId}/play`, { replace: true })
     },
@@ -90,7 +93,12 @@ export function useQuizPlayFlow() {
   const errorMessage = useQuizSessionStore((s) => s.errorMessage)
   const setPhase = useQuizSessionStore((s) => s.setPhase)
   const setError = useQuizSessionStore((s) => s.setError)
-  const setQuestion = useQuizSessionStore((s) => s.setQuestion)
+  const setPlayState = useQuizSessionStore((s) => s.setPlayState)
+  const totalQuestions = useQuizSessionStore((s) => s.totalQuestions)
+  const answeredCount = useQuizSessionStore((s) => s.answeredCount)
+  const currentQuestionNumber = useQuizSessionStore(
+    (s) => s.currentQuestionNumber,
+  )
 
   useEffect(() => {
     if (!quizId) return
@@ -115,16 +123,51 @@ export function useQuizPlayFlow() {
     onSuccess: (data) => {
       if (data.completed) {
         setPhase('completed')
-        setQuestion(null)
+        setPlayState({
+          question: null,
+          totalQuestions: data.totalQuestions,
+          answeredCount: data.answeredCount,
+          currentQuestionNumber: data.currentQuestionNumber,
+        })
         void navigate(`/quiz/${quizId}/complete`, { replace: true })
         return
       }
-      setQuestion(data.question)
+      setPlayState({
+        question: data.question,
+        totalQuestions: data.totalQuestions,
+        answeredCount: data.answeredCount,
+        currentQuestionNumber: data.currentQuestionNumber,
+      })
       setPhase('playing')
     },
     onError: () => {
       setPhase('error')
       setError('Não foi possível enviar a resposta.')
+    },
+  })
+
+  const undo = useMutation({
+    mutationFn: () => {
+      const sid = useQuizSessionStore.getState().sessionId
+      if (!sid) throw new Error('Sessão inválida')
+      return undoLastAnswer(sid)
+    },
+    onMutate: () => {
+      setPhase('submitting')
+      setError(null)
+    },
+    onSuccess: (data) => {
+      setPlayState({
+        question: data.question,
+        totalQuestions: data.totalQuestions,
+        answeredCount: data.answeredCount,
+        currentQuestionNumber: data.currentQuestionNumber,
+      })
+      setPhase('playing')
+    },
+    onError: () => {
+      setPhase('error')
+      setError('Não foi possível voltar à pergunta anterior.')
     },
   })
 
@@ -135,13 +178,22 @@ export function useQuizPlayFlow() {
     [answer],
   )
 
+  const goToPreviousQuestion = useCallback(() => {
+    undo.mutate()
+  }, [undo])
+
   return {
     quizId,
     sessionId,
     currentQuestion,
     phase,
     errorMessage,
-    isSubmitting: answer.isPending,
+    totalQuestions,
+    answeredCount,
+    currentQuestionNumber,
+    canGoBack: (answeredCount ?? 0) > 0,
+    isSubmitting: answer.isPending || undo.isPending,
     submitAnswer: submit,
+    goToPreviousQuestion,
   }
 }

@@ -2,6 +2,7 @@ import type {
   SessionDetailResponse,
   StartSessionResponse,
   SubmitAnswerResponse,
+  UndoLastAnswerResponse,
 } from '@/types/api'
 import { api } from './client'
 
@@ -20,6 +21,13 @@ export async function submitAnswer(
   const { data } = await api.post<SubmitAnswerResponse>(
     `/sessions/${sessionId}/answers`,
     body,
+  )
+  return data
+}
+
+export async function undoLastAnswer(sessionId: string) {
+  const { data } = await api.post<UndoLastAnswerResponse>(
+    `/sessions/${sessionId}/back`,
   )
   return data
 }

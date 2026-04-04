@@ -18,6 +18,9 @@ interface QuizSessionState {
   quizDescription: string | null
   respondentName: string
   currentQuestion: PublicQuestion | null
+  totalQuestions: number | null
+  answeredCount: number | null
+  currentQuestionNumber: number | null
   errorMessage: string | null
   reset: () => void
   setPhase: (phase: QuizPlayPhase) => void
@@ -29,8 +32,16 @@ interface QuizSessionState {
     quizDescription: string
     respondentName: string
     question: PublicQuestion | null
+    totalQuestions: number
+    answeredCount: number
+    currentQuestionNumber: number
   }) => void
-  setQuestion: (question: PublicQuestion | null) => void
+  setPlayState: (payload: {
+    question: PublicQuestion | null
+    totalQuestions: number
+    answeredCount: number
+    currentQuestionNumber: number
+  }) => void
   setRespondentName: (name: string) => void
 }
 
@@ -42,6 +53,9 @@ export const useQuizSessionStore = create<QuizSessionState>((set) => ({
   quizDescription: null,
   respondentName: '',
   currentQuestion: null,
+  totalQuestions: null,
+  answeredCount: null,
+  currentQuestionNumber: null,
   errorMessage: null,
   reset: () =>
     set({
@@ -52,6 +66,9 @@ export const useQuizSessionStore = create<QuizSessionState>((set) => ({
       quizDescription: null,
       respondentName: '',
       currentQuestion: null,
+      totalQuestions: null,
+      answeredCount: null,
+      currentQuestionNumber: null,
       errorMessage: null,
     }),
   setPhase: (phase) => set({ phase }),
@@ -64,9 +81,18 @@ export const useQuizSessionStore = create<QuizSessionState>((set) => ({
       quizDescription: payload.quizDescription,
       respondentName: payload.respondentName,
       currentQuestion: payload.question,
+      totalQuestions: payload.totalQuestions,
+      answeredCount: payload.answeredCount,
+      currentQuestionNumber: payload.currentQuestionNumber,
       phase: 'playing',
       errorMessage: null,
     }),
-  setQuestion: (currentQuestion) => set({ currentQuestion }),
+  setPlayState: (payload) =>
+    set({
+      currentQuestion: payload.question,
+      totalQuestions: payload.totalQuestions,
+      answeredCount: payload.answeredCount,
+      currentQuestionNumber: payload.currentQuestionNumber,
+    }),
   setRespondentName: (respondentName) => set({ respondentName }),
 }))
