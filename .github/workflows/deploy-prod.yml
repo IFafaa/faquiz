@@ -19,7 +19,6 @@ jobs:
           project-name: faquiz
           docker-compose-path: docker-compose.yml
           environment-variables: |
-            WEB_PORT=80
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             FRONTEND_URL=${{ secrets.FRONTEND_URL }}

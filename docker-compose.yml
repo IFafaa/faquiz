@@ -42,11 +42,19 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: /api
+    # Hostinger VPS: Traefik ocupa :80/:443; não mapear :80 aqui. O tráfego do domínio entra pelo Traefik.
     ports:
       - "${WEB_PORT:-8080}:80"
     depends_on:
       - api
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=faquiz_default"
+      - "traefik.http.routers.faquiz.rule=Host(`faquiz.com.br`) || Host(`www.faquiz.com.br`)"
+      - "traefik.http.routers.faquiz.entrypoints=websecure"
+      - "traefik.http.routers.faquiz.tls.certresolver=letsencrypt"
+      - "traefik.http.services.faquiz.loadbalancer.server.port=80"
 
 volumes:
   faquiz-pgdata:
