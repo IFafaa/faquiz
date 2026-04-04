@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -13,27 +13,45 @@ export function useQuizStartFlow() {
   const setError = useQuizSessionStore((s) => s.setError)
   const setSessionBootstrap = useQuizSessionStore((s) => s.setSessionBootstrap)
 
-  const loadQuiz = useMutation({
-    mutationFn: () => getPublicQuiz(quizId),
-    onMutate: () => {
+  const {
+    data: publicQuiz,
+    isPending: isLoadingQuiz,
+    isError: isPublicQuizError,
+  } = useQuery({
+    queryKey: ['public-quiz', quizId],
+    queryFn: () => getPublicQuiz(quizId),
+    enabled: !!quizId,
+  })
+
+  useEffect(() => {
+    if (!quizId) return
+    if (isLoadingQuiz) {
       setPhase('loading')
       setError(null)
-    },
-    onSuccess: (data) => {
-      if (!data.rootQuestion) {
-        setPhase('error')
-        setError('Este quiz ainda não tem perguntas configuradas.')
-        return
-      }
-      setPhase('ready')
-    },
-    onError: () => {
+      return
+    }
+    if (isPublicQuizError) {
       setPhase('error')
       setError(
         'Não foi possível carregar este quiz. Verifique se está publicado.',
       )
-    },
-  })
+      return
+    }
+    if (!publicQuiz) return
+    if (!publicQuiz.rootQuestion) {
+      setPhase('error')
+      setError('Este quiz ainda não tem perguntas configuradas.')
+      return
+    }
+    setPhase('ready')
+  }, [
+    quizId,
+    isLoadingQuiz,
+    isPublicQuizError,
+    publicQuiz,
+    setPhase,
+    setError,
+  ])
 
   const start = useMutation({
     mutationFn: (vars: {
@@ -78,15 +96,10 @@ export function useQuizStartFlow() {
     },
   })
 
-  useEffect(() => {
-    if (!quizId) return
-    void loadQuiz.mutateAsync()
-  }, [quizId, loadQuiz])
-
   return {
     quizId,
-    publicQuiz: loadQuiz.data,
-    isLoadingQuiz: loadQuiz.isPending,
+    publicQuiz,
+    isLoadingQuiz,
     isStarting: start.isPending,
     startQuiz: (vars: {
       respondentName?: string
