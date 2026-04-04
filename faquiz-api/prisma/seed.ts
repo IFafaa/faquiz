@@ -211,7 +211,12 @@ async function main() {
     return;
   }
 
-  const plainPassword = adminSeedPassword ?? 'admin123';
+  if (!adminSeedPassword) {
+    throw new Error(
+      'ADMIN_SEED_PASSWORD não configurado. Defina a variável de ambiente para criar o admin inicial.',
+    );
+  }
+  const plainPassword = adminSeedPassword;
   const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
   const admin = await prisma.admin.upsert({
