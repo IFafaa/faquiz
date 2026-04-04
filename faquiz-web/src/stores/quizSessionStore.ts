@@ -17,6 +17,8 @@ interface QuizSessionState {
   quizTitle: string | null
   quizDescription: string | null
   respondentName: string
+  respondentEmail: string
+  respondentPhone: string
   currentQuestion: PublicQuestion | null
   totalQuestions: number | null
   answeredCount: number | null
@@ -31,6 +33,8 @@ interface QuizSessionState {
     quizTitle: string
     quizDescription: string
     respondentName: string
+    respondentEmail: string
+    respondentPhone: string
     question: PublicQuestion | null
     totalQuestions: number
     answeredCount: number
@@ -52,6 +56,8 @@ export const useQuizSessionStore = create<QuizSessionState>((set) => ({
   quizTitle: null,
   quizDescription: null,
   respondentName: '',
+  respondentEmail: '',
+  respondentPhone: '',
   currentQuestion: null,
   totalQuestions: null,
   answeredCount: null,
@@ -65,6 +71,8 @@ export const useQuizSessionStore = create<QuizSessionState>((set) => ({
       quizTitle: null,
       quizDescription: null,
       respondentName: '',
+      respondentEmail: '',
+      respondentPhone: '',
       currentQuestion: null,
       totalQuestions: null,
       answeredCount: null,
@@ -80,6 +88,8 @@ export const useQuizSessionStore = create<QuizSessionState>((set) => ({
       quizTitle: payload.quizTitle,
       quizDescription: payload.quizDescription,
       respondentName: payload.respondentName,
+      respondentEmail: payload.respondentEmail,
+      respondentPhone: payload.respondentPhone,
       currentQuestion: payload.question,
       totalQuestions: payload.totalQuestions,
       answeredCount: payload.answeredCount,

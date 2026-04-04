@@ -100,10 +100,39 @@ export function SessionDetailPage() {
           <CardTitle>Resumo</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3 text-sm sm:grid-cols-2">
-          <div>
-            <p className="text-xs text-zinc-500">Respondente</p>
-            <p className="text-zinc-200">{session.respondentName || '—'}</p>
-          </div>
+          {loadingTree ? (
+            <div className="sm:col-span-2 text-xs text-zinc-500">
+              Carregando configuração do quiz…
+            </div>
+          ) : null}
+          {!loadingTree && tree?.quiz.collectName ? (
+            <div>
+              <p className="text-xs text-zinc-500">Nome</p>
+              <p className="text-zinc-200">{session.respondentName || '—'}</p>
+            </div>
+          ) : null}
+          {!loadingTree && tree?.quiz.collectEmail ? (
+            <div>
+              <p className="text-xs text-zinc-500">E-mail</p>
+              <p className="text-zinc-200">{session.respondentEmail || '—'}</p>
+            </div>
+          ) : null}
+          {!loadingTree && tree?.quiz.collectPhone ? (
+            <div>
+              <p className="text-xs text-zinc-500">Telefone</p>
+              <p className="text-zinc-200">{session.respondentPhone || '—'}</p>
+            </div>
+          ) : null}
+          {!loadingTree &&
+          tree &&
+          !tree.quiz.collectName &&
+          !tree.quiz.collectEmail &&
+          !tree.quiz.collectPhone ? (
+            <div className="sm:col-span-2">
+              <p className="text-xs text-zinc-500">Identificação</p>
+              <p className="text-zinc-400">Sessão anônima (sem dados pedidos)</p>
+            </div>
+          ) : null}
           <div>
             <p className="text-xs text-zinc-500">Status</p>
             <Badge

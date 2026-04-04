@@ -30,17 +30,26 @@ export function QuizListPage() {
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [collectName, setCollectName] = useState(false)
+  const [collectEmail, setCollectEmail] = useState(false)
+  const [collectPhone, setCollectPhone] = useState(false)
 
   const createMut = useMutation({
     mutationFn: () =>
       createQuiz({
         title: title.trim() || 'Novo quiz',
         description: description.trim() || undefined,
+        collectName,
+        collectEmail,
+        collectPhone,
       }),
     onSuccess: (quiz) => {
       void queryClient.invalidateQueries({ queryKey: ['quizzes'] })
       setTitle('')
       setDescription('')
+      setCollectName(false)
+      setCollectEmail(false)
+      setCollectPhone(false)
       void navigate(`/admin/quizzes/${quiz.id}`)
     },
   })
@@ -106,6 +115,45 @@ export function QuizListPage() {
                 placeholder="Breve descrição interna"
                 className="w-full rounded-xl border border-zinc-700 bg-zinc-900/80 px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
+            </div>
+          </div>
+          <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-950/40 p-4">
+            <p className="text-sm font-medium text-zinc-300">
+              Dados antes do quiz (opcional)
+            </p>
+            <p className="text-xs text-zinc-500">
+              Marque o que o respondente deve informar ao iniciar. Não pode ser
+              alterado depois de criado. Para pesquisa anônima, deixe tudo
+              desmarcado.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-4">
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="checkbox"
+                  checked={collectName}
+                  onChange={(e) => setCollectName(e.target.checked)}
+                  className="rounded border-zinc-600"
+                />
+                Nome
+              </label>
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="checkbox"
+                  checked={collectEmail}
+                  onChange={(e) => setCollectEmail(e.target.checked)}
+                  className="rounded border-zinc-600"
+                />
+                E-mail
+              </label>
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="checkbox"
+                  checked={collectPhone}
+                  onChange={(e) => setCollectPhone(e.target.checked)}
+                  className="rounded border-zinc-600"
+                />
+                Telefone
+              </label>
             </div>
           </div>
           <Button

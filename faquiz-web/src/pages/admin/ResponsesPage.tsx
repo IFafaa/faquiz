@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
-import { listQuizSessions } from '@/api/quiz'
+import { getQuiz, listQuizSessions } from '@/api/quiz'
 import { Badge } from '@/components/ui/Badge'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Spinner } from '@/components/ui/Spinner'
@@ -19,11 +19,24 @@ function formatDt(iso: string) {
 export function ResponsesPage() {
   const { id = '' } = useParams<{ id: string }>()
 
-  const { data: sessions, isLoading: loading } = useQuery({
+  const { data: quizMeta, isLoading: loadingQuiz } = useQuery({
+    queryKey: ['quiz', id],
+    queryFn: () => getQuiz(id),
+    enabled: !!id,
+  })
+
+  const { data: sessions, isLoading: loadingSessions } = useQuery({
     queryKey: ['quiz-sessions', id],
     queryFn: () => listQuizSessions(id),
     enabled: !!id,
   })
+
+  const loading = loadingQuiz || loadingSessions
+  const showName = quizMeta?.collectName ?? false
+  const showEmail = quizMeta?.collectEmail ?? false
+  const showPhone = quizMeta?.collectPhone ?? false
+  const idCols =
+    (showName ? 1 : 0) + (showEmail ? 1 : 0) + (showPhone ? 1 : 0)
 
   return (
     <div className="space-y-6">
@@ -49,9 +62,26 @@ export function ResponsesPage() {
               <table className="w-full min-w-[640px] text-left text-sm">
                 <thead className="border-b border-zinc-800 bg-zinc-900/80">
                   <tr>
-                    <th className="px-4 py-3 font-medium text-zinc-400">
-                      Respondente
-                    </th>
+                    {idCols === 0 ? (
+                      <th className="px-4 py-3 font-medium text-zinc-400">
+                        Identificação
+                      </th>
+                    ) : null}
+                    {showName ? (
+                      <th className="px-4 py-3 font-medium text-zinc-400">
+                        Nome
+                      </th>
+                    ) : null}
+                    {showEmail ? (
+                      <th className="px-4 py-3 font-medium text-zinc-400">
+                        E-mail
+                      </th>
+                    ) : null}
+                    {showPhone ? (
+                      <th className="px-4 py-3 font-medium text-zinc-400">
+                        Telefone
+                      </th>
+                    ) : null}
                     <th className="px-4 py-3 font-medium text-zinc-400">
                       Status
                     </th>
@@ -70,7 +100,7 @@ export function ResponsesPage() {
                   {(!sessions || sessions.length === 0) ? (
                     <tr>
                       <td
-                        colSpan={5}
+                        colSpan={Math.max(1, idCols) + 4}
                         className="px-4 py-12 text-center text-zinc-500"
                       >
                         Nenhuma sessão registrada ainda.
@@ -79,9 +109,26 @@ export function ResponsesPage() {
                   ) : (
                     sessions.map((s) => (
                       <tr key={s.id} className="bg-zinc-950/40">
-                        <td className="px-4 py-3 text-zinc-200">
-                          {s.respondentName || '—'}
-                        </td>
+                        {idCols === 0 ? (
+                          <td className="px-4 py-3 text-zinc-500">
+                            Anônimo
+                          </td>
+                        ) : null}
+                        {showName ? (
+                          <td className="px-4 py-3 text-zinc-200">
+                            {s.respondentName || '—'}
+                          </td>
+                        ) : null}
+                        {showEmail ? (
+                          <td className="px-4 py-3 text-zinc-200">
+                            {s.respondentEmail || '—'}
+                          </td>
+                        ) : null}
+                        {showPhone ? (
+                          <td className="px-4 py-3 text-zinc-200">
+                            {s.respondentPhone || '—'}
+                          </td>
+                        ) : null}
                         <td className="px-4 py-3">
                           <Badge
                             tone={

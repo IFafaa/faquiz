@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuizStartFlow } from '@/hooks/useQuizSession'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
@@ -12,9 +12,36 @@ export function QuizStartPage() {
   const phase = useQuizSessionStore((s) => s.phase)
   const errorMessage = useQuizSessionStore((s) => s.errorMessage)
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
 
   const loading = isLoadingQuiz || phase === 'loading'
   const ready = phase === 'ready' && publicQuiz
+
+  const cfg = publicQuiz?.quiz
+  const asksAnything = useMemo(
+    () =>
+      !!cfg &&
+      (cfg.collectName || cfg.collectEmail || cfg.collectPhone),
+    [cfg],
+  )
+
+  const canSubmit = useMemo(() => {
+    if (!cfg) return false
+    if (cfg.collectName && name.trim().length === 0) return false
+    if (cfg.collectEmail && email.trim().length === 0) return false
+    if (cfg.collectPhone && phone.trim().length === 0) return false
+    return true
+  }, [cfg, name, email, phone])
+
+  const handleStart = () => {
+    if (!cfg) return
+    startQuiz({
+      respondentName: cfg.collectName ? name.trim() : undefined,
+      respondentEmail: cfg.collectEmail ? email.trim() : undefined,
+      respondentPhone: cfg.collectPhone ? phone.trim() : undefined,
+    })
+  }
 
   return (
     <div className="mx-auto max-w-lg space-y-8">
@@ -51,17 +78,52 @@ export function QuizStartPage() {
                   </p>
                 ) : null}
               </div>
-              <Input
-                label="Seu nome (opcional)"
-                placeholder="Como podemos te chamar?"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+
+              {asksAnything ?? (
+                <p className="text-center text-xs text-zinc-500">
+                  Preencha os dados abaixo antes de iniciar.
+                </p>
+              )}
+
+              {publicQuiz.quiz.collectName ? (
+                <Input
+                  label="Nome"
+                  placeholder="Como podemos te chamar?"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              ) : null}
+
+              {publicQuiz.quiz.collectEmail ? (
+                <Input
+                  label="E-mail"
+                  type="email"
+                  placeholder="seu@email.com"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              ) : null}
+
+              {publicQuiz.quiz.collectPhone ? (
+                <Input
+                  label="Telefone"
+                  type="tel"
+                  placeholder="(00) 00000-0000"
+                  autoComplete="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              ) : null}
+
               <Button
                 className="w-full"
                 size="lg"
-                disabled={isStarting}
-                onClick={() => startQuiz(name.trim())}
+                disabled={isStarting || !canSubmit}
+                onClick={() => void handleStart()}
               >
                 {isStarting ? 'Iniciando…' : 'Começar'}
               </Button>

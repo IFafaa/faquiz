@@ -6,10 +6,17 @@ import type {
 } from '@/types/api'
 import { api } from './client'
 
-export async function startSession(quizId: string, respondentName?: string) {
+export async function startSession(
+  quizId: string,
+  body: {
+    respondentName?: string
+    respondentEmail?: string
+    respondentPhone?: string
+  },
+) {
   const { data } = await api.post<StartSessionResponse>(
     `/quizzes/${quizId}/sessions`,
-    { respondentName: respondentName ?? '' },
+    { ...body },
   )
   return data
 }

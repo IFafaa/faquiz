@@ -28,6 +28,8 @@ import { InsightsDateRangeField } from '@/components/admin/InsightsDateRangeFiel
 
 type FormState = {
   respondentNameContains: string
+  respondentEmailContains: string
+  respondentPhoneContains: string
   statusInProgress: boolean
   statusCompleted: boolean
   statusAbandoned: boolean
@@ -39,6 +41,8 @@ type FormState = {
 
 const emptyForm = (): FormState => ({
   respondentNameContains: '',
+  respondentEmailContains: '',
+  respondentPhoneContains: '',
   statusInProgress: true,
   statusCompleted: true,
   statusAbandoned: false,
@@ -55,14 +59,14 @@ function rangeToIsoBounds(range: DateRange | undefined) {
   return { from: from.toISOString(), to: to.toISOString() }
 }
 
-/** Cores por cartão — contraste no fundo zinc escuro */
+/** Cores por cartão — contraste no fundo zinc escuro (marca #8000CB + subtons) */
 const CHART_PALETTE = [
-  '#a78bfa',
+  '#8000CB',
+  '#B366FF',
+  '#5C1BB8',
   '#34d399',
   '#fbbf24',
   '#fb7185',
-  '#38bdf8',
-  '#c084fc',
   '#2dd4bf',
 ] as const
 
@@ -70,6 +74,12 @@ function formToFilters(form: FormState): ResponseFilters {
   const f: ResponseFilters = {}
   const name = form.respondentNameContains.trim()
   if (name) f.respondentNameContains = name
+
+  const email = form.respondentEmailContains.trim()
+  if (email) f.respondentEmailContains = email
+
+  const phone = form.respondentPhoneContains.trim()
+  if (phone) f.respondentPhoneContains = phone
 
   const status: string[] = []
   if (form.statusInProgress) status.push('in_progress')
@@ -145,6 +155,9 @@ export function QuizInsightsPage() {
   })
 
   const nodes = tree?.nodes ?? []
+  const collectName = tree?.quiz.collectName ?? false
+  const collectEmail = tree?.quiz.collectEmail ?? false
+  const collectPhone = tree?.quiz.collectPhone ?? false
 
   const toggleAnswer = (qid: string, value: string, checked: boolean) => {
     setForm((prev) => {
@@ -198,20 +211,56 @@ export function QuizInsightsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <label className="block text-sm">
-                  <span className="text-zinc-400">Nome do respondente contém</span>
-                  <input
-                    type="text"
-                    value={form.respondentNameContains}
-                    onChange={(e) =>
-                      setForm((f) => ({
-                        ...f,
-                        respondentNameContains: e.target.value,
-                      }))
-                    }
-                    className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
-                  />
-                </label>
+                {collectName ? (
+                  <label className="block text-sm">
+                    <span className="text-zinc-400">
+                      Nome do respondente contém
+                    </span>
+                    <input
+                      type="text"
+                      value={form.respondentNameContains}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          respondentNameContains: e.target.value,
+                        }))
+                      }
+                      className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
+                    />
+                  </label>
+                ) : null}
+                {collectEmail ? (
+                  <label className="block text-sm">
+                    <span className="text-zinc-400">E-mail contém</span>
+                    <input
+                      type="text"
+                      value={form.respondentEmailContains}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          respondentEmailContains: e.target.value,
+                        }))
+                      }
+                      className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
+                    />
+                  </label>
+                ) : null}
+                {collectPhone ? (
+                  <label className="block text-sm">
+                    <span className="text-zinc-400">Telefone contém</span>
+                    <input
+                      type="text"
+                      value={form.respondentPhoneContains}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          respondentPhoneContains: e.target.value,
+                        }))
+                      }
+                      className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
+                    />
+                  </label>
+                ) : null}
                 <div className="text-sm">
                   <span className="text-zinc-400">Status</span>
                   <div className="mt-2 flex flex-wrap gap-3">
@@ -395,9 +444,9 @@ export function QuizInsightsPage() {
                             <Line
                               type="monotone"
                               dataKey="count"
-                              stroke="#a78bfa"
+                              stroke="#8000CB"
                               strokeWidth={2.5}
-                              dot={{ r: 3, fill: '#a78bfa', strokeWidth: 0 }}
+                              dot={{ r: 3, fill: '#8000CB', strokeWidth: 0 }}
                               activeDot={{ r: 5 }}
                             />
                           </LineChart>
@@ -489,7 +538,7 @@ export function QuizInsightsPage() {
                               />
                               <Bar
                                 dataKey="count"
-                                fill="#a78bfa"
+                                fill="#8000CB"
                                 name="Respostas"
                                 maxBarSize={28}
                                 radius={[0, 4, 4, 0]}

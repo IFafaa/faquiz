@@ -24,6 +24,9 @@ export interface QuizSummary {
   title: string
   description: string
   isPublished: boolean
+  collectName: boolean
+  collectEmail: boolean
+  collectPhone: boolean
   rootNodeId: string | null
   adminId: string
   createdAt: string
@@ -35,6 +38,9 @@ export interface PublicQuizPayload {
     id: string
     title: string
     description: string
+    collectName: boolean
+    collectEmail: boolean
+    collectPhone: boolean
   }
   rootQuestion: PublicQuestion | null
 }
@@ -117,6 +123,8 @@ export interface QuizSessionRow {
   id: string
   quizId: string
   respondentName: string
+  respondentEmail: string
+  respondentPhone: string
   status: string
   pathTaken: string
   startedAt: string
@@ -142,6 +150,8 @@ export interface QuestionAnswerFilter {
 
 export interface ResponseFilters {
   respondentNameContains?: string
+  respondentEmailContains?: string
+  respondentPhoneContains?: string
   status?: string[]
   startedAtFrom?: string
   startedAtTo?: string

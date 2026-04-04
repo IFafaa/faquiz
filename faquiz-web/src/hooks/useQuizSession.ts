@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getPublicQuiz } from '@/api/quiz'
@@ -38,8 +39,11 @@ export function useQuizStartFlow() {
   })
 
   const start = useMutation({
-    mutationFn: ({ respondentName }: { respondentName: string }) =>
-      startSession(quizId, respondentName),
+    mutationFn: (vars: {
+      respondentName?: string
+      respondentEmail?: string
+      respondentPhone?: string
+    }) => startSession(quizId, vars),
     onMutate: () => {
       setPhase('loading')
       setError(null)
@@ -50,7 +54,9 @@ export function useQuizStartFlow() {
         quizId: data.quiz.id,
         quizTitle: data.quiz.title,
         quizDescription: data.quiz.description,
-        respondentName: variables.respondentName,
+        respondentName: variables.respondentName ?? '',
+        respondentEmail: variables.respondentEmail ?? '',
+        respondentPhone: variables.respondentPhone ?? '',
         question: data.question,
         totalQuestions: data.totalQuestions,
         answeredCount: data.answeredCount,
@@ -58,9 +64,20 @@ export function useQuizStartFlow() {
       })
       void navigate(`/quiz/${quizId}/play`, { replace: true })
     },
-    onError: () => {
+    onError: (err: unknown) => {
       setPhase('error')
-      setError('Não foi possível iniciar o quiz.')
+      const msg =
+        axios.isAxiosError(err) &&
+        err.response?.data &&
+        typeof err.response.data === 'object' &&
+        err.response.data !== null &&
+        'message' in err.response.data
+          ? String(
+              (err.response.data as { message?: string }).message ??
+                'Não foi possível iniciar o quiz.',
+            )
+          : 'Não foi possível iniciar o quiz.'
+      setError(msg)
     },
   })
 
@@ -75,8 +92,11 @@ export function useQuizStartFlow() {
     publicQuiz: loadQuiz.data,
     isLoadingQuiz: loadQuiz.isPending,
     isStarting: start.isPending,
-    startQuiz: (respondentName: string) =>
-      start.mutate({ respondentName }),
+    startQuiz: (vars: {
+      respondentName?: string
+      respondentEmail?: string
+      respondentPhone?: string
+    }) => start.mutate(vars),
   }
 }
 

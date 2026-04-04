@@ -8,7 +8,14 @@ export function QuizCompletePage() {
   const { id } = useParams<{ id: string }>()
   const quizTitle = useQuizSessionStore((s) => s.quizTitle)
   const respondentName = useQuizSessionStore((s) => s.respondentName)
+  const respondentEmail = useQuizSessionStore((s) => s.respondentEmail)
+  const respondentPhone = useQuizSessionStore((s) => s.respondentPhone)
   const reset = useQuizSessionStore((s) => s.reset)
+
+  const hasId =
+    !!respondentName?.trim() ||
+    !!respondentEmail?.trim() ||
+    !!respondentPhone?.trim()
 
   return (
     <div className="mx-auto max-w-lg space-y-8 text-center">
@@ -36,13 +43,34 @@ export function QuizCompletePage() {
               <span className="text-brand-100 font-medium">
                 {quizTitle ?? 'o quiz'}
               </span>
-              {respondentName ? (
-                <>
-                  , <span className="text-zinc-300">{respondentName}</span>
-                </>
-              ) : null}
               .
             </p>
+            {hasId ? (
+              <ul className="mt-3 space-y-1 text-left text-sm text-zinc-400">
+                {respondentName?.trim() ? (
+                  <li>
+                    <span className="text-zinc-500">Nome:</span>{' '}
+                    <span className="text-zinc-200">{respondentName.trim()}</span>
+                  </li>
+                ) : null}
+                {respondentEmail?.trim() ? (
+                  <li>
+                    <span className="text-zinc-500">E-mail:</span>{' '}
+                    <span className="text-zinc-200">
+                      {respondentEmail.trim()}
+                    </span>
+                  </li>
+                ) : null}
+                {respondentPhone?.trim() ? (
+                  <li>
+                    <span className="text-zinc-500">Telefone:</span>{' '}
+                    <span className="text-zinc-200">
+                      {respondentPhone.trim()}
+                    </span>
+                  </li>
+                ) : null}
+              </ul>
+            ) : null}
             <p className="mt-3 text-xs text-zinc-500">
               ID do quiz: <code className="text-zinc-400">{id}</code>
             </p>

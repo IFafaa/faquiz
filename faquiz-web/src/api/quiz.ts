@@ -22,7 +22,13 @@ export async function getQuiz(id: string) {
   return data
 }
 
-export async function createQuiz(body: { title: string; description?: string }) {
+export async function createQuiz(body: {
+  title: string
+  description?: string
+  collectName?: boolean
+  collectEmail?: boolean
+  collectPhone?: boolean
+}) {
   const { data } = await api.post<QuizSummary>('/quizzes', body)
   return data
 }
