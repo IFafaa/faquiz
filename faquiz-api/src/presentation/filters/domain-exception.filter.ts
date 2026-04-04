@@ -23,9 +23,18 @@ export class DomainExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof ValidationError) {
       status = HttpStatus.BAD_REQUEST;
     }
+    const userMessage =
+      exception instanceof NotFoundError
+        ? 'Recurso não encontrado.'
+        : exception instanceof UnauthorizedError
+          ? 'Não autorizado.'
+          : exception instanceof ValidationError
+            ? exception.message
+            : 'Ocorreu um erro ao processar a solicitação.';
+
     res.status(status).json({
       statusCode: status,
-      message: exception.message,
+      message: userMessage,
     });
   }
 }
