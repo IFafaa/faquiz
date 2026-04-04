@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { getPublishedQuizzes } from '@/api/quiz'
 import { Spinner } from '@/components/ui/Spinner'
+import { richTextToPlainText } from '@/lib/richText'
 
 const container = {
   hidden: { opacity: 0 },
@@ -102,7 +103,7 @@ export function HomePage() {
                       </h3>
                       {q.description ? (
                         <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-zinc-500">
-                          {q.description}
+                          {richTextToPlainText(q.description)}
                         </p>
                       ) : (
                         <p className="mt-2 flex-1 text-sm italic text-zinc-600">

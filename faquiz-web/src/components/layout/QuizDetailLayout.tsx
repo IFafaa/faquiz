@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useParams } from 'react-router-dom'
 import { getQuiz } from '@/api/quiz'
 import { Badge } from '@/components/ui/Badge'
 import { cn } from '@/lib/cn'
+import { richTextToPlainText } from '@/lib/richText'
 
 const tabClass = ({ isActive }: { isActive: boolean }) =>
   cn(
@@ -47,7 +48,7 @@ export function QuizDetailLayout() {
               </div>
               {quiz?.description ? (
                 <p className="mt-1 line-clamp-2 text-sm text-zinc-500">
-                  {quiz.description}
+                  {richTextToPlainText(quiz.description)}
                 </p>
               ) : null}
             </div>

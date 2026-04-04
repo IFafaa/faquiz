@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { getQuiz, updateQuiz } from '@/api/quiz'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { RichTextEditor } from '@/components/rich-text/RichTextEditor'
 import { Input } from '@/components/ui/Input'
 import { Spinner } from '@/components/ui/Spinner'
 
@@ -91,12 +92,12 @@ export function QuizConfigPage() {
             <label className="block text-sm font-medium text-zinc-300">
               Descrição
             </label>
-            <textarea
+            <RichTextEditor
+              key={quiz.id}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              placeholder="Descrição interna ou pública (conforme o uso no app)"
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-900/80 px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              onChange={setDescription}
+              placeholder="Descrição exibida ao iniciar o questionário (negrito, listas, parágrafos…)"
+              minHeight="8rem"
             />
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 pt-4">

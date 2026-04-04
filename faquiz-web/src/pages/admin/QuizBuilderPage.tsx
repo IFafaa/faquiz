@@ -265,6 +265,7 @@ function BuilderCanvas() {
           <p className="mb-2 text-xs font-semibold text-zinc-400">Inspetor</p>
           {selectedNode ? (
             <BuilderInspector
+              key={selectedNode.id}
               data={selectedNode.data}
               onChange={updateSelectedData}
               onAddOption={addOption}

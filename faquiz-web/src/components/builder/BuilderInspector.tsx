@@ -1,4 +1,5 @@
 import type { QuestionType } from '@/types/api'
+import { RichTextEditor } from '@/components/rich-text/RichTextEditor'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import type { QuestionNodeData } from './types'
@@ -34,11 +35,11 @@ export function BuilderInspector({
         <label className="mb-1 block text-xs font-medium text-zinc-400">
           Descrição
         </label>
-        <textarea
+        <RichTextEditor
           value={data.description}
-          onChange={(e) => onChange({ ...data, description: e.target.value })}
-          rows={2}
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100"
+          onChange={(html) => onChange({ ...data, description: html })}
+          placeholder="Texto da pergunta (opcional)"
+          minHeight="4.5rem"
         />
       </div>
       <div>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { useQuizStartFlow } from '@/hooks/useQuizSession'
+import { RichTextHtml } from '@/components/rich-text/RichTextHtml'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
@@ -73,9 +74,10 @@ export function QuizStartPage() {
                   {publicQuiz.quiz.title}
                 </h1>
                 {publicQuiz.quiz.description ? (
-                  <p className="text-sm text-zinc-400">
-                    {publicQuiz.quiz.description}
-                  </p>
+                  <RichTextHtml
+                    html={publicQuiz.quiz.description}
+                    className="text-center text-sm text-zinc-400"
+                  />
                 ) : null}
               </div>
 

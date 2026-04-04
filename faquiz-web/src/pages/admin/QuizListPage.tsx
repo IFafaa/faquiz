@@ -6,8 +6,10 @@ import type { QuizSummary } from '@/types/api'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { RichTextEditor } from '@/components/rich-text/RichTextEditor'
 import { Modal } from '@/components/ui/Modal'
 import { Spinner } from '@/components/ui/Spinner'
+import { richTextIsEmpty, richTextToPlainText } from '@/lib/richText'
 
 function formatUpdated(iso: string) {
   try {
@@ -60,7 +62,7 @@ export function QuizListPage() {
     mutationFn: () =>
       createQuiz({
         title: title.trim() || 'Novo quiz',
-        description: description.trim() || undefined,
+        description: richTextIsEmpty(description) ? undefined : description,
         collectName,
         collectEmail,
         collectPhone,
@@ -125,25 +127,22 @@ export function QuizListPage() {
         title="Novo quiz"
       >
         <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input
-              label="Título"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ex.: Pesquisa de satisfação"
+          <Input
+            label="Título"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Ex.: Pesquisa de satisfação"
+          />
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-zinc-300">
+              Descrição (opcional)
+            </label>
+            <RichTextEditor
+              value={description}
+              onChange={setDescription}
+              placeholder="Texto formatado: negrito, listas, parágrafos…"
+              minHeight="5rem"
             />
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-zinc-300">
-                Descrição (opcional)
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={2}
-                placeholder="Breve descrição interna"
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-900/80 px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-              />
-            </div>
           </div>
           <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-950/40 p-4">
             <p className="text-sm font-medium text-zinc-300">
@@ -259,7 +258,7 @@ export function QuizListPage() {
                         </p>
                         {q.description ? (
                           <p className="mt-1 line-clamp-2 text-xs text-zinc-500">
-                            {q.description}
+                            {richTextToPlainText(q.description)}
                           </p>
                         ) : null}
                         <div className="mt-2 sm:hidden">

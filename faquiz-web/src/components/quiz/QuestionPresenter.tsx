@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { RichTextHtml } from '@/components/rich-text/RichTextHtml'
 import type { PublicQuestion } from '@/types/api'
 import { MultipleChoiceQuestion } from './MultipleChoiceQuestion'
 import { RatingQuestion } from './RatingQuestion'
@@ -33,9 +34,10 @@ export function QuestionPresenter({
             {question.title}
           </h2>
           {question.description ? (
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              {question.description}
-            </p>
+            <RichTextHtml
+              html={question.description}
+              className="text-sm leading-relaxed text-zinc-400"
+            />
           ) : null}
         </header>
 

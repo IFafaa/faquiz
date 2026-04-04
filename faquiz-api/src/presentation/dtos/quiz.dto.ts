@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -10,6 +10,13 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
+import { sanitizeRichText } from '../../common/sanitize-rich-text.js';
+
+const richTextTransform = ({ value }: { value: unknown }) => {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === 'string') return sanitizeRichText(value);
+  return value;
+};
 
 export class CreateQuizDto {
   @IsString()
@@ -17,8 +24,9 @@ export class CreateQuizDto {
   title!: string;
 
   @IsOptional()
+  @Transform(richTextTransform)
   @IsString()
-  @MaxLength(1000)
+  @MaxLength(50000)
   description?: string;
 
   @IsOptional()
@@ -41,8 +49,9 @@ export class UpdateQuizDto {
   title?: string;
 
   @IsOptional()
+  @Transform(richTextTransform)
   @IsString()
-  @MaxLength(1000)
+  @MaxLength(50000)
   description?: string;
 
   @IsOptional()
@@ -79,8 +88,9 @@ export class QuizTreeNodeDto {
   title!: string;
 
   @IsOptional()
+  @Transform(richTextTransform)
   @IsString()
-  @MaxLength(2000)
+  @MaxLength(50000)
   description?: string;
 
   @IsString()
