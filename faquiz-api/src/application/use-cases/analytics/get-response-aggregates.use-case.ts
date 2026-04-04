@@ -93,8 +93,7 @@ export class GetResponseAggregatesUseCase {
         const rows = byQuestion.get(n.id) ?? [];
         const distribution = rows
           .map((r) => ({
-            label:
-              labelByQuestionValue.get(`${n.id}\0${r.value}`) ?? r.value,
+            label: labelByQuestionValue.get(`${n.id}\0${r.value}`) ?? r.value,
             value: r.value,
             count: r.count,
           }))
@@ -127,10 +126,12 @@ export class GetResponseAggregatesUseCase {
     };
   }
 
-  private buildTimeline(startedAts: Date[]): Array<{ date: string; count: number }> {
+  private buildTimeline(
+    startedAts: Date[],
+  ): Array<{ date: string; count: number }> {
     if (startedAts.length === 0) return [];
-    let min = startedAts[0]!;
-    let max = startedAts[0]!;
+    let min = startedAts[0];
+    let max = startedAts[0];
     for (const d of startedAts) {
       if (d < min) min = d;
       if (d > max) max = d;

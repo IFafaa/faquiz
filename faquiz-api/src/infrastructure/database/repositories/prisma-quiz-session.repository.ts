@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { IQuizSessionRepository } from '../../../domain/repositories/quiz-session.repository.js';
 import { PrismaService } from '../prisma.service.js';
-import {
-  mapQuizSession,
-  mapSessionAnswer,
-} from '../mappers/entity-mappers.js';
+import { mapQuizSession, mapSessionAnswer } from '../mappers/entity-mappers.js';
 
 @Injectable()
 export class PrismaQuizSessionRepository implements IQuizSessionRepository {
@@ -15,7 +12,9 @@ export class PrismaQuizSessionRepository implements IQuizSessionRepository {
     respondentName: string;
     respondentEmail: string;
     respondentPhone: string;
-  }): Promise<import('../../../domain/entities/quiz-session.entity.js').QuizSessionEntity> {
+  }): Promise<
+    import('../../../domain/entities/quiz-session.entity.js').QuizSessionEntity
+  > {
     const row = await this.prisma.quizSession.create({
       data: {
         quizId: data.quizId,
@@ -123,7 +122,6 @@ export class PrismaQuizSessionRepository implements IQuizSessionRepository {
     quizId: string,
     days: number,
   ): Promise<Array<{ date: string; count: number }>> {
-    // Últimos `days` dias em UTC **incluindo hoje** (antes: janela terminava em "ontem").
     const endUtc = new Date();
     endUtc.setUTCHours(0, 0, 0, 0);
 

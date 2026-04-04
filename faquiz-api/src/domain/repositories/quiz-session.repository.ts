@@ -43,5 +43,8 @@ export interface IQuizSessionRepository {
   } | null>;
   countByQuiz(quizId: string): Promise<number>;
   countCompletedByQuiz(quizId: string): Promise<number>;
-  sessionsPerDay(quizId: string, days: number): Promise<Array<{ date: string; count: number }>>;
+  sessionsPerDay(
+    quizId: string,
+    days: number,
+  ): Promise<Array<{ date: string; count: number }>>;
 }

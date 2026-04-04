@@ -12,9 +12,7 @@ import {
 } from '../../../domain/repositories/quiz-session.repository.js';
 
 function toPublicQuestion(
-  node: Awaited<
-    ReturnType<IQuizQueryRepository['findQuestionWithOptions']>
-  >,
+  node: Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>,
 ) {
   if (!node) return null;
   return {

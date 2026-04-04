@@ -21,6 +21,10 @@ export interface IQuizRepository {
   findById(id: string): Promise<QuizEntity | null>;
   findByIdAndAdmin(id: string, adminId: string): Promise<QuizEntity | null>;
   listByAdmin(adminId: string): Promise<QuizEntity[]>;
-  setRootNodeId(quizId: string, adminId: string, rootNodeId: string | null): Promise<void>;
+  setRootNodeId(
+    quizId: string,
+    adminId: string,
+    rootNodeId: string | null,
+  ): Promise<void>;
   saveTree(quizId: string, adminId: string, tree: QuizTreeInput): Promise<void>;
 }

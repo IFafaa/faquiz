@@ -9,7 +9,6 @@ if (!databaseUrl) {
 }
 const prisma = new PrismaClient({ adapter: new PrismaPg(databaseUrl) });
 
-/** Título curto + descrição completa (texto do questionário) */
 const QUESTIONS: { title: string; description: string }[] = [
   {
     title: 'Termo de consentimento livre e esclarecido (TCLE)',
@@ -188,7 +187,6 @@ const QUIZ_TITLE =
 const QUIZ_DESCRIPTION =
   'Pesquisa acadêmica da disciplina Pesquisa de Mercado.';
 
-/** ID fixo para testar sempre a mesma URL após rodar o seed. */
 const SEED_QUIZ_ID = 'cafebabe-0000-4000-8000-00000000a001';
 
 async function main() {
@@ -286,7 +284,6 @@ async function main() {
       })),
     });
 
-  // 0: TCLE — Não encerra; Sim → Q2
   await addOpts(0, [
     { label: 'Sim, eu concordo', value: 'consent_yes', order: 0, nextIdx: 1 },
     {
@@ -297,7 +294,6 @@ async function main() {
     },
   ]);
 
-  // 1: ano
   await addOpts(1, [
     {
       label: 'Anterior a 1996',
@@ -325,7 +321,6 @@ async function main() {
     },
   ]);
 
-  // 2: gênero
   await addOpts(2, [
     { label: 'Masculino', value: 'gender_m', order: 0, nextIdx: 3 },
     { label: 'Feminino', value: 'gender_f', order: 1, nextIdx: 3 },
@@ -338,7 +333,6 @@ async function main() {
     },
   ]);
 
-  // 3–8: encadeamento linear até a pergunta 9
   await addOpts(3, [
     { label: 'Sim', value: 'heard_yes', order: 0, nextIdx: 4 },
     { label: 'Não', value: 'heard_no', order: 1, nextIdx: 4 },
@@ -361,13 +355,11 @@ async function main() {
     { label: 'Não', value: 'influenced_no', order: 1, nextIdx: 8 },
   ]);
 
-  // 8: pergunta 9 (base) — Sim → bloco 10–21 (índices 9–22); Não → pergunta 22 (índice 23)
   await addOpts(8, [
     { label: 'Sim', value: 'ever_used_yes', order: 0, nextIdx: 9 },
     { label: 'Não', value: 'ever_used_no', order: 1, nextIdx: 23 },
   ]);
 
-  // 9: frequência (10) → todas para 10
   await addOpts(9, [
     {
       label: 'Menos que uma vez por ano',
@@ -407,7 +399,6 @@ async function main() {
     },
   ]);
 
-  // 10: idade primeiro uso (11)
   await addOpts(10, [
     {
       label: 'Menor que 12 anos',
@@ -523,7 +514,6 @@ async function main() {
     { label: 'Não', value: 'lied_no', order: 1, nextIdx: 23 },
   ]);
 
-  // 23: Q22 — comum a todos após o bloco condicional
   await addOpts(23, [
     { label: 'Sim', value: 'social_content_yes', order: 0, nextIdx: 24 },
     { label: 'Não', value: 'social_content_no', order: 1, nextIdx: 24 },

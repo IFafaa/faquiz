@@ -14,10 +14,6 @@ import type { JwtPayloadUser } from '../../infrastructure/auth/jwt.strategy.js';
 import { JwtAuthGuard } from '../../infrastructure/auth/jwt-auth.guard.js';
 import { ResponseFiltersBodyDto } from '../dtos/response-filters.dto.js';
 
-/**
- * Rotas explícitas (prefixo completo) para evitar ambiguidade no registo de paths
- * aninhados em alguns ambientes / versões do router.
- */
 @Controller()
 export class QuizInsightsController {
   constructor(

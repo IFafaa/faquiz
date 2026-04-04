@@ -24,10 +24,7 @@ export class SessionController {
   ) {}
 
   @Post(':id/answers')
-  submit(
-    @Param('id') sessionId: string,
-    @Body() dto: SubmitAnswerDto,
-  ) {
+  submit(@Param('id') sessionId: string, @Body() dto: SubmitAnswerDto) {
     return this.submitAnswerUseCase.execute(sessionId, {
       answerOptionId: dto.answerOptionId ?? undefined,
       answerValue: dto.answerValue,

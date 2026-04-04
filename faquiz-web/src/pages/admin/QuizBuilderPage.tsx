@@ -15,7 +15,13 @@ import {
   type Node,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useParams } from 'react-router-dom'
 import { getQuiz, getQuizTree, saveQuizTree } from '@/api/quiz'
 import { BuilderInspector } from '@/components/builder/BuilderInspector'
@@ -53,12 +59,11 @@ function BuilderCanvas() {
   useEffect(() => {
     if (!tree) return
     const { nodes: n, edges: e } = treeToFlow(tree)
-    /* Hidrata nós/arestas do snapshot; React Flow exige estado local. */
-    /* eslint-disable react-hooks/set-state-in-effect */
-    setNodes(n)
-    setEdges(e)
-    setRootNodeId(tree.quiz.rootNodeId)
-    /* eslint-enable react-hooks/set-state-in-effect */
+    startTransition(() => {
+      setNodes(n)
+      setEdges(e)
+      setRootNodeId(tree.quiz.rootNodeId)
+    })
   }, [tree, setNodes, setEdges])
 
   const selectedNode = useMemo(

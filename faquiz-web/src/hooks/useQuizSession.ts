@@ -6,9 +6,6 @@ import { getPublicQuiz } from '@/api/quiz'
 import { startSession, submitAnswer, undoLastAnswer } from '@/api/session'
 import { useQuizSessionStore } from '@/stores/quizSessionStore'
 
-/**
- * Página inicial do quiz: carrega quiz público e inicia sessão.
- */
 export function useQuizStartFlow() {
   const { id: quizId = '' } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -84,8 +81,7 @@ export function useQuizStartFlow() {
   useEffect(() => {
     if (!quizId) return
     void loadQuiz.mutateAsync()
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- apenas ao montar / trocar quiz
-  }, [quizId])
+  }, [quizId, loadQuiz])
 
   return {
     quizId,
@@ -100,9 +96,6 @@ export function useQuizStartFlow() {
   }
 }
 
-/**
- * Página de jogo: envia respostas até concluir (máquina: playing ↔ submitting).
- */
 export function useQuizPlayFlow() {
   const { id: quizId = '' } = useParams<{ id: string }>()
   const navigate = useNavigate()

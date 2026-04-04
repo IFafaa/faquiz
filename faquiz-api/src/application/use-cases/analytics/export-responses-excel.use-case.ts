@@ -39,25 +39,29 @@ export class ExportResponsesExcelUseCase {
 
     if (sessionIds.length === 0) {
       const workbook = new ExcelJS.Workbook();
-      workbook.addWorksheet('Sessões').addRow([
-        'id',
-        'respondente',
-        'email',
-        'telefone',
-        'status',
-        'iniciadoEm',
-        'concluidoEm',
-      ]);
-      workbook.addWorksheet('Respostas').addRow([
-        'sessionId',
-        'respondente',
-        'email',
-        'telefone',
-        'pergunta',
-        'valor',
-        'label',
-        'respondidoEm',
-      ]);
+      workbook
+        .addWorksheet('Sessões')
+        .addRow([
+          'id',
+          'respondente',
+          'email',
+          'telefone',
+          'status',
+          'iniciadoEm',
+          'concluidoEm',
+        ]);
+      workbook
+        .addWorksheet('Respostas')
+        .addRow([
+          'sessionId',
+          'respondente',
+          'email',
+          'telefone',
+          'pergunta',
+          'valor',
+          'label',
+          'respondidoEm',
+        ]);
       const buf = await workbook.xlsx.writeBuffer();
       return Buffer.from(buf);
     }

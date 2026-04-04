@@ -5,7 +5,6 @@
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
 
-  /* Marca #8000CB e subtons (tom ~305°) */
   --color-brand-50: oklch(0.97 0.025 305);
   --color-brand-100: oklch(0.93 0.055 305);
   --color-brand-200: oklch(0.86 0.12 305);
@@ -27,7 +26,6 @@
     @apply bg-zinc-950 text-zinc-100 min-h-screen font-sans;
   }
 
-  /* Áreas clicáveis: cursor explícito (links, botões, controlos de formulário) */
   button:not(:disabled),
   [role='button']:not([aria-disabled='true']),
   [role='link']:not([aria-disabled='true']),
@@ -47,7 +45,6 @@
   }
 }
 
-/* Calendário (Insights): tema escuro alinhado ao admin */
 .insights-day-picker.rdp-root {
   --rdp-accent-color: oklch(0.477 0.228 305);
   --rdp-accent-background-color: oklch(0.28 0.12 305);

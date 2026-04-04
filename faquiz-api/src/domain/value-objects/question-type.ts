@@ -4,4 +4,5 @@ export const QuestionType = {
   RATING: 'rating',
 } as const;
 
-export type QuestionTypeValue = (typeof QuestionType)[keyof typeof QuestionType];
+export type QuestionTypeValue =
+  (typeof QuestionType)[keyof typeof QuestionType];

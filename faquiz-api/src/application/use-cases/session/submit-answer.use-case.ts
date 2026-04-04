@@ -17,9 +17,7 @@ import {
 } from '../../../domain/repositories/quiz-session.repository.js';
 
 function toPublicQuestion(
-  node: Awaited<
-    ReturnType<IQuizQueryRepository['findQuestionWithOptions']>
-  >,
+  node: Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>,
 ) {
   if (!node) return null;
   return {
@@ -90,7 +88,7 @@ export class SubmitAnswerUseCase {
       throw new ValidationError('Pergunta não encontrada');
     }
 
-    let answerOptionId: string | null = input.answerOptionId ?? null;
+    const answerOptionId: string | null = input.answerOptionId ?? null;
     let answerValue = input.answerValue ?? '';
 
     if (question.questionType === QuestionType.MULTIPLE_CHOICE) {

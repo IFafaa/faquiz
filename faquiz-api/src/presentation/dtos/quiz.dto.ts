@@ -21,7 +21,6 @@ export class CreateQuizDto {
   @MaxLength(1000)
   description?: string;
 
-  /** Definidos só na criação; não podem ser alterados depois. */
   @IsOptional()
   @IsBoolean()
   collectName?: boolean;

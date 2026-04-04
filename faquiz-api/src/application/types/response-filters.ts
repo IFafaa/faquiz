@@ -3,7 +3,6 @@ export interface QuestionAnswerFilterInput {
   answerValues: string[];
 }
 
-/** Entrada de filtros para sessões (agregações / export). */
 export interface ResponseFiltersInput {
   respondentNameContains?: string;
   respondentEmailContains?: string;

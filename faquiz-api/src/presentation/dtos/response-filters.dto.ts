@@ -17,7 +17,6 @@ export class QuestionAnswerFilterDto {
   answerValues!: string[];
 }
 
-/** Filtros reutilizáveis para agregações e exportação Excel. */
 export class ResponseFiltersDto {
   @IsOptional()
   @IsString()

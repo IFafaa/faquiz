@@ -8,6 +8,10 @@ import { SessionController } from '../controllers/session.controller.js';
 @Module({
   imports: [AuthModule],
   controllers: [SessionController],
-  providers: [SubmitAnswerUseCase, UndoLastAnswerUseCase, GetSessionDetailUseCase],
+  providers: [
+    SubmitAnswerUseCase,
+    UndoLastAnswerUseCase,
+    GetSessionDetailUseCase,
+  ],
 })
 export class SessionModule {}

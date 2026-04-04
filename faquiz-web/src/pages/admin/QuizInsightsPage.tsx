@@ -35,7 +35,6 @@ type FormState = {
   statusAbandoned: boolean
   startedRange: DateRange | undefined
   completedRange: DateRange | undefined
-  /** questionNodeId -> selected option values */
   answerSelections: Record<string, string[]>
 }
 
@@ -59,7 +58,6 @@ function rangeToIsoBounds(range: DateRange | undefined) {
   return { from: from.toISOString(), to: to.toISOString() }
 }
 
-/** Cores por cartão — contraste no fundo zinc escuro (marca #8000CB + subtons) */
 const CHART_PALETTE = [
   '#8000CB',
   '#B366FF',

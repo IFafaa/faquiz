@@ -29,8 +29,7 @@ export class GetQuizAnalyticsUseCase {
       quizId,
       totalSessions,
       completedSessions,
-      completionRate:
-        totalSessions > 0 ? completedSessions / totalSessions : 0,
+      completionRate: totalSessions > 0 ? completedSessions / totalSessions : 0,
       sessionsPerDay,
     };
   }

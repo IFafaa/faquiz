@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getQuiz, updateQuiz } from '@/api/quiz'
 import { Button } from '@/components/ui/Button'
@@ -21,10 +21,11 @@ export function QuizConfigPage() {
   const [description, setDescription] = useState('')
 
   useEffect(() => {
-    if (quiz) {
+    if (!quiz) return
+    startTransition(() => {
       setTitle(quiz.title)
       setDescription(quiz.description ?? '')
-    }
+    })
   }, [quiz])
 
   const saveMeta = useMutation({

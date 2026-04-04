@@ -1,9 +1,6 @@
 import { Prisma } from '../../../generated/prisma/client.js';
 import type { ResponseFiltersInput } from '../types/response-filters.js';
 
-/**
- * Monta o `where` de `QuizSession` para um quiz do admin, com filtros opcionais.
- */
 export function buildQuizSessionWhere(
   quizId: string,
   adminId: string,

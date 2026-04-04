@@ -27,7 +27,7 @@ export function QuizSettingsPage() {
     try {
       await navigator.clipboard.writeText(share.publicUrl)
     } catch {
-      /* ignore */
+      void 0
     }
   }
 

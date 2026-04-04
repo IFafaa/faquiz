@@ -19,7 +19,9 @@ import { AuthController } from '../controllers/auth.controller.js';
       useFactory: (config: ConfigService) => {
         const jwtSecret = config.get<string>('JWT_SECRET');
         if (!jwtSecret) {
-          throw new Error('JWT_SECRET não configurado. Defina a variável de ambiente antes de iniciar.');
+          throw new Error(
+            'JWT_SECRET não configurado. Defina a variável de ambiente antes de iniciar.',
+          );
         }
         return {
           secret: jwtSecret,

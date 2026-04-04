@@ -91,7 +91,10 @@ export class QuizController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Req() req: Request & { user: JwtPayloadUser }, @Body() dto: CreateQuizDto) {
+  create(
+    @Req() req: Request & { user: JwtPayloadUser },
+    @Body() dto: CreateQuizDto,
+  ) {
     return this.createQuiz.execute(req.user.sub, {
       title: dto.title,
       description: dto.description ?? '',
@@ -107,7 +110,6 @@ export class QuizController {
     return this.listQuizzes.execute(req.user.sub);
   }
 
-  /** Lista quizzes publicados (página inicial pública). Deve ficar antes de rotas `:id`. */
   @Get('published')
   listPublished() {
     return this.listPublishedQuizzes.execute();
@@ -125,17 +127,12 @@ export class QuizController {
         collectEmail: data.quiz.collectEmail,
         collectPhone: data.quiz.collectPhone,
       },
-      rootQuestion: data.rootNode
-        ? this.toPublicQuestion(data.rootNode)
-        : null,
+      rootQuestion: data.rootNode ? this.toPublicQuestion(data.rootNode) : null,
     };
   }
 
   @Post(':id/sessions')
-  startQuizSession(
-    @Param('id') quizId: string,
-    @Body() dto: StartSessionDto,
-  ) {
+  startQuizSession(@Param('id') quizId: string, @Body() dto: StartSessionDto) {
     return this.startSession.execute(quizId, {
       respondentName: dto.respondentName,
       respondentEmail: dto.respondentEmail,

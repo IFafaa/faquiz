@@ -4,4 +4,5 @@ export const SessionStatus = {
   ABANDONED: 'abandoned',
 } as const;
 
-export type SessionStatusValue = (typeof SessionStatus)[keyof typeof SessionStatus];
+export type SessionStatusValue =
+  (typeof SessionStatus)[keyof typeof SessionStatus];
