@@ -4,19 +4,10 @@ import { Link } from 'react-router-dom'
 import { faquizApi } from '@/app/api'
 import { Spinner } from '@/shared/ui/Spinner'
 import { richTextToPlainText } from '@/shared/utils/richText'
-
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.12 },
-  },
-}
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
-}
+import {
+  homeQuizListContainer,
+  homeQuizListItem,
+} from '@/features/quiz/constants/homeMotion'
 
 export function HomePage() {
   const { data: quizzes, isLoading } = useQuery({
@@ -77,13 +68,13 @@ export function HomePage() {
               Lista de questionários
             </h2>
             <motion.ul
-              variants={container}
+              variants={homeQuizListContainer}
               initial="hidden"
               animate="show"
               className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
             >
               {quizzes.map((q, i) => (
-                <motion.li key={q.id} variants={item} className="min-w-0">
+                <motion.li key={q.id} variants={homeQuizListItem} className="min-w-0">
                   <Link
                     to={`/quiz/${q.id}`}
                     className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-800/90 bg-gradient-to-br from-zinc-900/95 via-zinc-950 to-zinc-950 p-0 shadow-lg shadow-black/30 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-brand-500/40 hover:shadow-brand-900/20"
