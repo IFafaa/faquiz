@@ -30,7 +30,7 @@ export function QuestionPresenter({
         className="space-y-6"
       >
         <header className="space-y-2">
-          <h2 className="font-display text-xl font-semibold text-zinc-50 md:text-2xl">
+          <h2 className="font-display text-balance text-xl font-semibold leading-snug text-zinc-50 break-words md:text-2xl">
             {question.title}
           </h2>
           {question.description ? (

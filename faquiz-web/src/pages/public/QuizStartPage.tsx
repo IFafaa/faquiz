@@ -70,7 +70,7 @@ export function QuizStartPage() {
           <Card>
             <CardContent className="space-y-6 py-8">
               <div className="space-y-2 text-center">
-                <h1 className="font-display text-2xl font-bold text-zinc-50">
+                <h1 className="font-display text-balance text-2xl font-bold leading-snug text-zinc-50 break-words">
                   {publicQuiz.quiz.title}
                 </h1>
                 {publicQuiz.quiz.description ? (

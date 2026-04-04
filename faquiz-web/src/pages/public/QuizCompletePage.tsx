@@ -38,9 +38,9 @@ export function QuizCompletePage() {
             <h1 className="font-display text-2xl font-bold text-zinc-50">
               Obrigado!
             </h1>
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-pretty text-sm leading-relaxed text-zinc-400">
               Você concluiu{' '}
-              <span className="text-brand-100 font-medium">
+              <span className="inline-block max-w-full break-words text-brand-100 font-medium">
                 {quizTitle ?? 'o quiz'}
               </span>
               .
