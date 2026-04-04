@@ -12,6 +12,11 @@ import { SessionModule } from './presentation/modules/session.module.js';
     ThrottlerModule.forRoot({
       throttlers: [
         {
+          name: 'global',
+          ttl: 60_000,
+          limit: 120,
+        },
+        {
           name: 'login',
           ttl: 60_000,
           limit: 5,
