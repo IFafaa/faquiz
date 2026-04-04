@@ -16,13 +16,19 @@ import { AuthController } from '../controllers/auth.controller.js';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET') ?? 'dev-secret',
-        signOptions: {
-          expiresIn: (config.get<string>('JWT_EXPIRATION') ??
-            '7d') as StringValue,
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const jwtSecret = config.get<string>('JWT_SECRET');
+        if (!jwtSecret) {
+          throw new Error('JWT_SECRET não configurado. Defina a variável de ambiente antes de iniciar.');
+        }
+        return {
+          secret: jwtSecret,
+          signOptions: {
+            expiresIn: (config.get<string>('JWT_EXPIRATION') ??
+              '7d') as StringValue,
+          },
+        };
+      },
     }),
   ],
   providers: [JwtStrategy, LoginUseCase],
