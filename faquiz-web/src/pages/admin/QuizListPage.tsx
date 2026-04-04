@@ -5,8 +5,8 @@ import { createQuiz, deleteQuiz, listQuizzes } from '@/api/quiz'
 import type { QuizSummary } from '@/types/api'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
+import { Modal } from '@/components/ui/Modal'
 import { Spinner } from '@/components/ui/Spinner'
 
 function formatUpdated(iso: string) {
@@ -20,6 +20,19 @@ function formatUpdated(iso: string) {
   }
 }
 
+function RowChevron() {
+  return (
+    <span
+      className="ml-2 inline-flex shrink-0 text-zinc-600 transition-colors group-hover:text-brand-400"
+      aria-hidden
+    >
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+    </span>
+  )
+}
+
 export function QuizListPage() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -28,11 +41,20 @@ export function QuizListPage() {
     queryFn: listQuizzes,
   })
 
+  const [modalOpen, setModalOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [collectName, setCollectName] = useState(false)
   const [collectEmail, setCollectEmail] = useState(false)
   const [collectPhone, setCollectPhone] = useState(false)
+
+  const resetForm = () => {
+    setTitle('')
+    setDescription('')
+    setCollectName(false)
+    setCollectEmail(false)
+    setCollectPhone(false)
+  }
 
   const createMut = useMutation({
     mutationFn: () =>
@@ -45,11 +67,8 @@ export function QuizListPage() {
       }),
     onSuccess: (quiz) => {
       void queryClient.invalidateQueries({ queryKey: ['quizzes'] })
-      setTitle('')
-      setDescription('')
-      setCollectName(false)
-      setCollectEmail(false)
-      setCollectPhone(false)
+      resetForm()
+      setModalOpen(false)
       void navigate(`/admin/quizzes/${quiz.id}`)
     },
   })
@@ -82,21 +101,30 @@ export function QuizListPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-display text-2xl font-bold text-zinc-50">
-          Quizzes
-        </h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          Clique numa linha para abrir o quiz. Edição e publicação ficam na aba
-          Configuração.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-zinc-50">Quizzes</h1>
+          <p className="mt-1 max-w-xl text-sm text-zinc-400">
+            As linhas da tabela são clicáveis: use para abrir o quiz e gerir
+            configuração, fluxo e publicação. A coluna{' '}
+            <span className="text-zinc-300">Ações</span> não abre o detalhe — só
+            excluir.
+          </p>
+        </div>
+        <Button type="button" className="shrink-0" onClick={() => setModalOpen(true)}>
+          Novo quiz
+        </Button>
       </div>
 
-      <Card className="border-zinc-800/80">
-        <CardHeader className="border-b border-zinc-800/80 pb-4">
-          <CardTitle className="text-base">Novo quiz</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 pt-6">
+      <Modal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false)
+          resetForm()
+        }}
+        title="Novo quiz"
+      >
+        <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
               label="Título"
@@ -156,15 +184,27 @@ export function QuizListPage() {
               </label>
             </div>
           </div>
-          <Button
-            type="button"
-            onClick={() => createMut.mutate()}
-            disabled={createMut.isPending}
-          >
-            {createMut.isPending ? 'Criando…' : 'Criar quiz'}
-          </Button>
-        </CardContent>
-      </Card>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setModalOpen(false)
+                resetForm()
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              onClick={() => createMut.mutate()}
+              disabled={createMut.isPending}
+            >
+              {createMut.isPending ? 'Criando…' : 'Criar quiz'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/30 shadow-sm">
         <table className="w-full table-fixed text-left text-sm">
@@ -180,12 +220,12 @@ export function QuizListPage() {
                 Atualizado
               </th>
               <th className="w-[100px] px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                Excluir
+                Ações
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-800/80">
-            {(!quizzes || quizzes.length === 0) ? (
+            {!quizzes || quizzes.length === 0 ? (
               <tr>
                 <td
                   colSpan={4}
@@ -200,7 +240,8 @@ export function QuizListPage() {
                   key={q.id}
                   role="link"
                   tabIndex={0}
-                  className="cursor-pointer bg-zinc-950/20 transition-colors hover:bg-zinc-900/40"
+                  aria-label={`Abrir quiz: ${q.title}`}
+                  className="group cursor-pointer border-l-2 border-l-transparent bg-zinc-950/20 transition-colors hover:border-l-brand-500 hover:bg-zinc-900/50"
                   onClick={() => void navigate(`/admin/quizzes/${q.id}`)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -210,20 +251,25 @@ export function QuizListPage() {
                   }}
                 >
                   <td className="px-4 py-3 align-middle">
-                    <p className="font-medium leading-snug text-zinc-200">
-                      {q.title}
-                    </p>
-                    {q.description ? (
-                      <p className="mt-1 line-clamp-2 text-xs text-zinc-500">
-                        {q.description}
-                      </p>
-                    ) : null}
-                    <div className="mt-2 sm:hidden">
-                      {q.isPublished ? (
-                        <Badge tone="success">Publicado</Badge>
-                      ) : (
-                        <Badge tone="muted">Rascunho</Badge>
-                      )}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="flex items-start font-medium leading-snug text-zinc-200">
+                          <span className="min-w-0">{q.title}</span>
+                          <RowChevron />
+                        </p>
+                        {q.description ? (
+                          <p className="mt-1 line-clamp-2 text-xs text-zinc-500">
+                            {q.description}
+                          </p>
+                        ) : null}
+                        <div className="mt-2 sm:hidden">
+                          {q.isPublished ? (
+                            <Badge tone="success">Publicado</Badge>
+                          ) : (
+                            <Badge tone="muted">Rascunho</Badge>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </td>
                   <td className="hidden px-4 py-3 align-middle sm:table-cell">
