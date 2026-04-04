@@ -6,20 +6,7 @@ import { Spinner } from '@/shared/ui/Spinner'
 import { DashboardStatsGrid } from '@/features/admin/components/dashboard/DashboardStatsGrid'
 import { DashboardSessionsChart } from '@/features/admin/components/dashboard/DashboardSessionsChart'
 import { DashboardQuizTable } from '@/features/admin/components/dashboard/DashboardQuizTable'
-
-function mergeSessionsPerDay(
-  analytics: AnalyticsResponse[],
-): Array<{ date: string; count: number }> {
-  const map = new Map<string, number>()
-  for (const a of analytics) {
-    for (const { date, count } of a.sessionsPerDay) {
-      map.set(date, (map.get(date) ?? 0) + count)
-    }
-  }
-  return Array.from(map.entries())
-    .sort(([d1], [d2]) => d1.localeCompare(d2))
-    .map(([date, count]) => ({ date, count }))
-}
+import { mergeSessionsPerDay } from '@/features/admin/utils/analytics'
 
 export function DashboardPage() {
   const { data: quizzes, isLoading: loadingQuizzes } = useQuery({
