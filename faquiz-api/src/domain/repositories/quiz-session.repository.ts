@@ -26,6 +26,7 @@ export interface IQuizSessionRepository {
     answerValue: string;
   }): Promise<SessionAnswerEntity>;
   listAnswersForSession(sessionId: string): Promise<SessionAnswerEntity[]>;
+  removeLastAnswer(sessionId: string): Promise<SessionAnswerEntity | null>;
   listByQuizForAdmin(
     quizId: string,
     adminId: string,

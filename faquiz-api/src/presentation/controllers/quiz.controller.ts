@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { GetPublicQuizUseCase } from '../../application/use-cases/quiz/get-public-quiz.use-case.js';
+import { ListPublishedQuizzesUseCase } from '../../application/use-cases/quiz/list-published-quizzes.use-case.js';
 import {
   CreateQuizUseCase,
   DeleteQuizUseCase,
@@ -64,6 +65,7 @@ export class QuizController {
     private readonly getQuizTree: GetQuizTreeUseCase,
     private readonly saveQuizTree: SaveQuizTreeUseCase,
     private readonly getPublicQuiz: GetPublicQuizUseCase,
+    private readonly listPublishedQuizzes: ListPublishedQuizzesUseCase,
     private readonly startSession: StartSessionUseCase,
     private readonly shareUseCase: GetShareUseCase,
     private readonly analyticsUseCase: GetQuizAnalyticsUseCase,
@@ -100,6 +102,12 @@ export class QuizController {
   @UseGuards(JwtAuthGuard)
   list(@Req() req: Request & { user: JwtPayloadUser }) {
     return this.listQuizzes.execute(req.user.sub);
+  }
+
+  /** Lista quizzes publicados (página inicial pública). Deve ficar antes de rotas `:id`. */
+  @Get('published')
+  listPublished() {
+    return this.listPublishedQuizzes.execute();
   }
 
   @Get(':id/public')

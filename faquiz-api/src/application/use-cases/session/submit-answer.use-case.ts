@@ -66,6 +66,11 @@ export class SubmitAnswerUseCase {
       throw new ValidationError('Quiz inválido');
     }
 
+    const totalInQuiz = Math.max(
+      1,
+      await this.queries.countQuestionNodes(session.quizId),
+    );
+
     const answers = await this.sessions.listAnswersForSession(sessionId);
     const expectedNodeId = await this.resolveCurrentQuestionId(
       quiz.rootNodeId,
@@ -116,6 +121,8 @@ export class SubmitAnswerUseCase {
       answerValue,
     });
 
+    const answeredCount = answers.length + 1;
+
     const path: string[] = JSON.parse(session.pathTaken || '[]') as string[];
     path.push(expectedNodeId);
 
@@ -128,7 +135,13 @@ export class SubmitAnswerUseCase {
         SessionStatus.COMPLETED,
         new Date(),
       );
-      return { completed: true, question: null };
+      return {
+        completed: true,
+        question: null,
+        totalQuestions: totalInQuiz,
+        answeredCount,
+        currentQuestionNumber: totalInQuiz,
+      };
     }
 
     await this.sessions.updatePathAndStatus(
@@ -143,9 +156,17 @@ export class SubmitAnswerUseCase {
       nextNodeId,
     );
 
+    const currentQuestionNumber = await this.queries.getQuestionOrdinal(
+      session.quizId,
+      nextNodeId,
+    );
+
     return {
       completed: false,
       question: toPublicQuestion(nextQuestion),
+      totalQuestions: totalInQuiz,
+      answeredCount,
+      currentQuestionNumber,
     };
   }
 

@@ -55,6 +55,14 @@ export class StartSessionUseCase {
       quizId,
       data.quiz.rootNodeId,
     );
+    const totalQuestions = Math.max(
+      1,
+      await this.queries.countQuestionNodes(quizId),
+    );
+    const currentQuestionNumber = await this.queries.getQuestionOrdinal(
+      quizId,
+      data.quiz.rootNodeId,
+    );
     return {
       sessionId: session.id,
       quiz: {
@@ -63,6 +71,9 @@ export class StartSessionUseCase {
         description: data.quiz.description,
       },
       question: toPublicQuestion(question),
+      totalQuestions,
+      answeredCount: 0,
+      currentQuestionNumber,
     };
   }
 }

@@ -72,6 +72,16 @@ export class PrismaQuizSessionRepository implements IQuizSessionRepository {
     return rows.map(mapSessionAnswer);
   }
 
+  async removeLastAnswer(sessionId: string) {
+    const last = await this.prisma.sessionAnswer.findFirst({
+      where: { sessionId },
+      orderBy: { answeredAt: 'desc' },
+    });
+    if (!last) return null;
+    await this.prisma.sessionAnswer.delete({ where: { id: last.id } });
+    return mapSessionAnswer(last);
+  }
+
   async listByQuizForAdmin(quizId: string, adminId: string) {
     const rows = await this.prisma.quizSession.findMany({
       where: { quiz: { id: quizId, adminId } },

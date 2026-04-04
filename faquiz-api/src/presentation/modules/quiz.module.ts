@@ -6,6 +6,7 @@ import {
 import { ExportResponsesExcelUseCase } from '../../application/use-cases/analytics/export-responses-excel.use-case.js';
 import { GetResponseAggregatesUseCase } from '../../application/use-cases/analytics/get-response-aggregates.use-case.js';
 import { GetPublicQuizUseCase } from '../../application/use-cases/quiz/get-public-quiz.use-case.js';
+import { ListPublishedQuizzesUseCase } from '../../application/use-cases/quiz/list-published-quizzes.use-case.js';
 import {
   CreateQuizUseCase,
   DeleteQuizUseCase,
@@ -36,6 +37,7 @@ import { QuizInsightsController } from '../controllers/quiz-insights.controller.
     GetQuizTreeUseCase,
     SaveQuizTreeUseCase,
     GetPublicQuizUseCase,
+    ListPublishedQuizzesUseCase,
     StartSessionUseCase,
     GetShareUseCase,
     GetQuizAnalyticsUseCase,

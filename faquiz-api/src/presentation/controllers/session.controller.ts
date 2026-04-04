@@ -10,6 +10,7 @@ import {
 import type { Request } from 'express';
 import { GetSessionDetailUseCase } from '../../application/use-cases/analytics/quiz-analytics.use-cases.js';
 import { SubmitAnswerUseCase } from '../../application/use-cases/session/submit-answer.use-case.js';
+import { UndoLastAnswerUseCase } from '../../application/use-cases/session/undo-last-answer.use-case.js';
 import type { JwtPayloadUser } from '../../infrastructure/auth/jwt.strategy.js';
 import { JwtAuthGuard } from '../../infrastructure/auth/jwt-auth.guard.js';
 import { SubmitAnswerDto } from '../dtos/session.dto.js';
@@ -18,6 +19,7 @@ import { SubmitAnswerDto } from '../dtos/session.dto.js';
 export class SessionController {
   constructor(
     private readonly submitAnswerUseCase: SubmitAnswerUseCase,
+    private readonly undoLastAnswerUseCase: UndoLastAnswerUseCase,
     private readonly getSessionDetailUseCase: GetSessionDetailUseCase,
   ) {}
 
@@ -30,6 +32,11 @@ export class SessionController {
       answerOptionId: dto.answerOptionId ?? undefined,
       answerValue: dto.answerValue,
     });
+  }
+
+  @Post(':id/back')
+  undoLast(@Param('id') sessionId: string) {
+    return this.undoLastAnswerUseCase.execute(sessionId);
   }
 
   @Get(':id')

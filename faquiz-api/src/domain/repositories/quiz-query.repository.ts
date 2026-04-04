@@ -28,4 +28,13 @@ export interface IQuizQueryRepository {
     | (QuestionNodeEntity & { answerOptions: AnswerOptionEntity[] })
     | null
   >;
+  listPublishedQuizzes(): Promise<
+    Array<{ id: string; title: string; description: string }>
+  >;
+  countQuestionNodes(quizId: string): Promise<number>;
+  /**
+   * Posição 1-based do nó entre todas as perguntas do quiz (ordem estável:
+   * `createdAt` asc, `id` asc). Usada na barra: ex. 20/30 ao saltar para a 20.ª.
+   */
+  getQuestionOrdinal(quizId: string, nodeId: string): Promise<number>;
 }

@@ -84,4 +84,27 @@ export class PrismaQuizQueryRepository implements IQuizQueryRepository {
       answerOptions: node.answerOptions.map(mapAnswerOption),
     };
   }
+
+  async listPublishedQuizzes() {
+    const rows = await this.prisma.quiz.findMany({
+      where: { isPublished: true, rootNodeId: { not: null } },
+      select: { id: true, title: true, description: true },
+      orderBy: { updatedAt: 'desc' },
+    });
+    return rows;
+  }
+
+  async countQuestionNodes(quizId: string) {
+    return this.prisma.questionNode.count({ where: { quizId } });
+  }
+
+  async getQuestionOrdinal(quizId: string, nodeId: string) {
+    const rows = await this.prisma.questionNode.findMany({
+      where: { quizId },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      select: { id: true },
+    });
+    const idx = rows.findIndex((r) => r.id === nodeId);
+    return idx >= 0 ? idx + 1 : 1;
+  }
 }
