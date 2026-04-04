@@ -6,26 +6,31 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
 
 export class CreateQuizDto {
   @IsString()
+  @MaxLength(255)
   title!: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(1000)
   description?: string;
 }
 
 export class UpdateQuizDto {
   @IsOptional()
   @IsString()
+  @MaxLength(255)
   title?: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(1000)
   description?: string;
 
   @IsOptional()
@@ -38,9 +43,11 @@ export class QuizTreeAnswerOptionDto {
   id!: string;
 
   @IsString()
+  @MaxLength(500)
   label!: string;
 
   @IsString()
+  @MaxLength(500)
   value!: string;
 
   @IsNumber()
@@ -56,13 +63,16 @@ export class QuizTreeNodeDto {
   id!: string;
 
   @IsString()
+  @MaxLength(500)
   title!: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(2000)
   description?: string;
 
   @IsString()
+  @MaxLength(100)
   questionType!: string;
 
   @IsNumber()
