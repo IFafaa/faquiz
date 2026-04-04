@@ -179,22 +179,16 @@ export function QuizInsightsPage() {
   const qCompareB = aggregates?.questions.find((q) => q.questionNodeId === compareB)
 
   return (
-    <div className="space-y-5">
-      <div className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900/80 via-zinc-950 to-zinc-950 px-5 py-4">
-        <div
-          className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-brand-500/10 blur-3xl"
-          aria-hidden
-        />
-        <div className="relative">
-          <h2 className="font-display text-xl font-semibold tracking-tight text-zinc-50">
-            Insights e exportação
-          </h2>
-          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-zinc-400">
-            {loading
-              ? 'Carregando…'
-              : 'Filtre sessões, compare perguntas e leia distribuições em grelha densa — mais contexto por ecrã.'}
-          </p>
-        </div>
+    <div className="space-y-8">
+      <div>
+        <h2 className="font-display text-lg font-semibold text-zinc-100">
+          Insights
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500">
+          {loading
+            ? 'Carregando…'
+            : 'Filtre sessões, compare perguntas e veja distribuições. Exporte respostas em Excel quando precisar.'}
+        </p>
       </div>
 
       {loading ? (
