@@ -59,77 +59,77 @@ Você concorda em participar desta pesquisa?`,
   },
   {
     title:
-      'Você já fez uso de cigarro eletrônico? (pergunta de basdefine o fluxo)',
+      'Você já fez uso de cigarro eletrônico?',
     description:
-      'As próximas perguntas marcadas no roteiro original só aparecem para quem respondeu "Sim" aqui.',
+      '',
   },
   {
-    title: '1Com que frequência você utiliza cigarro eletrônico?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    title: 'Com que frequência você utiliza cigarro eletrônico?',
+    description: '',
   },
   {
     title:
-      '1Com que idade você fez o primeiro uso de cigarro eletrônico?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+      'Com que idade você fez o primeiro uso de cigarro eletrônico?',
+    description: '',
   },
   {
     title:
       'Antes do seu primeiro uso de cigarro eletrônico, você fez uso de cigarro branco?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title: 'O cigarro eletrônico foi seu primeiro contato com o fumo?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você percebe que o seu uso ocorre com maior frequência quando você…',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você percebe que o seu uso ocorre com maior frequência quando você…',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você percebe que o seu uso ocorre com maior frequência quando você…',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você já gastou dinheiro na compra de um cigarro eletrônico?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você já usou um cigarro eletrônico emprestado de outra pessoa?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'O seu uso ocorre em maior frequência por meio de um produto próprio ou por meio de um produto emprestado de outra pessoa?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você já fez uso de cigarro eletrônico acompanhado de bebidas alcoólicas?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você já fez uso de cigarro eletrônico acompanhado de outras substâncias ilícitas?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você já se sentiu julgado de alguma forma por alguém por fazer uso de cigarro eletrônico?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
       'Você já teve que omitir ou mentir que você faz uso de cigarro eletrônico?',
-    description: 'Exibida apenas se você respondeu "Sim" na pergunta 9.',
+    description: '',
   },
   {
     title:
