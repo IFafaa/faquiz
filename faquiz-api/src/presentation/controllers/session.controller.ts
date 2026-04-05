@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { GetSessionDetailUseCase } from '../../application/use-cases/analytics/quiz-analytics.use-cases.js';
+import { GetSessionDetailUseCase } from '../../application/use-cases/analytics/get-session-detail.use-case.js';
 import { SubmitAnswerUseCase } from '../../application/use-cases/session/submit-answer.use-case.js';
 import { UndoLastAnswerUseCase } from '../../application/use-cases/session/undo-last-answer.use-case.js';
 import type { JwtPayloadUser } from '../../infrastructure/auth/jwt.strategy.js';

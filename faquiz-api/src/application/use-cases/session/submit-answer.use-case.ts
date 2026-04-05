@@ -15,24 +15,7 @@ import {
   QUIZ_SESSION_REPOSITORY,
   type IQuizSessionRepository,
 } from '../../../domain/repositories/quiz-session.repository.js';
-
-function toPublicQuestion(
-  node: Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>,
-) {
-  if (!node) return null;
-  return {
-    id: node.id,
-    title: node.title,
-    description: node.description,
-    questionType: node.questionType,
-    answerOptions: node.answerOptions.map((o) => ({
-      id: o.id,
-      label: o.label,
-      value: o.value,
-      order: o.order,
-    })),
-  };
-}
+import { toPublicQuestion } from './to-public-question.js';
 
 @Injectable()
 export class SubmitAnswerUseCase {
