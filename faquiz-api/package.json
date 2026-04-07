@@ -22,7 +22,9 @@
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "prisma:seed": "tsx prisma/seed.ts",
-    "demo:bulk-quizzes": "tsx scripts/bulk-demo-quizzes.ts"
+    "demo:bulk-quizzes": "tsx scripts/bulk-demo-quizzes.ts",
+    "verify:api": "tsx scripts/verify-api.ts",
+    "verify:api:full": "powershell -ExecutionPolicy Bypass -File ../scripts/verify-api-full.ps1"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
