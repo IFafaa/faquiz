@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import type { IQuizRepository } from '../../../domain/repositories/quiz.repository.js';
-import type { QuizEntity } from '../../../domain/entities/quiz.entity.js';
+import type { Quiz } from '../../../domain/entities/quiz.entity.js';
 import type { QuizTreeInput } from '../../../domain/entities/quiz-tree-input.js';
 import { NotFoundError } from '../../../domain/errors/not-found.error.js';
-import { ValidationError } from '../../../domain/errors/validation.error.js';
 import { PrismaService } from '../prisma.service.js';
 import { mapQuiz } from '../mappers/entity-mappers.js';
 
@@ -11,41 +10,48 @@ import { mapQuiz } from '../mappers/entity-mappers.js';
 export class PrismaQuizRepository implements IQuizRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: {
-    title: string;
-    description: string;
-    adminId: string;
-    collectName: boolean;
-    collectEmail: boolean;
-    collectPhone: boolean;
-  }): Promise<QuizEntity> {
-    const row = await this.prisma.quiz.create({
-      data: {
-        title: data.title,
-        description: data.description,
-        adminId: data.adminId,
-        collectName: data.collectName,
-        collectEmail: data.collectEmail,
-        collectPhone: data.collectPhone,
-      },
-    });
-    return mapQuiz(row);
+  async persist(quiz: Quiz): Promise<Quiz> {
+    return this.persistOne(quiz);
   }
 
-  async update(
-    id: string,
-    adminId: string,
-    data: { title?: string; description?: string; isPublished?: boolean },
-  ): Promise<QuizEntity> {
+  async persistMany(quizzes: Quiz[]): Promise<Quiz[]> {
+    return Promise.all(quizzes.map((q) => this.persistOne(q)));
+  }
+
+  private async persistOne(quiz: Quiz): Promise<Quiz> {
+    if (quiz.isNew()) {
+      const row = await this.prisma.quiz.create({
+        data: {
+          title: quiz.title,
+          description: quiz.description,
+          isPublished: quiz.isPublished,
+          collectName: quiz.collectName,
+          collectEmail: quiz.collectEmail,
+          collectPhone: quiz.collectPhone,
+          rootNodeId: quiz.rootNodeId,
+          adminId: quiz.adminId,
+        },
+      });
+      return mapQuiz(row);
+    }
+
     const found = await this.prisma.quiz.findFirst({
-      where: { id, adminId },
+      where: { id: quiz.id, adminId: quiz.adminId },
     });
     if (!found) {
-      throw new NotFoundError('Quiz', id);
+      throw new NotFoundError('Quiz', quiz.id);
     }
     const row = await this.prisma.quiz.update({
-      where: { id },
-      data,
+      where: { id: quiz.id },
+      data: {
+        title: quiz.title,
+        description: quiz.description,
+        isPublished: quiz.isPublished,
+        collectName: quiz.collectName,
+        collectEmail: quiz.collectEmail,
+        collectPhone: quiz.collectPhone,
+        rootNodeId: quiz.rootNodeId,
+      },
     });
     return mapQuiz(row);
   }
@@ -60,22 +66,19 @@ export class PrismaQuizRepository implements IQuizRepository {
     await this.prisma.quiz.delete({ where: { id } });
   }
 
-  async findById(id: string): Promise<QuizEntity | null> {
+  async findById(id: string): Promise<Quiz | null> {
     const row = await this.prisma.quiz.findUnique({ where: { id } });
     return row ? mapQuiz(row) : null;
   }
 
-  async findByIdAndAdmin(
-    id: string,
-    adminId: string,
-  ): Promise<QuizEntity | null> {
+  async findByIdAndAdmin(id: string, adminId: string): Promise<Quiz | null> {
     const row = await this.prisma.quiz.findFirst({
       where: { id, adminId },
     });
     return row ? mapQuiz(row) : null;
   }
 
-  async listByAdmin(adminId: string): Promise<QuizEntity[]> {
+  async listByAdmin(adminId: string): Promise<Quiz[]> {
     const rows = await this.prisma.quiz.findMany({
       where: { adminId },
       orderBy: { updatedAt: 'desc' },
@@ -83,24 +86,7 @@ export class PrismaQuizRepository implements IQuizRepository {
     return rows.map(mapQuiz);
   }
 
-  async setRootNodeId(
-    quizId: string,
-    adminId: string,
-    rootNodeId: string | null,
-  ): Promise<void> {
-    const found = await this.prisma.quiz.findFirst({
-      where: { id: quizId, adminId },
-    });
-    if (!found) {
-      throw new NotFoundError('Quiz', quizId);
-    }
-    await this.prisma.quiz.update({
-      where: { id: quizId },
-      data: { rootNodeId },
-    });
-  }
-
-  async saveTree(
+  async persistQuizTree(
     quizId: string,
     adminId: string,
     tree: QuizTreeInput,
@@ -109,25 +95,7 @@ export class PrismaQuizRepository implements IQuizRepository {
       where: { id: quizId, adminId },
     });
     if (!quiz) {
-      throw new ValidationError('Quiz não encontrado ou sem permissão');
-    }
-
-    const nodeIds = new Set(tree.nodes.map((n) => n.id));
-    if (tree.rootNodeId !== null && !nodeIds.has(tree.rootNodeId)) {
-      throw new ValidationError('rootNodeId deve referenciar um nó do payload');
-    }
-
-    for (const node of tree.nodes) {
-      for (const opt of node.answerOptions) {
-        if (
-          opt.nextQuestionNodeId !== null &&
-          !nodeIds.has(opt.nextQuestionNodeId)
-        ) {
-          throw new ValidationError(
-            `nextQuestionNodeId inválido na opção ${opt.id}`,
-          );
-        }
-      }
+      throw new NotFoundError('Quiz', quizId);
     }
 
     await this.prisma.$transaction(async (tx) => {

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { IQuizSessionRepository } from '../../../domain/repositories/quiz-session.repository.js';
+import type { QuizSession } from '../../../domain/entities/quiz-session.entity.js';
 import { PrismaService } from '../prisma.service.js';
 import { mapQuizSession, mapSessionAnswer } from '../mappers/entity-mappers.js';
 
@@ -7,23 +8,39 @@ import { mapQuizSession, mapSessionAnswer } from '../mappers/entity-mappers.js';
 export class PrismaQuizSessionRepository implements IQuizSessionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: {
-    quizId: string;
-    respondentName: string;
-    respondentEmail: string;
-    respondentPhone: string;
-  }): Promise<
-    import('../../../domain/entities/quiz-session.entity.js').QuizSessionEntity
-  > {
-    const row = await this.prisma.quizSession.create({
+  async persist(session: QuizSession): Promise<QuizSession> {
+    return this.persistOne(session);
+  }
+
+  async persistMany(sessions: QuizSession[]): Promise<QuizSession[]> {
+    return Promise.all(sessions.map((s) => this.persistOne(s)));
+  }
+
+  private async persistOne(session: QuizSession): Promise<QuizSession> {
+    if (session.isNew()) {
+      const row = await this.prisma.quizSession.create({
+        data: {
+          quizId: session.quizId,
+          respondentName: session.respondentName ?? '',
+          respondentEmail: session.respondentEmail ?? '',
+          respondentPhone: session.respondentPhone ?? '',
+          status: session.status,
+          pathTaken: session.pathTaken,
+          completedAt: session.completedAt,
+        },
+      });
+      return mapQuizSession(row);
+    }
+
+    await this.prisma.quizSession.update({
+      where: { id: session.id },
       data: {
-        quizId: data.quizId,
-        respondentName: data.respondentName ?? '',
-        respondentEmail: data.respondentEmail ?? '',
-        respondentPhone: data.respondentPhone ?? '',
+        pathTaken: session.pathTaken,
+        status: session.status,
+        completedAt: session.completedAt,
       },
     });
-    return mapQuizSession(row);
+    return session;
   }
 
   async findById(id: string) {
@@ -36,18 +53,6 @@ export class PrismaQuizSessionRepository implements IQuizSessionRepository {
       where: { id: sessionId, quizId },
     });
     return row ? mapQuizSession(row) : null;
-  }
-
-  async updatePathAndStatus(
-    sessionId: string,
-    pathTaken: string,
-    status: import('../../../domain/entities/quiz-session.entity.js').QuizSessionEntity['status'],
-    completedAt: Date | null,
-  ): Promise<void> {
-    await this.prisma.quizSession.update({
-      where: { id: sessionId },
-      data: { pathTaken, status, completedAt },
-    });
   }
 
   async addAnswer(data: {

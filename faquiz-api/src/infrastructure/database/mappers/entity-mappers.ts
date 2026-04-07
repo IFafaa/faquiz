@@ -2,15 +2,15 @@ import type {
   Admin,
   AnswerOption,
   QuestionNode,
-  Quiz,
-  QuizSession,
+  Quiz as PrismaQuizRow,
+  QuizSession as PrismaQuizSessionRow,
   SessionAnswer,
 } from '../../../../generated/prisma/client.js';
 import type { AdminEntity } from '../../../domain/entities/admin.entity.js';
 import type { AnswerOptionEntity } from '../../../domain/entities/answer-option.entity.js';
 import type { QuestionNodeEntity } from '../../../domain/entities/question-node.entity.js';
-import type { QuizEntity } from '../../../domain/entities/quiz.entity.js';
-import type { QuizSessionEntity } from '../../../domain/entities/quiz-session.entity.js';
+import { Quiz } from '../../../domain/entities/quiz.entity.js';
+import { QuizSession } from '../../../domain/entities/quiz-session.entity.js';
 import type { SessionAnswerEntity } from '../../../domain/entities/session-answer.entity.js';
 import type { QuestionTypeValue } from '../../../domain/value-objects/question-type.js';
 import type { SessionStatusValue } from '../../../domain/value-objects/session-status.js';
@@ -26,8 +26,8 @@ export function mapAdmin(row: Admin): AdminEntity {
   };
 }
 
-export function mapQuiz(row: Quiz): QuizEntity {
-  return {
+export function mapQuiz(row: PrismaQuizRow): Quiz {
+  return Quiz.fromPersistence({
     id: row.id,
     title: row.title,
     description: row.description,
@@ -39,7 +39,7 @@ export function mapQuiz(row: Quiz): QuizEntity {
     adminId: row.adminId,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
-  };
+  });
 }
 
 export function mapQuestionNode(row: QuestionNode): QuestionNodeEntity {
@@ -69,8 +69,8 @@ export function mapAnswerOption(row: AnswerOption): AnswerOptionEntity {
   };
 }
 
-export function mapQuizSession(row: QuizSession): QuizSessionEntity {
-  return {
+export function mapQuizSession(row: PrismaQuizSessionRow): QuizSession {
+  return QuizSession.fromPersistence({
     id: row.id,
     quizId: row.quizId,
     respondentName: row.respondentName,
@@ -80,7 +80,7 @@ export function mapQuizSession(row: QuizSession): QuizSessionEntity {
     pathTaken: row.pathTaken,
     startedAt: row.startedAt,
     completedAt: row.completedAt,
-  };
+  });
 }
 
 export function mapSessionAnswer(row: SessionAnswer): SessionAnswerEntity {

@@ -5,7 +5,7 @@ import type {
 } from '../../../domain/repositories/quiz-query.repository.js';
 import type { AnswerOptionEntity } from '../../../domain/entities/answer-option.entity.js';
 import type { QuestionNodeEntity } from '../../../domain/entities/question-node.entity.js';
-import type { QuizEntity } from '../../../domain/entities/quiz.entity.js';
+import type { Quiz } from '../../../domain/entities/quiz.entity.js';
 import { PrismaService } from '../prisma.service.js';
 import {
   mapAnswerOption,
@@ -42,7 +42,7 @@ export class PrismaQuizQueryRepository implements IQuizQueryRepository {
   }
 
   async findPublishedWithRootNode(quizId: string): Promise<{
-    quiz: QuizEntity;
+    quiz: Quiz;
     rootNode:
       | (QuestionNodeEntity & { answerOptions: AnswerOptionEntity[] })
       | null;
