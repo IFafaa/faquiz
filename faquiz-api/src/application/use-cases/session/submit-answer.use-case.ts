@@ -110,12 +110,12 @@ export class SubmitAnswerUseCase {
     const nextNodeId = this.computeNextNodeId(question, answerOptionId);
 
     if (nextNodeId === null) {
-      await this.sessions.updatePathAndStatus(
-        sessionId,
-        JSON.stringify(path),
-        SessionStatus.COMPLETED,
-        new Date(),
-      );
+      session.updateProgress({
+        pathTaken: JSON.stringify(path),
+        status: SessionStatus.COMPLETED,
+        completedAt: new Date(),
+      });
+      await this.sessions.persist(session);
       return {
         completed: true,
         question: null,
@@ -125,12 +125,12 @@ export class SubmitAnswerUseCase {
       };
     }
 
-    await this.sessions.updatePathAndStatus(
-      sessionId,
-      JSON.stringify(path),
-      SessionStatus.IN_PROGRESS,
-      null,
-    );
+    session.updateProgress({
+      pathTaken: JSON.stringify(path),
+      status: SessionStatus.IN_PROGRESS,
+      completedAt: null,
+    });
+    await this.sessions.persist(session);
 
     const nextQuestion = await this.queries.findQuestionWithOptions(
       session.quizId,

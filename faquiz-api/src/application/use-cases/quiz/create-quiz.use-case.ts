@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { QuizEntity } from '../../../domain/entities/quiz.entity.js';
+import { Quiz } from '../../../domain/entities/quiz.entity.js';
 import {
   QUIZ_REPOSITORY,
   type IQuizRepository,
@@ -20,8 +20,8 @@ export class CreateQuizUseCase {
       collectEmail: boolean;
       collectPhone: boolean;
     },
-  ): Promise<QuizEntity> {
-    return this.quizzes.create({
+  ): Promise<Quiz> {
+    const draft = Quiz.createDraft({
       title: data.title,
       description: data.description ?? '',
       adminId,
@@ -29,5 +29,6 @@ export class CreateQuizUseCase {
       collectEmail: data.collectEmail,
       collectPhone: data.collectPhone,
     });
+    return this.quizzes.persist(draft);
   }
 }

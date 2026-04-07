@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { QuizTree } from '../../../domain/entities/quiz-tree.entity.js';
 import type { QuizTreeInput } from '../../../domain/entities/quiz-tree-input.js';
 import {
   QUIZ_REPOSITORY,
@@ -12,6 +13,8 @@ export class SaveQuizTreeUseCase {
   ) {}
 
   execute(quizId: string, adminId: string, tree: QuizTreeInput): Promise<void> {
-    return this.quizzes.saveTree(quizId, adminId, tree);
+    const quizTree = new QuizTree(tree);
+    quizTree.validate();
+    return this.quizzes.persistQuizTree(quizId, adminId, quizTree.getInput());
   }
 }

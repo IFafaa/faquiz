@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { QuizEntity } from '../../../domain/entities/quiz.entity.js';
+import type { Quiz } from '../../../domain/entities/quiz.entity.js';
 import {
   QUIZ_REPOSITORY,
   type IQuizRepository,
@@ -11,7 +11,7 @@ export class ListQuizzesUseCase {
     @Inject(QUIZ_REPOSITORY) private readonly quizzes: IQuizRepository,
   ) {}
 
-  execute(adminId: string): Promise<QuizEntity[]> {
+  execute(adminId: string): Promise<Quiz[]> {
     return this.quizzes.listByAdmin(adminId);
   }
 }

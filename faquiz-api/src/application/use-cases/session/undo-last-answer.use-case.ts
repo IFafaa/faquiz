@@ -45,12 +45,12 @@ export class UndoLastAnswerUseCase {
       path.pop();
     }
 
-    await this.sessions.updatePathAndStatus(
-      sessionId,
-      JSON.stringify(path),
-      SessionStatus.IN_PROGRESS,
-      null,
-    );
+    session.updateProgress({
+      pathTaken: JSON.stringify(path),
+      status: SessionStatus.IN_PROGRESS,
+      completedAt: null,
+    });
+    await this.sessions.persist(session);
 
     const question = await this.queries.findQuestionWithOptions(
       session.quizId,

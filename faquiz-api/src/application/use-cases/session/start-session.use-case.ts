@@ -9,6 +9,7 @@ import {
   QUIZ_SESSION_REPOSITORY,
   type IQuizSessionRepository,
 } from '../../../domain/repositories/quiz-session.repository.js';
+import { QuizSession } from '../../../domain/entities/quiz-session.entity.js';
 import { toPublicQuestion } from './to-public-question.js';
 
 @Injectable()
@@ -60,12 +61,13 @@ export class StartSessionUseCase {
       throw new ValidationError('Telefone é obrigatório para este quiz.');
     }
 
-    const session = await this.sessions.create({
+    const draft = QuizSession.createDraft({
       quizId,
       respondentName: name,
       respondentEmail: email,
       respondentPhone: phone,
     });
+    const session = await this.sessions.persist(draft);
     const question = await this.queries.findQuestionWithOptions(
       quizId,
       data.quiz.rootNodeId,

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NotFoundError } from '../../../domain/errors/not-found.error.js';
-import type { QuizEntity } from '../../../domain/entities/quiz.entity.js';
+import type { Quiz } from '../../../domain/entities/quiz.entity.js';
 import {
   QUIZ_REPOSITORY,
   type IQuizRepository,
@@ -12,7 +12,7 @@ export class GetQuizUseCase {
     @Inject(QUIZ_REPOSITORY) private readonly quizzes: IQuizRepository,
   ) {}
 
-  async execute(id: string, adminId: string): Promise<QuizEntity> {
+  async execute(id: string, adminId: string): Promise<Quiz> {
     const quiz = await this.quizzes.findByIdAndAdmin(id, adminId);
     if (!quiz) {
       throw new NotFoundError('Quiz', id);
