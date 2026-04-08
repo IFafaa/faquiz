@@ -15,12 +15,12 @@ import { QuizMapper } from '../mappers/quiz.mapper.js';
 export class PrismaQuizQueryRepository implements IQuizQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findTreeForAdmin(
+  async findTreeForUser(
     quizId: string,
-    adminId: string,
+    userId: string,
   ): Promise<QuizTreeSnapshot | null> {
     const quiz = await this.prisma.quiz.findFirst({
-      where: { id: quizId, adminId },
+      where: { id: quizId, userId },
     });
     if (!quiz) return null;
 

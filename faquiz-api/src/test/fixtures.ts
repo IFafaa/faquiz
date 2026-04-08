@@ -1,5 +1,5 @@
 import { hashSync } from 'bcryptjs';
-import { Admin } from '../domain/entities/admin.entity.js';
+import { User } from '../domain/entities/user.entity.js';
 import { AnswerOption } from '../domain/entities/answer-option.entity.js';
 import { QuestionNode } from '../domain/entities/question-node.entity.js';
 import { Quiz } from '../domain/entities/quiz.entity.js';
@@ -10,20 +10,20 @@ import { SessionStatus } from '../domain/value-objects/session-status.js';
 
 const now = () => new Date('2026-01-01T00:00:00.000Z');
 
-export function adminFixture(
+export function userFixture(
   overrides: Partial<{
     id: string;
     email: string;
     passwordPlain: string;
     name: string;
   }> = {},
-): Admin {
+): User {
   const plain = overrides.passwordPlain ?? 'secret';
-  return Admin.fromPersistence({
-    id: overrides.id ?? 'admin-1',
+  return User.fromPersistence({
+    id: overrides.id ?? 'user-1',
     email: overrides.email ?? 'a@test.com',
     passwordHash: hashSync(plain, 4),
-    name: overrides.name ?? 'Admin',
+    name: overrides.name ?? 'User',
     createdAt: now(),
     updatedAt: now(),
   });
@@ -33,7 +33,7 @@ export function quizFixture(
   overrides: Partial<{
     id: string;
     title: string;
-    adminId: string;
+    userId: string;
     rootNodeId: string | null;
     isPublished: boolean;
   }> = {},
@@ -48,7 +48,7 @@ export function quizFixture(
     collectPhone: false,
     rootNodeId:
       overrides.rootNodeId !== undefined ? overrides.rootNodeId : 'node-root',
-    adminId: overrides.adminId ?? 'admin-1',
+    userId: overrides.userId ?? 'user-1',
     createdAt: now(),
     updatedAt: now(),
   });

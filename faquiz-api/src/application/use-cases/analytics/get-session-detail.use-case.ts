@@ -17,19 +17,19 @@ export class GetSessionDetailUseCase {
     private readonly sessions: IQuizSessionRepository,
   ) {}
 
-  async execute(sessionId: string, adminId: string) {
+  async execute(sessionId: string, userId: string) {
     const session = await this.sessions.findById(sessionId);
     if (!session) {
       throw new NotFoundError('Sessão', sessionId);
     }
-    const quiz = await this.quizzes.findByIdAndAdmin(session.quizId, adminId);
+    const quiz = await this.quizzes.findByIdAndUser(session.quizId, userId);
     if (!quiz) {
       throw new NotFoundError('Sessão', sessionId);
     }
-    const detail = await this.sessions.findDetailForAdmin(
+    const detail = await this.sessions.findDetailForUser(
       sessionId,
       session.quizId,
-      adminId,
+      userId,
     );
     if (!detail) {
       throw new NotFoundError('Sessão', sessionId);

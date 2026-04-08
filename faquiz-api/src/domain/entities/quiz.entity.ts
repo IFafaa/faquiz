@@ -7,7 +7,7 @@ export type QuizPersistenceProps = {
   collectEmail: boolean;
   collectPhone: boolean;
   rootNodeId: string | null;
-  adminId: string;
+  userId: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -31,7 +31,7 @@ export class Quiz {
     collectEmail: boolean,
     collectPhone: boolean,
     rootNodeId: string | null,
-    public readonly adminId: string,
+    public readonly userId: string,
     public readonly createdAt: Date,
     updatedAt: Date,
   ) {
@@ -80,7 +80,7 @@ export class Quiz {
   static createDraft(params: {
     title: string;
     description: string;
-    adminId: string;
+    userId: string;
     collectName: boolean;
     collectEmail: boolean;
     collectPhone: boolean;
@@ -95,7 +95,7 @@ export class Quiz {
       params.collectEmail,
       params.collectPhone,
       null,
-      params.adminId,
+      params.userId,
       now,
       now,
     );
@@ -111,7 +111,7 @@ export class Quiz {
       p.collectEmail,
       p.collectPhone,
       p.rootNodeId,
-      p.adminId,
+      p.userId,
       p.createdAt,
       p.updatedAt,
     );

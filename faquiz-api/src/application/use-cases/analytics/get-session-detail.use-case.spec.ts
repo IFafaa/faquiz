@@ -11,35 +11,35 @@ describe('GetSessionDetailUseCase', () => {
     answers: [],
   };
 
-  it('returns detail when session and quiz belong to admin', async () => {
+  it('returns detail when session and quiz belong to the same user', async () => {
     const session = quizSessionFixture({ id: 's1', quizId: 'q1' });
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(quizFixture({ id: 'q1' })),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(quizFixture({ id: 'q1' })),
     };
     const sessions: Pick<
       IQuizSessionRepository,
-      'findById' | 'findDetailForAdmin'
+      'findById' | 'findDetailForUser'
     > = {
       findById: jest.fn().mockResolvedValue(session),
-      findDetailForAdmin: jest.fn().mockResolvedValue(detail),
+      findDetailForUser: jest.fn().mockResolvedValue(detail),
     };
     const uc = new GetSessionDetailUseCase(
       quizzes as IQuizRepository,
       sessions as IQuizSessionRepository,
     );
-    await expect(uc.execute('s1', 'admin-1')).resolves.toBe(detail);
+    await expect(uc.execute('s1', 'user-1')).resolves.toBe(detail);
   });
 
   it('throws NotFoundError when session does not exist', async () => {
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn(),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn(),
     };
     const sessions: Pick<
       IQuizSessionRepository,
-      'findById' | 'findDetailForAdmin'
+      'findById' | 'findDetailForUser'
     > = {
       findById: jest.fn().mockResolvedValue(null),
-      findDetailForAdmin: jest.fn(),
+      findDetailForUser: jest.fn(),
     };
     const uc = new GetSessionDetailUseCase(
       quizzes as IQuizRepository,

@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import type { StringValue } from 'ms';
 import { LoginUseCase } from '../../application/use-cases/auth/login.use-case.js';
+import { RegisterUseCase } from '../../application/use-cases/auth/register.use-case.js';
 import { JwtStrategy } from '../../infrastructure/auth/jwt.strategy.js';
 import { RepositoriesModule } from '../../infrastructure/repositories.module.js';
 import { AuthController } from '../controllers/auth.controller.js';
@@ -33,7 +34,7 @@ import { AuthController } from '../controllers/auth.controller.js';
       },
     }),
   ],
-  providers: [JwtStrategy, LoginUseCase],
+  providers: [JwtStrategy, LoginUseCase, RegisterUseCase],
   controllers: [AuthController],
   exports: [JwtModule, PassportModule],
 })

@@ -1,11 +1,11 @@
-import type { Admin as PrismaAdmin } from '../../../../generated/prisma/client.js';
-import { Admin } from '../../../domain/entities/admin.entity.js';
+import type { User as PrismaUser } from '../../../../generated/prisma/client.js';
+import { User } from '../../../domain/entities/user.entity.js';
 
-export class AdminMapper {
+export class UserMapper {
   private constructor() {}
 
-  static toDomain(row: PrismaAdmin): Admin {
-    return Admin.fromPersistence({
+  static toDomain(row: PrismaUser): User {
+    return User.fromPersistence({
       id: row.id,
       email: row.email,
       passwordHash: row.password,
@@ -15,7 +15,7 @@ export class AdminMapper {
     });
   }
 
-  static toPersistence(entity: Admin): {
+  static toPersistence(entity: User): {
     email: string;
     password: string;
     name: string;

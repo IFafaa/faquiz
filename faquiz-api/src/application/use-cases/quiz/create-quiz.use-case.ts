@@ -12,7 +12,7 @@ export class CreateQuizUseCase {
   ) {}
 
   execute(
-    adminId: string,
+    userId: string,
     data: {
       title: string;
       description: string;
@@ -24,7 +24,7 @@ export class CreateQuizUseCase {
     const draft = Quiz.createDraft({
       title: data.title,
       description: data.description ?? '',
-      adminId,
+      userId,
       collectName: data.collectName,
       collectEmail: data.collectEmail,
       collectPhone: data.collectPhone,

@@ -6,16 +6,16 @@ import { GetQuizTreeUseCase } from './get-quiz-tree.use-case.js';
 describe('GetQuizTreeUseCase', () => {
   it('returns tree when it exists', async () => {
     const tree = { quiz: quizFixture(), nodes: [] };
-    const repo: Pick<IQuizQueryRepository, 'findTreeForAdmin'> = {
-      findTreeForAdmin: jest.fn().mockResolvedValue(tree),
+    const repo: Pick<IQuizQueryRepository, 'findTreeForUser'> = {
+      findTreeForUser: jest.fn().mockResolvedValue(tree),
     };
     const uc = new GetQuizTreeUseCase(repo as IQuizQueryRepository);
-    await expect(uc.execute('quiz-1', 'admin-1')).resolves.toBe(tree);
+    await expect(uc.execute('quiz-1', 'user-1')).resolves.toBe(tree);
   });
 
   it('throws NotFoundError when it does not exist', async () => {
-    const repo: Pick<IQuizQueryRepository, 'findTreeForAdmin'> = {
-      findTreeForAdmin: jest.fn().mockResolvedValue(null),
+    const repo: Pick<IQuizQueryRepository, 'findTreeForUser'> = {
+      findTreeForUser: jest.fn().mockResolvedValue(null),
     };
     const uc = new GetQuizTreeUseCase(repo as IQuizQueryRepository);
     await expect(uc.execute('x', 'a')).rejects.toBeInstanceOf(NotFoundError);

@@ -9,7 +9,7 @@ describe('CreateQuizUseCase', () => {
       persist: jest.fn().mockResolvedValue(persisted),
     };
     const uc = new CreateQuizUseCase(repo as IQuizRepository);
-    const result = await uc.execute('admin-1', {
+    const result = await uc.execute('user-1', {
       title: 'T',
       description: 'd',
       collectName: false,

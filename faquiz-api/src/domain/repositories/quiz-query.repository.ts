@@ -14,9 +14,9 @@ export interface QuizTreeSnapshot {
 }
 
 export interface IQuizQueryRepository {
-  findTreeForAdmin(
+  findTreeForUser(
     quizId: string,
-    adminId: string,
+    userId: string,
   ): Promise<QuizTreeSnapshot | null>;
   findPublishedWithRootNode(quizId: string): Promise<{
     quiz: Quiz;

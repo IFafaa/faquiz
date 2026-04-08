@@ -76,17 +76,17 @@ export class PrismaQuizSessionRepository implements IQuizSessionRepository {
     return SessionAnswerMapper.toDomain(last);
   }
 
-  async listByQuizForAdmin(quizId: string, adminId: string) {
+  async listByQuizForUser(quizId: string, userId: string) {
     const rows = await this.prisma.quizSession.findMany({
-      where: { quiz: { id: quizId, adminId } },
+      where: { quiz: { id: quizId, userId } },
       orderBy: { startedAt: 'desc' },
     });
     return rows.map((r) => QuizSessionMapper.toDomain(r));
   }
 
-  async findDetailForAdmin(sessionId: string, quizId: string, adminId: string) {
+  async findDetailForUser(sessionId: string, quizId: string, userId: string) {
     const session = await this.prisma.quizSession.findFirst({
-      where: { id: sessionId, quizId, quiz: { adminId } },
+      where: { id: sessionId, quizId, quiz: { userId } },
     });
     if (!session) return null;
     const answers = await this.prisma.sessionAnswer.findMany({

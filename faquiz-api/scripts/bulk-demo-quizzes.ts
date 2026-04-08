@@ -8,8 +8,15 @@ const API_BASE_URL = (process.env.API_BASE_URL ?? 'http://localhost:3333/api').r
   '',
 );
 const DATABASE_URL = process.env.DATABASE_URL;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@faquiz.com';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123';
+const USER_EMAIL =
+  process.env.FAQUIZ_USER_EMAIL ??
+  process.env.ADMIN_EMAIL ??
+  'admin@faquiz.com';
+const USER_PASSWORD =
+  process.env.FAQUIZ_USER_PASSWORD ??
+  process.env.ADMIN_PASSWORD ??
+  process.env.ADMIN_SEED_PASSWORD ??
+  'admin123';
 const SESSIONS_PER_QUIZ = Math.max(
   1,
   Number.parseInt(process.env.SESSIONS_PER_QUIZ ?? '500', 10) || 500,
@@ -340,7 +347,7 @@ async function login(): Promise<string> {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
+    body: JSON.stringify({ email: USER_EMAIL, password: USER_PASSWORD }),
   });
   if (!res.ok) {
     const t = await res.text();
@@ -476,7 +483,7 @@ async function main() {
   });
 
   const token = await login();
-  console.log(`Autenticado como ${ADMIN_EMAIL}.`);
+  console.log(`Autenticado como ${USER_EMAIL}.`);
   console.log(
     `Criando ${QUIZ_BLUEPRINTS.length} quizzes e ${SESSIONS_PER_QUIZ} sessões completas por quiz…`,
   );

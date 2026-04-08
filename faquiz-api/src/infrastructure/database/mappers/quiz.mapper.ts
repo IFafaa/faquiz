@@ -14,7 +14,7 @@ export class QuizMapper {
       collectEmail: row.collectEmail,
       collectPhone: row.collectPhone,
       rootNodeId: row.rootNodeId,
-      adminId: row.adminId,
+      userId: row.userId,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     });
@@ -29,7 +29,7 @@ export class QuizMapper {
       collectEmail: boolean;
       collectPhone: boolean;
       rootNodeId: string | null;
-      adminId: string;
+      userId: string;
     };
     update: {
       title: string;
@@ -51,7 +51,7 @@ export class QuizMapper {
       rootNodeId: quiz.rootNodeId,
     };
     return {
-      create: { ...update, adminId: quiz.adminId },
+      create: { ...update, userId: quiz.userId },
       update,
     };
   }

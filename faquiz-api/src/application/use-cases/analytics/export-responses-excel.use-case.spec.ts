@@ -10,8 +10,8 @@ import {
 
 describe('ExportResponsesExcelUseCase', () => {
   it('throws NotFoundError when quiz does not exist', async () => {
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(null),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(null),
     };
     const prisma = {} as unknown as PrismaService;
     const uc = new ExportResponsesExcelUseCase(quizzes as IQuizRepository, prisma);
@@ -22,8 +22,8 @@ describe('ExportResponsesExcelUseCase', () => {
 
   it('generates empty workbook when there are no sessions', async () => {
     const q = quizFixture();
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(q),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(q),
     };
     const prisma = {
       quizSession: {
@@ -31,15 +31,15 @@ describe('ExportResponsesExcelUseCase', () => {
       },
     } as unknown as PrismaService;
     const uc = new ExportResponsesExcelUseCase(quizzes as IQuizRepository, prisma);
-    const buf = await uc.execute('quiz-1', 'admin-1', null);
+    const buf = await uc.execute('quiz-1', 'user-1', null);
     expect(Buffer.isBuffer(buf)).toBe(true);
     expect(buf.length).toBeGreaterThan(0);
   });
 
   it('throws PayloadTooLargeException when answer row limit is exceeded', async () => {
     const q = quizFixture();
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(q),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(q),
     };
     const sessionIds = Array.from({ length: 3 }, (_, i) => `s${i}`);
     const prisma = {
@@ -61,7 +61,7 @@ describe('ExportResponsesExcelUseCase', () => {
       },
     } as unknown as PrismaService;
     const uc = new ExportResponsesExcelUseCase(quizzes as IQuizRepository, prisma);
-    await expect(uc.execute('quiz-1', 'admin-1', null)).rejects.toBeInstanceOf(
+    await expect(uc.execute('quiz-1', 'user-1', null)).rejects.toBeInstanceOf(
       PayloadTooLargeException,
     );
   });

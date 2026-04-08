@@ -30,7 +30,7 @@ export class PrismaQuizRepository implements IQuizRepository {
     }
 
     const found = await this.prisma.quiz.findFirst({
-      where: { id: quiz.id, adminId: quiz.adminId },
+      where: { id: quiz.id, userId: quiz.userId },
     });
     if (!found) {
       throw new NotFoundError('Quiz', quiz.id);
@@ -43,9 +43,9 @@ export class PrismaQuizRepository implements IQuizRepository {
     return QuizMapper.toDomain(row);
   }
 
-  async delete(id: string, adminId: string): Promise<void> {
+  async delete(id: string, userId: string): Promise<void> {
     const found = await this.prisma.quiz.findFirst({
-      where: { id, adminId },
+      where: { id, userId },
     });
     if (!found) {
       throw new NotFoundError('Quiz', id);
@@ -58,16 +58,16 @@ export class PrismaQuizRepository implements IQuizRepository {
     return row ? QuizMapper.toDomain(row) : null;
   }
 
-  async findByIdAndAdmin(id: string, adminId: string): Promise<Quiz | null> {
+  async findByIdAndUser(id: string, userId: string): Promise<Quiz | null> {
     const row = await this.prisma.quiz.findFirst({
-      where: { id, adminId },
+      where: { id, userId },
     });
     return row ? QuizMapper.toDomain(row) : null;
   }
 
-  async listByAdmin(adminId: string): Promise<Quiz[]> {
+  async listByUser(userId: string): Promise<Quiz[]> {
     const rows = await this.prisma.quiz.findMany({
-      where: { adminId },
+      where: { userId },
       orderBy: { updatedAt: 'desc' },
     });
     return rows.map((row) => QuizMapper.toDomain(row));
@@ -75,11 +75,11 @@ export class PrismaQuizRepository implements IQuizRepository {
 
   async persistQuizTree(
     quizId: string,
-    adminId: string,
+    userId: string,
     tree: QuizTreeInput,
   ): Promise<void> {
     const quiz = await this.prisma.quiz.findFirst({
-      where: { id: quizId, adminId },
+      where: { id: quizId, userId },
     });
     if (!quiz) {
       throw new NotFoundError('Quiz', quizId);

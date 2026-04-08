@@ -10,7 +10,7 @@ export class DeleteQuizUseCase {
     @Inject(QUIZ_REPOSITORY) private readonly quizzes: IQuizRepository,
   ) {}
 
-  execute(id: string, adminId: string): Promise<void> {
-    return this.quizzes.delete(id, adminId);
+  execute(id: string, userId: string): Promise<void> {
+    return this.quizzes.delete(id, userId);
   }
 }

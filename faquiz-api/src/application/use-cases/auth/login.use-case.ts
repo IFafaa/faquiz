@@ -3,15 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UnauthorizedError } from '../../../domain/errors/unauthorized.error.js';
 import {
-  ADMIN_REPOSITORY,
-  type IAdminRepository,
-} from '../../../domain/repositories/admin.repository.js';
+  USER_REPOSITORY,
+  type IUserRepository,
+} from '../../../domain/repositories/user.repository.js';
 
 @Injectable()
 export class LoginUseCase {
   constructor(
-    @Inject(ADMIN_REPOSITORY)
-    private readonly admins: IAdminRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly users: IUserRepository,
     private readonly jwt: JwtService,
   ) {}
 
@@ -19,13 +19,13 @@ export class LoginUseCase {
     email: string,
     password: string,
   ): Promise<{ accessToken: string }> {
-    const admin = await this.admins.findByEmail(email);
-    if (!admin || !(await bcrypt.compare(password, admin.passwordHash))) {
+    const user = await this.users.findByEmail(email);
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       throw new UnauthorizedError('Credenciais inválidas');
     }
     const accessToken = await this.jwt.signAsync({
-      sub: admin.id,
-      email: admin.email,
+      sub: user.id,
+      email: user.email,
     });
     return { accessToken };
   }

@@ -6,19 +6,19 @@ import { GetQuizUseCase } from './get-quiz.use-case.js';
 describe('GetQuizUseCase', () => {
   it('returns quiz when it exists', async () => {
     const q = quizFixture();
-    const repo: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(q),
+    const repo: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(q),
     };
     const uc = new GetQuizUseCase(repo as IQuizRepository);
-    await expect(uc.execute('quiz-1', 'admin-1')).resolves.toBe(q);
+    await expect(uc.execute('quiz-1', 'user-1')).resolves.toBe(q);
   });
 
   it('throws NotFoundError when it does not exist', async () => {
-    const repo: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(null),
+    const repo: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(null),
     };
     const uc = new GetQuizUseCase(repo as IQuizRepository);
-    await expect(uc.execute('x', 'admin-1')).rejects.toBeInstanceOf(
+    await expect(uc.execute('x', 'user-1')).rejects.toBeInstanceOf(
       NotFoundError,
     );
   });

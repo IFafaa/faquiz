@@ -14,10 +14,10 @@ export class UpdateQuizUseCase {
 
   async execute(
     id: string,
-    adminId: string,
+    userId: string,
     data: { title?: string; description?: string; isPublished?: boolean },
   ): Promise<Quiz> {
-    const quiz = await this.quizzes.findByIdAndAdmin(id, adminId);
+    const quiz = await this.quizzes.findByIdAndUser(id, userId);
     if (!quiz) {
       throw new NotFoundError('Quiz', id);
     }

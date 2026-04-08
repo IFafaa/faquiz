@@ -12,8 +12,8 @@ export class GetQuizTreeUseCase {
     private readonly queries: IQuizQueryRepository,
   ) {}
 
-  async execute(quizId: string, adminId: string) {
-    const tree = await this.queries.findTreeForAdmin(quizId, adminId);
+  async execute(quizId: string, userId: string) {
+    const tree = await this.queries.findTreeForUser(quizId, userId);
     if (!tree) {
       throw new NotFoundError('Quiz', quizId);
     }

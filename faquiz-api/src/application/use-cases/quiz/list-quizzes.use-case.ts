@@ -11,7 +11,7 @@ export class ListQuizzesUseCase {
     @Inject(QUIZ_REPOSITORY) private readonly quizzes: IQuizRepository,
   ) {}
 
-  execute(adminId: string): Promise<Quiz[]> {
-    return this.quizzes.listByAdmin(adminId);
+  execute(userId: string): Promise<Quiz[]> {
+    return this.quizzes.listByUser(userId);
   }
 }

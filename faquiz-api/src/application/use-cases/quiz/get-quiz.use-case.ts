@@ -12,8 +12,8 @@ export class GetQuizUseCase {
     @Inject(QUIZ_REPOSITORY) private readonly quizzes: IQuizRepository,
   ) {}
 
-  async execute(id: string, adminId: string): Promise<Quiz> {
-    const quiz = await this.quizzes.findByIdAndAdmin(id, adminId);
+  async execute(id: string, userId: string): Promise<Quiz> {
+    const quiz = await this.quizzes.findByIdAndUser(id, userId);
     if (!quiz) {
       throw new NotFoundError('Quiz', id);
     }

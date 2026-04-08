@@ -17,8 +17,8 @@ export class GetQuizAnalyticsUseCase {
     private readonly sessions: IQuizSessionRepository,
   ) {}
 
-  async execute(quizId: string, adminId: string) {
-    const quiz = await this.quizzes.findByIdAndAdmin(quizId, adminId);
+  async execute(quizId: string, userId: string) {
+    const quiz = await this.quizzes.findByIdAndUser(quizId, userId);
     if (!quiz) {
       throw new NotFoundError('Quiz', quizId);
     }

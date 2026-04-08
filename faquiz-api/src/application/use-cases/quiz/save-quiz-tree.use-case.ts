@@ -12,9 +12,9 @@ export class SaveQuizTreeUseCase {
     @Inject(QUIZ_REPOSITORY) private readonly quizzes: IQuizRepository,
   ) {}
 
-  execute(quizId: string, adminId: string, tree: QuizTreeInput): Promise<void> {
+  execute(quizId: string, userId: string, tree: QuizTreeInput): Promise<void> {
     const quizTree = new QuizTree(tree);
     quizTree.validate();
-    return this.quizzes.persistQuizTree(quizId, adminId, quizTree.getInput());
+    return this.quizzes.persistQuizTree(quizId, userId, quizTree.getInput());
   }
 }

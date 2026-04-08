@@ -7,8 +7,8 @@ import { GetQuizAnalyticsUseCase } from './get-quiz-analytics.use-case.js';
 describe('GetQuizAnalyticsUseCase', () => {
   it('aggregates counts and daily series', async () => {
     const q = quizFixture();
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(q),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(q),
     };
     const sessions: Pick<
       IQuizSessionRepository,
@@ -22,7 +22,7 @@ describe('GetQuizAnalyticsUseCase', () => {
       quizzes as IQuizRepository,
       sessions as IQuizSessionRepository,
     );
-    await expect(uc.execute('quiz-1', 'admin-1')).resolves.toEqual({
+    await expect(uc.execute('quiz-1', 'user-1')).resolves.toEqual({
       quizId: 'quiz-1',
       totalSessions: 10,
       completedSessions: 4,
@@ -32,8 +32,8 @@ describe('GetQuizAnalyticsUseCase', () => {
   });
 
   it('throws NotFoundError when quiz does not exist', async () => {
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(null),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(null),
     };
     const sessions: Pick<
       IQuizSessionRepository,

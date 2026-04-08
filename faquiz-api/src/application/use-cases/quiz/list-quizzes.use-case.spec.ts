@@ -3,12 +3,12 @@ import { quizFixture } from '../../../test/fixtures.js';
 import { ListQuizzesUseCase } from './list-quizzes.use-case.js';
 
 describe('ListQuizzesUseCase', () => {
-  it('delegates listByAdmin to repository', async () => {
+  it('delegates listByUser to repository', async () => {
     const list = [quizFixture()];
-    const repo: Pick<IQuizRepository, 'listByAdmin'> = {
-      listByAdmin: jest.fn().mockResolvedValue(list),
+    const repo: Pick<IQuizRepository, 'listByUser'> = {
+      listByUser: jest.fn().mockResolvedValue(list),
     };
     const uc = new ListQuizzesUseCase(repo as IQuizRepository);
-    await expect(uc.execute('admin-1')).resolves.toBe(list);
+    await expect(uc.execute('user-1')).resolves.toBe(list);
   });
 });

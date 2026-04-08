@@ -19,14 +19,14 @@ export interface IQuizSessionRepository {
   }): Promise<SessionAnswer>;
   listAnswersForSession(sessionId: string): Promise<SessionAnswer[]>;
   removeLastAnswer(sessionId: string): Promise<SessionAnswer | null>;
-  listByQuizForAdmin(
+  listByQuizForUser(
     quizId: string,
-    adminId: string,
+    userId: string,
   ): Promise<QuizSession[]>;
-  findDetailForAdmin(
+  findDetailForUser(
     sessionId: string,
     quizId: string,
-    adminId: string,
+    userId: string,
   ): Promise<{
     session: QuizSession;
     answers: SessionAnswer[];

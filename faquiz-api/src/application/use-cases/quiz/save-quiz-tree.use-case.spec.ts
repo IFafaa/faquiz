@@ -32,7 +32,7 @@ describe('SaveQuizTreeUseCase', () => {
       persistQuizTree: jest.fn().mockResolvedValue(undefined),
     };
     const uc = new SaveQuizTreeUseCase(repo as IQuizRepository);
-    await uc.execute('quiz-1', 'admin-1', validTree);
+    await uc.execute('quiz-1', 'user-1', validTree);
     expect(repo.persistQuizTree).toHaveBeenCalled();
   });
 
@@ -42,7 +42,7 @@ describe('SaveQuizTreeUseCase', () => {
     };
     const uc = new SaveQuizTreeUseCase(repo as IQuizRepository);
     expect(() =>
-      uc.execute('quiz-1', 'admin-1', {
+      uc.execute('quiz-1', 'user-1', {
         rootNodeId: 'missing',
         nodes: validTree.nodes,
       }),

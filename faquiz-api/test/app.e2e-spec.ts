@@ -166,20 +166,27 @@ describeE2e('FAQuiz API (e2e)', () => {
     });
   });
 
-  const adminEmail = process.env.E2E_ADMIN_EMAIL ?? process.env.ADMIN_EMAIL;
-  const adminPassword =
-    process.env.E2E_ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD;
+  const seedUserEmail =
+    process.env.E2E_USER_EMAIL ??
+    process.env.E2E_ADMIN_EMAIL ??
+    process.env.FAQUIZ_USER_EMAIL ??
+    process.env.ADMIN_EMAIL;
+  const seedUserPassword =
+    process.env.E2E_USER_PASSWORD ??
+    process.env.E2E_ADMIN_PASSWORD ??
+    process.env.FAQUIZ_USER_PASSWORD ??
+    process.env.ADMIN_PASSWORD;
 
   const describeWithSeed =
-    adminEmail && adminPassword ? describe : describe.skip;
+    seedUserEmail && seedUserPassword ? describe : describe.skip;
 
-  describeWithSeed('authenticated flow (requires admin in database)', () => {
+  describeWithSeed('authenticated flow (requires seed user in database)', () => {
     let token: string;
 
     beforeAll(async () => {
       const res = await request(app.getHttpServer())
         .post('/api/auth/login')
-        .send({ email: adminEmail, password: adminPassword });
+        .send({ email: seedUserEmail, password: seedUserPassword });
       expect(res.status).toBe(200);
       expect(res.body?.accessToken).toBeDefined();
       token = res.body.accessToken as string;

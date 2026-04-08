@@ -6,8 +6,8 @@ import { GetResponseAggregatesUseCase } from './get-response-aggregates.use-case
 
 describe('GetResponseAggregatesUseCase', () => {
   it('throws NotFoundError when quiz does not exist', async () => {
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(null),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(null),
     };
     const prisma = {} as unknown as PrismaService;
     const uc = new GetResponseAggregatesUseCase(
@@ -21,8 +21,8 @@ describe('GetResponseAggregatesUseCase', () => {
 
   it('returns empty aggregates when no sessions match filters', async () => {
     const q = quizFixture();
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(q),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(q),
     };
     const prisma = {
       quizSession: {
@@ -45,7 +45,7 @@ describe('GetResponseAggregatesUseCase', () => {
       quizzes as IQuizRepository,
       prisma,
     );
-    await expect(uc.execute('quiz-1', 'admin-1', null)).resolves.toEqual({
+    await expect(uc.execute('quiz-1', 'user-1', null)).resolves.toEqual({
       quizId: 'quiz-1',
       filteredSessionCount: 0,
       questions: [

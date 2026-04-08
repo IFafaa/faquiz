@@ -9,25 +9,25 @@ describe('ListQuizSessionsUseCase', () => {
   it('lists sessions when quiz exists', async () => {
     const q = quizFixture();
     const list = [quizSessionFixture()];
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(q),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(q),
     };
-    const sessions: Pick<IQuizSessionRepository, 'listByQuizForAdmin'> = {
-      listByQuizForAdmin: jest.fn().mockResolvedValue(list),
+    const sessions: Pick<IQuizSessionRepository, 'listByQuizForUser'> = {
+      listByQuizForUser: jest.fn().mockResolvedValue(list),
     };
     const uc = new ListQuizSessionsUseCase(
       quizzes as IQuizRepository,
       sessions as IQuizSessionRepository,
     );
-    await expect(uc.execute('quiz-1', 'admin-1')).resolves.toBe(list);
+    await expect(uc.execute('quiz-1', 'user-1')).resolves.toBe(list);
   });
 
   it('throws NotFoundError when quiz does not exist', async () => {
-    const quizzes: Pick<IQuizRepository, 'findByIdAndAdmin'> = {
-      findByIdAndAdmin: jest.fn().mockResolvedValue(null),
+    const quizzes: Pick<IQuizRepository, 'findByIdAndUser'> = {
+      findByIdAndUser: jest.fn().mockResolvedValue(null),
     };
-    const sessions: Pick<IQuizSessionRepository, 'listByQuizForAdmin'> = {
-      listByQuizForAdmin: jest.fn(),
+    const sessions: Pick<IQuizSessionRepository, 'listByQuizForUser'> = {
+      listByQuizForUser: jest.fn(),
     };
     const uc = new ListQuizSessionsUseCase(
       quizzes as IQuizRepository,

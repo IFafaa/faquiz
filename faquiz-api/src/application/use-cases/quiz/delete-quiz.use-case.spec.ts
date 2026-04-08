@@ -7,7 +7,7 @@ describe('DeleteQuizUseCase', () => {
       delete: jest.fn().mockResolvedValue(undefined),
     };
     const uc = new DeleteQuizUseCase(repo as IQuizRepository);
-    await uc.execute('quiz-1', 'admin-1');
-    expect(repo.delete).toHaveBeenCalledWith('quiz-1', 'admin-1');
+    await uc.execute('quiz-1', 'user-1');
+    expect(repo.delete).toHaveBeenCalledWith('quiz-1', 'user-1');
   });
 });

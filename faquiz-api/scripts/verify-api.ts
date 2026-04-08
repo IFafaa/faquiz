@@ -1,8 +1,14 @@
 const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:3333';
 const API = `${BASE.replace(/\/$/, '')}/api`;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@faquiz.com';
-const ADMIN_PASSWORD =
-  process.env.ADMIN_PASSWORD ?? process.env.ADMIN_SEED_PASSWORD ?? 'admin123';
+const USER_EMAIL =
+  process.env.FAQUIZ_USER_EMAIL ??
+  process.env.ADMIN_EMAIL ??
+  'admin@faquiz.com';
+const USER_PASSWORD =
+  process.env.FAQUIZ_USER_PASSWORD ??
+  process.env.ADMIN_PASSWORD ??
+  process.env.ADMIN_SEED_PASSWORD ??
+  'admin123';
 
 const SEED_QUIZ_ID = 'cafebabe-0000-4000-8000-00000000a001';
 
@@ -62,7 +68,7 @@ async function main() {
   }
 
   r = await req('POST', '/auth/login', {
-    body: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
+    body: { email: USER_EMAIL, password: USER_PASSWORD },
   });
   ok(r.status, [200, 401], 'POST /auth/login');
   if (r.status !== 200) {
