@@ -167,15 +167,9 @@ describeE2e('FAQuiz API (e2e)', () => {
   });
 
   const seedUserEmail =
-    process.env.E2E_USER_EMAIL ??
-    process.env.E2E_ADMIN_EMAIL ??
-    process.env.FAQUIZ_USER_EMAIL ??
-    process.env.ADMIN_EMAIL;
+    process.env.E2E_USER_EMAIL ?? process.env.FAQUIZ_USER_EMAIL;
   const seedUserPassword =
-    process.env.E2E_USER_PASSWORD ??
-    process.env.E2E_ADMIN_PASSWORD ??
-    process.env.FAQUIZ_USER_PASSWORD ??
-    process.env.ADMIN_PASSWORD;
+    process.env.E2E_USER_PASSWORD ?? process.env.FAQUIZ_USER_PASSWORD;
 
   const describeWithSeed =
     seedUserEmail && seedUserPassword ? describe : describe.skip;

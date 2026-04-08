@@ -1,14 +1,11 @@
 const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:3333';
 const API = `${BASE.replace(/\/$/, '')}/api`;
 const USER_EMAIL =
-  process.env.FAQUIZ_USER_EMAIL ??
-  process.env.ADMIN_EMAIL ??
-  'admin@faquiz.com';
+  process.env.FAQUIZ_USER_EMAIL ?? 'demo@faquiz.com';
 const USER_PASSWORD =
   process.env.FAQUIZ_USER_PASSWORD ??
-  process.env.ADMIN_PASSWORD ??
-  process.env.ADMIN_SEED_PASSWORD ??
-  'admin123';
+  process.env.USER_SEED_PASSWORD ??
+  'demo123';
 
 const SEED_QUIZ_ID = 'cafebabe-0000-4000-8000-00000000a001';
 
@@ -63,7 +60,7 @@ async function main() {
   ok(r.status, [200, 404], 'GET /quizzes/:id/public');
   if (r.status === 404) {
     console.warn(
-      '  Quiz seed não encontrado (rode prisma seed com ADMIN_SEED_PASSWORD).',
+      '  Quiz seed não encontrado (rode prisma seed com USER_SEED_PASSWORD).',
     );
   }
 

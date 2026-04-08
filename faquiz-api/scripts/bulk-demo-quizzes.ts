@@ -9,14 +9,11 @@ const API_BASE_URL = (process.env.API_BASE_URL ?? 'http://localhost:3333/api').r
 );
 const DATABASE_URL = process.env.DATABASE_URL;
 const USER_EMAIL =
-  process.env.FAQUIZ_USER_EMAIL ??
-  process.env.ADMIN_EMAIL ??
-  'admin@faquiz.com';
+  process.env.FAQUIZ_USER_EMAIL ?? 'demo@faquiz.com';
 const USER_PASSWORD =
   process.env.FAQUIZ_USER_PASSWORD ??
-  process.env.ADMIN_PASSWORD ??
-  process.env.ADMIN_SEED_PASSWORD ??
-  'admin123';
+  process.env.USER_SEED_PASSWORD ??
+  'demo123';
 const SESSIONS_PER_QUIZ = Math.max(
   1,
   Number.parseInt(process.env.SESSIONS_PER_QUIZ ?? '500', 10) || 500,
