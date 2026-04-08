@@ -8,7 +8,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model Admin {
+model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
@@ -27,14 +27,14 @@ model Quiz {
   collectEmail  Boolean        @default(false)
   collectPhone  Boolean        @default(false)
   rootNodeId    String?
-  adminId       String
-  admin         Admin          @relation(fields: [adminId], references: [id])
+  userId        String
+  user          User           @relation(fields: [userId], references: [id])
   questionNodes QuestionNode[]
   sessions      QuizSession[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
-  @@index([adminId])
+  @@index([userId])
 }
 
 model QuestionNode {

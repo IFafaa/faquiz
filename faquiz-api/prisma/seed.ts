@@ -201,31 +201,31 @@ async function main() {
   const adminSeedPassword = process.env.ADMIN_SEED_PASSWORD;
   if (isProd && !adminSeedPassword) {
     console.warn(
-      'Seed ignorado em produção: defina ADMIN_SEED_PASSWORD (segredo forte) para criar o admin e o quiz na primeira execução.',
+      'Seed ignorado em produção: defina ADMIN_SEED_PASSWORD (segredo forte) para criar o usuário seed e o quiz na primeira execução.',
     );
     return;
   }
 
   if (!adminSeedPassword) {
     throw new Error(
-      'ADMIN_SEED_PASSWORD não configurado. Defina a variável de ambiente para criar o admin inicial.',
+      'ADMIN_SEED_PASSWORD não configurado. Defina a variável de ambiente para criar o usuário seed inicial.',
     );
   }
   const plainPassword = adminSeedPassword;
   const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
-  const admin = await prisma.admin.upsert({
+  const user = await prisma.user.upsert({
     where: { email: 'admin@faquiz.com' },
     update: {},
     create: {
       email: 'admin@faquiz.com',
       password: hashedPassword,
-      name: 'Admin',
+      name: 'Usuário demo',
     },
   });
 
   await prisma.quiz.deleteMany({
-    where: { title: QUIZ_TITLE, adminId: admin.id },
+    where: { title: QUIZ_TITLE, userId: user.id },
   });
 
   const quiz = await prisma.quiz.create({
@@ -237,7 +237,7 @@ async function main() {
       collectName: false,
       collectEmail: false,
       collectPhone: false,
-      adminId: admin.id,
+      userId: user.id,
     },
   });
 
@@ -649,9 +649,9 @@ async function main() {
 
   console.log('Seed OK.');
   if (isProd) {
-    console.log('Admin criado:', admin.email, '(senha definida por ADMIN_SEED_PASSWORD)');
+    console.log('Usuário seed:', user.email, '(senha definida por ADMIN_SEED_PASSWORD)');
   } else {
-    console.log('Admin:', admin.email, '(senha seed local: admin123)');
+    console.log('Usuário seed:', user.email, '(senha seed local: admin123)');
   }
   console.log('Quiz título:', QUIZ_TITLE);
   console.log('Quiz ID (use na URL pública):', quiz.id);
