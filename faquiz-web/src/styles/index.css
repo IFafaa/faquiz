@@ -57,7 +57,6 @@
   cursor: pointer;
 }
 
-/* TipTap placeholder */
 .rich-text-editor .ProseMirror p.is-editor-empty:first-child::before {
   color: oklch(0.5 0 0);
   content: attr(data-placeholder);

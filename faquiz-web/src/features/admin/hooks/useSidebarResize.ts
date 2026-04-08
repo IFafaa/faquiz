@@ -54,9 +54,7 @@ export function useSidebarResize() {
         const clamped = clampSidebarWidth(w)
         try {
           localStorage.setItem(SIDEBAR_STORAGE_KEY, String(clamped))
-        } catch {
-          /* noop */
-        }
+        } catch {}
         return clamped
       })
       document.body.style.removeProperty('cursor')

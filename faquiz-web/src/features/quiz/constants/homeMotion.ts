@@ -1,4 +1,3 @@
-/** Variantes Framer Motion da lista de quizzes na home. */
 export const homeQuizListContainer = {
   hidden: { opacity: 0 },
   show: {
