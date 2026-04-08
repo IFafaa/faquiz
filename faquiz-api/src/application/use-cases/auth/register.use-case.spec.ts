@@ -1,5 +1,5 @@
-import { JwtService } from '@nestjs/jwt';
 import { ConflictError } from '../../../domain/errors/conflict.error.js';
+import type { IMailPort } from '../../../domain/ports/mail.port.js';
 import type { IUserRepository } from '../../../domain/repositories/user.repository.js';
 import { userFixture } from '../../../test/fixtures.js';
 import { RegisterUseCase } from './register.use-case.js';
@@ -11,42 +11,50 @@ describe('RegisterUseCase', () => {
       findByEmail: jest.fn().mockResolvedValue(existing),
       create: jest.fn(),
     };
-    const jwt = { signAsync: jest.fn() };
+    const mail = { send: jest.fn() };
+    const config = { get: jest.fn().mockReturnValue('http://localhost:5173') };
     const uc = new RegisterUseCase(
       repo as unknown as IUserRepository,
-      jwt as unknown as JwtService,
+      mail as unknown as IMailPort,
+      config as never,
     );
     await expect(
       uc.execute({
         email: 'a@test.com',
-        password: 'password12',
+        password: 'Abcd1234!',
         name: 'A',
       }),
     ).rejects.toBeInstanceOf(ConflictError);
     expect(repo.create).not.toHaveBeenCalled();
   });
 
-  it('creates user and returns accessToken', async () => {
+  it('creates user and sends confirmation e-mail', async () => {
     const repo = {
       findByEmail: jest.fn().mockResolvedValue(null),
       create: jest.fn().mockImplementation((u) => Promise.resolve(u)),
     };
-    const jwt = { signAsync: jest.fn().mockResolvedValue('tok') };
+    const mail = { send: jest.fn().mockResolvedValue(undefined) };
+    const config = { get: jest.fn().mockReturnValue('http://localhost:5173') };
     const uc = new RegisterUseCase(
       repo as unknown as IUserRepository,
-      jwt as unknown as JwtService,
+      mail as unknown as IMailPort,
+      config as never,
     );
     await expect(
       uc.execute({
         email: 'new@test.com',
-        password: 'password12',
+        password: 'Abcd1234!',
         name: 'Novo',
       }),
-    ).resolves.toEqual({ accessToken: 'tok' });
+    ).resolves.toEqual({
+      message:
+        'Conta criada. Enviamos um link de confirmação para seu e-mail.',
+    });
     expect(repo.create).toHaveBeenCalled();
-    expect(jwt.signAsync).toHaveBeenCalledWith(
+    expect(mail.send).toHaveBeenCalledWith(
       expect.objectContaining({
-        email: 'new@test.com',
+        to: 'new@test.com',
+        subject: expect.stringContaining('FAQuiz') as string,
       }),
     );
   });

@@ -16,6 +16,7 @@ export function userFixture(
     email: string;
     passwordPlain: string;
     name: string;
+    emailVerifiedAt: Date | null;
   }> = {},
 ): User {
   const plain = overrides.passwordPlain ?? 'secret';
@@ -24,8 +25,51 @@ export function userFixture(
     email: overrides.email ?? 'a@test.com',
     passwordHash: hashSync(plain, 4),
     name: overrides.name ?? 'User',
+    emailVerifiedAt:
+      overrides.emailVerifiedAt !== undefined
+        ? overrides.emailVerifiedAt
+        : now(),
+    emailVerificationToken: null,
+    emailVerificationExpires: null,
+    passwordResetToken: null,
+    passwordResetExpires: null,
     createdAt: now(),
     updatedAt: now(),
+  });
+}
+
+/** Usuário com e-mail ainda não verificado e token de confirmação ativo. */
+export function userPendingEmailVerificationFixture(params: {
+  token: string;
+  expires: Date;
+  email?: string;
+  name?: string;
+}): User {
+  const base = userFixture({
+    email: params.email,
+    name: params.name,
+    emailVerifiedAt: null,
+  });
+  const p = base.toPersistenceProps();
+  return User.fromPersistence({
+    ...p,
+    emailVerificationToken: params.token,
+    emailVerificationExpires: params.expires,
+  });
+}
+
+/** Usuário com fluxo de redefinição de senha (token válido até `expires`). */
+export function userWithPasswordResetTokenFixture(params: {
+  token: string;
+  expires: Date;
+  email?: string;
+}): User {
+  const base = userFixture({ email: params.email });
+  const p = base.toPersistenceProps();
+  return User.fromPersistence({
+    ...p,
+    passwordResetToken: params.token,
+    passwordResetExpires: params.expires,
   });
 }
 
