@@ -35,3 +35,37 @@ export class RegisterDto {
   @MinLength(1)
   name!: string;
 }
+
+export class VerifyEmailDto {
+  @IsString()
+  @MinLength(1)
+  token!: string;
+}
+
+export class ResendVerificationDto {
+  @IsEmail()
+  email!: string;
+}
+
+export class ForgotPasswordDto {
+  @IsEmail()
+  email!: string;
+}
+
+export class ResetPasswordDto {
+  @IsString()
+  @MinLength(1)
+  token!: string;
+
+  @IsString()
+  @MinLength(8)
+  @MaxLength(128)
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,128}$/,
+    {
+      message:
+        'Senha deve ter 8–128 caracteres, incluindo maiúscula, minúscula, número e um caractere especial.',
+    },
+  )
+  password!: string;
+}

@@ -1,8 +1,6 @@
 import { randomBytes } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcryptjs';
-import { ConflictError } from '../../../domain/errors/conflict.error.js';
 import { User } from '../../../domain/entities/user.entity.js';
 import {
   MAIL_PORT,
@@ -13,12 +11,12 @@ import {
   type IUserRepository,
 } from '../../../domain/repositories/user.repository.js';
 import { verificationEmailLink } from '../../../infrastructure/mail/auth-mail-templates.js';
-import { verifyEmailWelcome } from '../../../infrastructure/mail/templates/index.js';
+import { verifyEmailResend } from '../../../infrastructure/mail/templates/index.js';
 
 const TTL_MS = 24 * 60 * 60 * 1000;
 
 @Injectable()
-export class RegisterUseCase {
+export class ResendVerificationUseCase {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly users: IUserRepository,
@@ -27,37 +25,32 @@ export class RegisterUseCase {
     private readonly config: ConfigService,
   ) {}
 
-  async execute(params: {
-    email: string;
-    password: string;
-    name: string;
-  }): Promise<{ message: string }> {
-    const existing = await this.users.findByEmail(params.email.trim().toLowerCase());
-    if (existing) {
-      throw new ConflictError('Este e-mail já está cadastrado.');
+  async execute(email: string): Promise<{ message: string }> {
+    const normalized = email.trim().toLowerCase();
+    const user = await this.users.findByEmail(normalized);
+    const generic =
+      'Se existir uma conta com este e-mail, enviaremos um link de confirmação.';
+    if (!user || user.emailVerifiedAt) {
+      return { message: generic };
     }
-    const passwordHash = await bcrypt.hash(params.password, 10);
     const token = randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + TTL_MS);
-    const user = User.createPendingEmailVerification({
-      email: params.email.trim().toLowerCase(),
-      passwordHash,
-      name: params.name,
+    const p = user.toPersistenceProps();
+    const updated = User.fromPersistence({
+      ...p,
       emailVerificationToken: token,
       emailVerificationExpires: expires,
+      updatedAt: new Date(),
     });
-    const saved = await this.users.create(user);
+    await this.users.update(updated);
     const frontend =
       this.config.get<string>('FRONTEND_URL') ?? 'http://localhost:5173';
     const confirmLink = verificationEmailLink(frontend, token);
-    const body = verifyEmailWelcome({
-      recipientName: saved.name,
+    const body = verifyEmailResend({
+      recipientName: user.name,
       confirmLink,
     });
-    await this.mail.send({ to: saved.email, ...body });
-    return {
-      message:
-        'Conta criada. Enviamos um link de confirmação para seu e-mail.',
-    };
+    await this.mail.send({ to: user.email, ...body });
+    return { message: generic };
   }
 }

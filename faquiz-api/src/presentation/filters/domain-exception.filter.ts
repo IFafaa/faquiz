@@ -10,6 +10,7 @@ import { NotFoundError } from '../../domain/errors/not-found.error.js';
 import { UnauthorizedError } from '../../domain/errors/unauthorized.error.js';
 import { ValidationError } from '../../domain/errors/validation.error.js';
 import { ConflictError } from '../../domain/errors/conflict.error.js';
+import { ForbiddenError } from '../../domain/errors/forbidden.error.js';
 
 @Catch(DomainError)
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -21,6 +22,8 @@ export class DomainExceptionFilter implements ExceptionFilter {
       status = HttpStatus.NOT_FOUND;
     } else if (exception instanceof UnauthorizedError) {
       status = HttpStatus.UNAUTHORIZED;
+    } else if (exception instanceof ForbiddenError) {
+      status = HttpStatus.FORBIDDEN;
     } else if (exception instanceof ConflictError) {
       status = HttpStatus.CONFLICT;
     } else if (exception instanceof ValidationError) {
@@ -31,11 +34,13 @@ export class DomainExceptionFilter implements ExceptionFilter {
         ? 'Recurso não encontrado.'
         : exception instanceof UnauthorizedError
           ? 'Não autorizado.'
-          : exception instanceof ConflictError
+          : exception instanceof ForbiddenError
             ? exception.message
-            : exception instanceof ValidationError
+            : exception instanceof ConflictError
               ? exception.message
-              : 'Ocorreu um erro ao processar a solicitação.';
+              : exception instanceof ValidationError
+                ? exception.message
+                : 'Ocorreu um erro ao processar a solicitação.';
 
     res.status(status).json({
       statusCode: status,

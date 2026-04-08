@@ -3,15 +3,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import type { StringValue } from 'ms';
+import { ForgotPasswordUseCase } from '../../application/use-cases/auth/forgot-password.use-case.js';
 import { LoginUseCase } from '../../application/use-cases/auth/login.use-case.js';
 import { RegisterUseCase } from '../../application/use-cases/auth/register.use-case.js';
+import { ResendVerificationUseCase } from '../../application/use-cases/auth/resend-verification.use-case.js';
+import { ResetPasswordUseCase } from '../../application/use-cases/auth/reset-password.use-case.js';
+import { VerifyEmailUseCase } from '../../application/use-cases/auth/verify-email.use-case.js';
 import { JwtStrategy } from '../../infrastructure/auth/jwt.strategy.js';
+import { MailModule } from '../../infrastructure/mail/mail.module.js';
 import { RepositoriesModule } from '../../infrastructure/repositories.module.js';
 import { AuthController } from '../controllers/auth.controller.js';
 
 @Module({
   imports: [
     ConfigModule,
+    MailModule,
     RepositoriesModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
@@ -34,7 +40,15 @@ import { AuthController } from '../controllers/auth.controller.js';
       },
     }),
   ],
-  providers: [JwtStrategy, LoginUseCase, RegisterUseCase],
+  providers: [
+    JwtStrategy,
+    LoginUseCase,
+    RegisterUseCase,
+    VerifyEmailUseCase,
+    ResendVerificationUseCase,
+    ForgotPasswordUseCase,
+    ResetPasswordUseCase,
+  ],
   controllers: [AuthController],
   exports: [JwtModule, PassportModule],
 })
