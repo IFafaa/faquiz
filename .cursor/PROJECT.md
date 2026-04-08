@@ -7,7 +7,7 @@ Monorepo com **API NestJS** (Clean Architecture / DDD) e **SPA React** (Vite). Q
 ## 1. Visão do produto
 
 - **Respondente (público):** abre um quiz publicado, inicia sessão, responde perguntas em sequência **não linear** (definida pelas arestas da árvore). Tipos de pergunta: `multiple_choice`, `text`, `rating`.
-- **Admin:** login JWT, CRUD de quizzes, **builder visual** (React Flow + layout dagre), URL pública + QR, dashboard com métricas e lista de sessões/respostas.
+- **Conta autenticada (painel / studio):** login JWT, registro opcional, CRUD de quizzes, **builder visual** (React Flow + layout dagre), URL pública + QR, dashboard com métricas e lista de sessões/respostas.
 
 ---
 
@@ -15,7 +15,7 @@ Monorepo com **API NestJS** (Clean Architecture / DDD) e **SPA React** (Vite). Q
 
 ```
 faquiz/
-├── faquiz-api/          # Backend NestJS + Prisma + SQLite
+├── faquiz-api/          # Backend NestJS + Prisma + PostgreSQL
 │   ├── prisma/          # schema.prisma, migrations, seed.ts
 │   ├── generated/prisma # Cliente Prisma gerado (gitignored)
 │   └── src/
@@ -28,7 +28,7 @@ faquiz/
 │       ├── api/         # Cliente Axios + funções por recurso
 │       ├── components/  # UI, quiz, builder
 │       ├── hooks/       # useQuizSession (fluxo público)
-│       ├── pages/       # Rotas públicas e admin
+│       ├── pages/       # Rotas públicas e painel (studio)
 │       ├── stores/      # Zustand (auth, quiz session)
 │       └── types/       # Tipos alinhados à API
 └── .cursor/             # Esta documentação
@@ -42,11 +42,11 @@ faquiz/
 |------|-------------|
 | Runtime | Node.js **20+** (recomendado **22 LTS**) |
 | API | NestJS 11, class-validator, Passport JWT |
-| Persistência | Prisma 7, SQLite (`dev.db`), adapter `better-sqlite3` |
+| Persistência | Prisma 7, PostgreSQL, adapter `pg` |
 | Web | React 19, Vite 8, React Router 7, TanStack Query 5, Zustand 5 |
 | UI pública | Framer Motion, Tailwind 4 |
 | Builder | `@xyflow/react` (React Flow 12), `dagre` (layout) |
-| Gráficos admin | Recharts |
+| Gráficos (painel) | Recharts |
 
 ---
 
@@ -54,8 +54,8 @@ faquiz/
 
 ### Camadas
 
-1. **`domain/`** — Regras e modelo puro: entidades (`Quiz`, `QuestionNode`, `AnswerOption`, `QuizSession`, …), **interfaces** de repositório (`IQuizRepository`, `IQuizSessionRepository`, …), value objects (`QuestionType`, `SessionStatus`), erros de domínio (`NotFoundError`, `ValidationError`, …).
-2. **`application/`** — **Use cases** por caso de uso (login, CRUD quiz, salvar árvore, iniciar sessão, submeter resposta, analytics, share/QR). Não importar Nest aqui; dependências via interfaces injetadas.
+1. **`domain/`** — Regras e modelo puro: entidades (`User`, `Quiz`, `QuestionNode`, `AnswerOption`, `QuizSession`, …), **interfaces** de repositório (`IQuizRepository`, `IQuizSessionRepository`, …), value objects (`QuestionType`, `SessionStatus`), erros de domínio (`NotFoundError`, `ValidationError`, …).
+2. **`application/`** — **Use cases** por caso de uso (login, registro, CRUD quiz, salvar árvore, iniciar sessão, submeter resposta, analytics, share/QR). Não importar Nest aqui; dependências via interfaces injetadas.
 3. **`infrastructure/`** — Implementações Prisma (`prisma-*-repository.ts`), `PrismaService`, módulo Prisma, JWT strategy/guard, serviços (ex.: QR).
 4. **`presentation/`** — Controllers REST, DTOs, `ValidationPipe`, `JwtAuthGuard`, filtro de exceções de domínio.
 
@@ -96,12 +96,13 @@ Fluxo da sessão reconstrói o “nó atual” percorrendo as respostas desde a 
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | POST | `/auth/login` | Body: email/senha → JWT |
+| POST | `/auth/register` | Body: email, senha, nome → JWT |
 
-### Quizzes — admin (Bearer JWT)
+### Quizzes — autenticado (Bearer JWT)
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| GET | `/quizzes` | Lista quizzes do admin |
+| GET | `/quizzes` | Lista quizzes do utilizador |
 | POST | `/quizzes` | Criar |
 | GET | `/quizzes/:id` | Detalhe |
 | PUT | `/quizzes/:id` | Atualizar (título, descrição, `isPublished`) |
@@ -125,7 +126,7 @@ Fluxo da sessão reconstrói o “nó atual” percorrendo as respostas desde a 
 |--------|------|-----------|
 | POST | `/sessions/:id/answers` | Submeter resposta (`answerOptionId` ou `answerValue` conforme tipo) |
 
-### Sessão — admin
+### Sessão — painel (JWT)
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
@@ -139,7 +140,7 @@ Configurado em `main.ts` com `FRONTEND_URL` (ex.: `http://localhost:5173`).
 
 Exemplo típico (`.env`):
 
-- `DATABASE_URL` — SQLite: `file:./dev.db`
+- `DATABASE_URL` — PostgreSQL (ex.: `postgresql://user:pass@localhost:5432/faquiz?schema=public`)
 - `JWT_SECRET`, `JWT_EXPIRATION`
 - `PORT` — padrão `3333`
 - `FRONTEND_URL` — origem permitida no CORS
@@ -156,7 +157,7 @@ Exemplo típico (`.env`):
 
 ## 7. Seed (`faquiz-api/prisma/seed.ts`)
 
-- Cria admin padrão (email/senha definidos no script — ver console após rodar).
+- Cria utilizador demo (`demo@faquiz.com`) com senha vinda de `USER_SEED_PASSWORD` em produção a variável é obrigatória na primeira execução.
 - Cria quiz de exemplo **“Pesquisa Gen Z…”** com árvore longa; ramificação na **pergunta 9** (uso prévio de cigarro eletrônico): **Sim** → bloco extra; **Não** → pula para a parte comum.
 - **ID fixo do quiz de seed** (para URLs estáveis após cada `seed`):  
   `cafebabe-0000-4000-8000-00000000a001`
@@ -171,12 +172,14 @@ Comando: `cd faquiz-api && npm run prisma:seed` (equivale a `tsx prisma/seed.ts`
 ### Configuração
 
 - **`VITE_API_URL`** — base da API, ex.: `http://localhost:3333/api` (arquivo `.env`, não commitado; há `.env.example`).
-- Cliente Axios em `src/api/client.ts` injeta `Authorization` a partir do `authStore`.
+- Cliente HTTP em `src/app/api` injeta `Authorization` a partir do `authStore`.
 
-### Rotas principais (`App.tsx`)
+### Rotas principais (`AppRoutes.tsx`)
 
 - Público: `/`, `/quiz/:id`, `/quiz/:id/play`, `/quiz/:id/complete`
-- Admin: `/admin/login`, `/admin`, `/admin/quizzes`, `/admin/quizzes/:id/build`, `.../settings`, `.../responses`, `/admin/sessions/:id`
+- Autenticação: `/entrar`, `/cadastro`
+- Painel (JWT): `/painel`, `/painel/quizzes`, `/painel/quizzes/:id/...` (build, settings, responses, insights), `/painel/sessoes/:id`
+- Redirecionamentos legados: `/legacy/*` → rotas atuais equivalentes
 
 ### Fluxo público do quiz
 
@@ -184,7 +187,7 @@ Comando: `cd faquiz-api && npm run prisma:seed` (equivale a `tsx prisma/seed.ts`
 - **`useQuizPlayFlow`** — exige sessão alinhada ao `quizId`; `submitAnswer` até `completed` ou erro.
 - Estado em **`quizSessionStore`** (Zustand): fase, `sessionId`, pergunta atual, etc.
 
-### Admin
+### Painel (studio)
 
 - **Dashboard:** agrega analytics de todos os quizzes; gráfico `sessionsPerDay`.
 - **Lista / CRUD** de quizzes; **builder** com React Flow; **settings** (URL + QR); **respostas** e **detalhe de sessão**.
