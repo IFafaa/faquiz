@@ -15,6 +15,7 @@ import {
   QUIZ_SESSION_REPOSITORY,
   type IQuizSessionRepository,
 } from '../../../domain/repositories/quiz-session.repository.js';
+import type { SessionAnswer } from '../../../domain/entities/session-answer.entity.js';
 import { toPublicQuestion } from './to-public-question.js';
 
 @Injectable()
@@ -154,7 +155,7 @@ export class SubmitAnswerUseCase {
   private async resolveCurrentQuestionId(
     rootNodeId: string,
     quizId: string,
-    answers: import('../../../domain/entities/session-answer.entity.js').SessionAnswerEntity[],
+    answers: SessionAnswer[],
   ): Promise<string | null> {
     let nodeId: string | null = rootNodeId;
     for (const ans of answers) {
@@ -174,7 +175,7 @@ export class SubmitAnswerUseCase {
     node: NonNullable<
       Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>
     >,
-    ans: import('../../../domain/entities/session-answer.entity.js').SessionAnswerEntity,
+    ans: SessionAnswer,
   ): string | null {
     if (node.questionType === QuestionType.MULTIPLE_CHOICE) {
       if (!ans.answerOptionId) return null;

@@ -4,7 +4,9 @@ import type { Quiz } from '../../../domain/entities/quiz.entity.js';
 import type { QuizTreeInput } from '../../../domain/entities/quiz-tree-input.js';
 import { NotFoundError } from '../../../domain/errors/not-found.error.js';
 import { PrismaService } from '../prisma.service.js';
-import { mapQuiz } from '../mappers/entity-mappers.js';
+import { AnswerOptionMapper } from '../mappers/answer-option.mapper.js';
+import { QuestionNodeMapper } from '../mappers/question-node.mapper.js';
+import { QuizMapper } from '../mappers/quiz.mapper.js';
 
 @Injectable()
 export class PrismaQuizRepository implements IQuizRepository {
@@ -20,19 +22,11 @@ export class PrismaQuizRepository implements IQuizRepository {
 
   private async persistOne(quiz: Quiz): Promise<Quiz> {
     if (quiz.isNew()) {
+      const { create } = QuizMapper.toPersistence(quiz);
       const row = await this.prisma.quiz.create({
-        data: {
-          title: quiz.title,
-          description: quiz.description,
-          isPublished: quiz.isPublished,
-          collectName: quiz.collectName,
-          collectEmail: quiz.collectEmail,
-          collectPhone: quiz.collectPhone,
-          rootNodeId: quiz.rootNodeId,
-          adminId: quiz.adminId,
-        },
+        data: create,
       });
-      return mapQuiz(row);
+      return QuizMapper.toDomain(row);
     }
 
     const found = await this.prisma.quiz.findFirst({
@@ -41,19 +35,12 @@ export class PrismaQuizRepository implements IQuizRepository {
     if (!found) {
       throw new NotFoundError('Quiz', quiz.id);
     }
+    const { update } = QuizMapper.toPersistence(quiz);
     const row = await this.prisma.quiz.update({
       where: { id: quiz.id },
-      data: {
-        title: quiz.title,
-        description: quiz.description,
-        isPublished: quiz.isPublished,
-        collectName: quiz.collectName,
-        collectEmail: quiz.collectEmail,
-        collectPhone: quiz.collectPhone,
-        rootNodeId: quiz.rootNodeId,
-      },
+      data: update,
     });
-    return mapQuiz(row);
+    return QuizMapper.toDomain(row);
   }
 
   async delete(id: string, adminId: string): Promise<void> {
@@ -68,14 +55,14 @@ export class PrismaQuizRepository implements IQuizRepository {
 
   async findById(id: string): Promise<Quiz | null> {
     const row = await this.prisma.quiz.findUnique({ where: { id } });
-    return row ? mapQuiz(row) : null;
+    return row ? QuizMapper.toDomain(row) : null;
   }
 
   async findByIdAndAdmin(id: string, adminId: string): Promise<Quiz | null> {
     const row = await this.prisma.quiz.findFirst({
       where: { id, adminId },
     });
-    return row ? mapQuiz(row) : null;
+    return row ? QuizMapper.toDomain(row) : null;
   }
 
   async listByAdmin(adminId: string): Promise<Quiz[]> {
@@ -83,7 +70,7 @@ export class PrismaQuizRepository implements IQuizRepository {
       where: { adminId },
       orderBy: { updatedAt: 'desc' },
     });
-    return rows.map(mapQuiz);
+    return rows.map((row) => QuizMapper.toDomain(row));
   }
 
   async persistQuizTree(
@@ -114,24 +101,15 @@ export class PrismaQuizRepository implements IQuizRepository {
       }
 
       for (const node of tree.nodes) {
+        const { answerOptions: _a, ...nodeFields } = node;
+        const { create, update } = QuestionNodeMapper.toPersistence({
+          ...nodeFields,
+          quizId,
+        });
         await tx.questionNode.upsert({
           where: { id: node.id },
-          create: {
-            id: node.id,
-            quizId,
-            title: node.title,
-            description: node.description,
-            questionType: node.questionType,
-            positionX: node.positionX,
-            positionY: node.positionY,
-          },
-          update: {
-            title: node.title,
-            description: node.description,
-            questionType: node.questionType,
-            positionX: node.positionX,
-            positionY: node.positionY,
-          },
+          create,
+          update,
         });
       }
 
@@ -151,23 +129,19 @@ export class PrismaQuizRepository implements IQuizRepository {
         }
 
         for (const opt of node.answerOptions) {
-          await tx.answerOption.upsert({
-            where: { id: opt.id },
-            create: {
+          const { create: optCreate, update: optUpdate } =
+            AnswerOptionMapper.toPersistence({
               id: opt.id,
               questionNodeId: node.id,
               label: opt.label,
               value: opt.value,
               order: opt.order,
               nextQuestionNodeId: opt.nextQuestionNodeId,
-            },
-            update: {
-              questionNodeId: node.id,
-              label: opt.label,
-              value: opt.value,
-              order: opt.order,
-              nextQuestionNodeId: opt.nextQuestionNodeId,
-            },
+            });
+          await tx.answerOption.upsert({
+            where: { id: opt.id },
+            create: optCreate,
+            update: optUpdate,
           });
         }
       }

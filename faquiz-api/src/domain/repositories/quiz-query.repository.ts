@@ -1,5 +1,5 @@
-import type { AnswerOptionEntity } from '../entities/answer-option.entity.js';
-import type { QuestionNodeEntity } from '../entities/question-node.entity.js';
+import type { AnswerOption } from '../entities/answer-option.entity.js';
+import type { QuestionNode } from '../entities/question-node.entity.js';
 import type { Quiz } from '../entities/quiz.entity.js';
 
 export const QUIZ_QUERY_REPOSITORY = Symbol('QUIZ_QUERY_REPOSITORY');
@@ -7,8 +7,8 @@ export const QUIZ_QUERY_REPOSITORY = Symbol('QUIZ_QUERY_REPOSITORY');
 export interface QuizTreeSnapshot {
   quiz: Quiz;
   nodes: Array<
-    QuestionNodeEntity & {
-      answerOptions: AnswerOptionEntity[];
+    QuestionNode & {
+      answerOptions: AnswerOption[];
     }
   >;
 }
@@ -21,14 +21,14 @@ export interface IQuizQueryRepository {
   findPublishedWithRootNode(quizId: string): Promise<{
     quiz: Quiz;
     rootNode:
-      | (QuestionNodeEntity & { answerOptions: AnswerOptionEntity[] })
+      | (QuestionNode & { answerOptions: AnswerOption[] })
       | null;
   } | null>;
   findQuestionWithOptions(
     quizId: string,
     nodeId: string,
   ): Promise<
-    (QuestionNodeEntity & { answerOptions: AnswerOptionEntity[] }) | null
+    (QuestionNode & { answerOptions: AnswerOption[] }) | null
   >;
   listPublishedQuizzes(): Promise<
     Array<{ id: string; title: string; description: string }>

@@ -25,8 +25,8 @@ import { StartSessionUseCase } from '../../application/use-cases/session/start-s
 import { UpdateQuizUseCase } from '../../application/use-cases/quiz/update-quiz.use-case.js';
 import type { JwtPayloadUser } from '../../infrastructure/auth/jwt.strategy.js';
 import { JwtAuthGuard } from '../../infrastructure/auth/jwt-auth.guard.js';
-import type { AnswerOptionEntity } from '../../domain/entities/answer-option.entity.js';
-import type { QuestionNodeEntity } from '../../domain/entities/question-node.entity.js';
+import type { AnswerOption } from '../../domain/entities/answer-option.entity.js';
+import type { QuestionNode } from '../../domain/entities/question-node.entity.js';
 import {
   CreateQuizDto,
   SaveQuizTreeDto,
@@ -67,7 +67,7 @@ export class QuizController {
   ) {}
 
   private toPublicQuestion(
-    node: QuestionNodeEntity & { answerOptions: AnswerOptionEntity[] },
+    node: QuestionNode & { answerOptions: AnswerOption[] },
   ): PublicQuestion {
     return {
       id: node.id,

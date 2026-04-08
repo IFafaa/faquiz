@@ -1,5 +1,5 @@
 import type { QuizSession } from '../entities/quiz-session.entity.js';
-import type { SessionAnswerEntity } from '../entities/session-answer.entity.js';
+import type { SessionAnswer } from '../entities/session-answer.entity.js';
 
 export const QUIZ_SESSION_REPOSITORY = Symbol('QUIZ_SESSION_REPOSITORY');
 
@@ -16,9 +16,9 @@ export interface IQuizSessionRepository {
     questionNodeId: string;
     answerOptionId: string | null;
     answerValue: string;
-  }): Promise<SessionAnswerEntity>;
-  listAnswersForSession(sessionId: string): Promise<SessionAnswerEntity[]>;
-  removeLastAnswer(sessionId: string): Promise<SessionAnswerEntity | null>;
+  }): Promise<SessionAnswer>;
+  listAnswersForSession(sessionId: string): Promise<SessionAnswer[]>;
+  removeLastAnswer(sessionId: string): Promise<SessionAnswer | null>;
   listByQuizForAdmin(
     quizId: string,
     adminId: string,
@@ -29,7 +29,7 @@ export interface IQuizSessionRepository {
     adminId: string,
   ): Promise<{
     session: QuizSession;
-    answers: SessionAnswerEntity[];
+    answers: SessionAnswer[];
   } | null>;
   countByQuiz(quizId: string): Promise<number>;
   countCompletedByQuiz(quizId: string): Promise<number>;

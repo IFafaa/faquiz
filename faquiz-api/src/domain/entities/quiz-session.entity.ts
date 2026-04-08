@@ -16,17 +16,37 @@ export type QuizSessionPersistenceProps = {
 };
 
 export class QuizSession {
+  private _status: SessionStatusValue;
+  private _pathTaken: string;
+  private _completedAt: Date | null;
+
   constructor(
     public readonly id: string,
     public readonly quizId: string,
     public readonly respondentName: string,
     public readonly respondentEmail: string,
     public readonly respondentPhone: string,
-    public status: SessionStatusValue,
-    public pathTaken: string,
+    status: SessionStatusValue,
+    pathTaken: string,
     public readonly startedAt: Date,
-    public completedAt: Date | null,
-  ) {}
+    completedAt: Date | null,
+  ) {
+    this._status = status;
+    this._pathTaken = pathTaken;
+    this._completedAt = completedAt;
+  }
+
+  get status(): SessionStatusValue {
+    return this._status;
+  }
+
+  get pathTaken(): string {
+    return this._pathTaken;
+  }
+
+  get completedAt(): Date | null {
+    return this._completedAt;
+  }
 
   static createDraft(params: {
     quizId: string;
@@ -71,8 +91,8 @@ export class QuizSession {
     status: SessionStatusValue;
     completedAt: Date | null;
   }): void {
-    this.pathTaken = next.pathTaken;
-    this.status = next.status;
-    this.completedAt = next.completedAt;
+    this._pathTaken = next.pathTaken;
+    this._status = next.status;
+    this._completedAt = next.completedAt;
   }
 }
