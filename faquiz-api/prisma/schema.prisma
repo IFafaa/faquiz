@@ -23,7 +23,6 @@ model Quiz {
   title         String
   description   String         @default("")
   isPublished   Boolean        @default(false)
-  /** Coletar nome antes do quiz (definido só na criação). */
   collectName   Boolean        @default(false)
   collectEmail  Boolean        @default(false)
   collectPhone  Boolean        @default(false)
