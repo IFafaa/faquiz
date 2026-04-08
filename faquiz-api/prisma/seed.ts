@@ -218,12 +218,15 @@ async function main() {
   const seedEmail = 'demo@faquiz.com';
   const user = await prisma.user.upsert({
     where: { email: seedEmail },
-    update: {},
+    update: {
+      emailVerifiedAt: new Date(),
+    } as never,
     create: {
       email: seedEmail,
       password: hashedPassword,
       name: 'Usuário demo',
-    },
+      emailVerifiedAt: new Date(),
+    } as never,
   });
 
   await prisma.quiz.deleteMany({
