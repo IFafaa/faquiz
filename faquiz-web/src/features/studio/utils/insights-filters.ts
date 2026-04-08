@@ -1,6 +1,6 @@
 import { endOfDay, startOfDay } from 'date-fns'
 import type { DateRange } from 'react-day-picker'
-import type { InsightsFormState } from '@/features/admin/components/insights/insights-filter.types'
+import type { InsightsFormState } from '@/features/studio/components/insights/insights-filter.types'
 import type { ResponseFilters } from '@/shared/types/api'
 
 export function rangeToIsoBounds(range: DateRange | undefined) {

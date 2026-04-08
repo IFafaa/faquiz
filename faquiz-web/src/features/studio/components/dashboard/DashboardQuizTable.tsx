@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import type { QuizSummary } from '@/shared/types/api'
 import { Badge } from '@/shared/ui/Badge'
 import { Card, CardContent } from '@/shared/ui/Card'
@@ -18,7 +19,7 @@ export function DashboardQuizTable({ quizzes }: Props) {
           <CardContent className="py-10 text-center text-sm text-zinc-500">
             Nenhum quiz ainda.{' '}
             <Link
-              to="/admin/quizzes"
+              to={paths.painelQuizzes}
               className="text-brand-300 underline underline-offset-2"
             >
               Crie o primeiro
@@ -53,7 +54,7 @@ export function DashboardQuizTable({ quizzes }: Props) {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link
-                      to={`/admin/quizzes/${q.id}`}
+                      to={paths.painelQuiz(q.id)}
                       className="text-brand-300 hover:underline"
                     >
                       Abrir quiz

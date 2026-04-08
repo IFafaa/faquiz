@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import { faquizApi } from '@/app/api'
 import { Badge } from '@/shared/ui/Badge'
 import { Card, CardContent } from '@/shared/ui/Card'
@@ -136,7 +137,7 @@ export function ResponsesPage() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <Link
-                            to={`/admin/sessions/${s.id}`}
+                            to={paths.painelSessao(s.id)}
                             className="text-brand-300 hover:underline"
                           >
                             Ver sessão

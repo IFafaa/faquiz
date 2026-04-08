@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, NavLink, Outlet, useParams } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import { faquizApi } from '@/app/api'
 import { Badge } from '@/shared/ui/Badge'
 import { cn } from '@/shared/utils/cn'
@@ -27,7 +28,7 @@ export function QuizDetailLayout() {
       <div className="sticky top-0 z-30 -mx-4 border-b border-zinc-800 bg-zinc-950/95 px-4 pb-0 pt-0 backdrop-blur-sm md:-mx-8 md:px-8">
         <div className="flex flex-col gap-3 pb-4 pt-1">
           <Link
-            to="/admin/quizzes"
+            to={paths.painelQuizzes}
             className="inline-flex w-fit text-sm text-zinc-500 hover:text-zinc-300"
           >
             ← Todos os quizzes
@@ -58,19 +59,32 @@ export function QuizDetailLayout() {
           className="-mb-px flex gap-1 overflow-x-auto border-t border-zinc-800/80"
           aria-label="Seções do quiz"
         >
-          <NavLink to={`/admin/quizzes/${id}/config`} className={tabClass} end>
+          <NavLink
+            to={paths.painelQuizTab(id, 'config')}
+            className={tabClass}
+            end
+          >
             Configuração
           </NavLink>
-          <NavLink to={`/admin/quizzes/${id}/build`} className={tabClass}>
+          <NavLink to={paths.painelQuizTab(id, 'build')} className={tabClass}>
             Builder
           </NavLink>
-          <NavLink to={`/admin/quizzes/${id}/settings`} className={tabClass}>
+          <NavLink
+            to={paths.painelQuizTab(id, 'settings')}
+            className={tabClass}
+          >
             Compartilhamento
           </NavLink>
-          <NavLink to={`/admin/quizzes/${id}/responses`} className={tabClass}>
+          <NavLink
+            to={paths.painelQuizTab(id, 'responses')}
+            className={tabClass}
+          >
             Respostas
           </NavLink>
-          <NavLink to={`/admin/quizzes/${id}/insights`} className={tabClass}>
+          <NavLink
+            to={paths.painelQuizTab(id, 'insights')}
+            className={tabClass}
+          >
             Insights
           </NavLink>
         </nav>

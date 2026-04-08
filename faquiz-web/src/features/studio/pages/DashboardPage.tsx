@@ -3,10 +3,10 @@ import { useQueries, useQuery } from '@tanstack/react-query'
 import { faquizApi } from '@/app/api'
 import type { AnalyticsResponse } from '@/shared/types/api'
 import { Spinner } from '@/shared/ui/Spinner'
-import { DashboardStatsGrid } from '@/features/admin/components/dashboard/DashboardStatsGrid'
-import { DashboardSessionsChart } from '@/features/admin/components/dashboard/DashboardSessionsChart'
-import { DashboardQuizTable } from '@/features/admin/components/dashboard/DashboardQuizTable'
-import { mergeSessionsPerDay } from '@/features/admin/utils/analytics'
+import { DashboardStatsGrid } from '@/features/studio/components/dashboard/DashboardStatsGrid'
+import { DashboardSessionsChart } from '@/features/studio/components/dashboard/DashboardSessionsChart'
+import { DashboardQuizTable } from '@/features/studio/components/dashboard/DashboardQuizTable'
+import { mergeSessionsPerDay } from '@/features/studio/utils/analytics'
 
 export function DashboardPage() {
   const { data: quizzes, isLoading: loadingQuizzes } = useQuery({
@@ -63,10 +63,10 @@ export function DashboardPage() {
     <div className="space-y-8">
       <div>
         <h1 className="font-display text-2xl font-bold text-zinc-50">
-          Dashboard
+          Início
         </h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Visão geral dos quizzes e sessões nos últimos 30 dias.
+          Visão geral dos seus quizzes e das sessões nos últimos 30 dias.
         </p>
       </div>
 

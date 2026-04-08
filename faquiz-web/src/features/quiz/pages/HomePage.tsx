@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import { faquizApi } from '@/app/api'
+import { useAuthStore } from '@/app/store/authStore'
 import { Spinner } from '@/shared/ui/Spinner'
 import { richTextToPlainText } from '@/shared/utils/richText'
 import {
@@ -9,7 +11,14 @@ import {
   homeQuizListItem,
 } from '@/features/quiz/constants/homeMotion'
 
+const heroBtnPrimary =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/40 transition-[transform,box-shadow] hover:bg-brand-500 hover:shadow-brand-800/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400'
+
+const heroBtnSecondary =
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-600 bg-zinc-900/60 px-6 py-3 text-sm font-semibold text-zinc-100 backdrop-blur-sm transition-[transform,border-color] hover:border-zinc-500 hover:bg-zinc-800/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500'
+
 export function HomePage() {
+  const token = useAuthStore((s) => s.token)
   const { data: quizzes, isLoading } = useQuery({
     queryKey: ['published-quizzes'],
     queryFn: () => faquizApi.getPublishedQuizzes(),
@@ -34,7 +43,7 @@ export function HomePage() {
         <motion.header
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-3xl space-y-5"
+          className="max-w-3xl space-y-6"
         >
           <p className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-950/40 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-brand-300">
             Questionários abertos
@@ -46,7 +55,63 @@ export function HomePage() {
           </h1>
           <p className="text-lg leading-relaxed text-zinc-400">
             Cada resposta define o próximo passo: fluxos em árvore para pesquisas e
-            formulários. Escolha um dos questionários abaixo para participar.
+            formulários. Participe dos questionários abaixo ou crie os seus.
+          </p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
+          >
+            {token ? (
+              <Link to={paths.painel} className={heroBtnPrimary}>
+                Ir para meus quizzes
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </Link>
+            ) : (
+              <>
+                <Link to={paths.register} className={heroBtnPrimary}>
+                  Criar conta grátis
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    />
+                  </svg>
+                </Link>
+                <Link to={paths.login} className={heroBtnSecondary}>
+                  Já tenho conta — entrar
+                </Link>
+              </>
+            )}
+          </motion.div>
+
+          <p className="text-sm text-zinc-500">
+            {token
+              ? 'Gerencie quizzes, respostas e compartilhamento no painel.'
+              : 'Cadastre-se para montar questionários, publicar e acompanhar resultados.'}
           </p>
         </motion.header>
 

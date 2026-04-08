@@ -7,6 +7,7 @@ import { faquizApi } from '@/app/api'
 import { Button } from '@/shared/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card'
 import { Input } from '@/shared/ui/Input'
+import { paths, isPainelPath } from '@/app/routes/paths'
 import { useAuthStore } from '@/app/store/authStore'
 
 export function LoginPage() {
@@ -17,9 +18,9 @@ export function LoginPage() {
   const [password, setPassword] = useState('')
 
   const rawFrom =
-    (location.state as { from?: string } | null)?.from ?? '/admin'
+    (location.state as { from?: string } | null)?.from ?? paths.painel
   const from =
-    rawFrom.startsWith('/admin') && !rawFrom.includes('//') ? rawFrom : '/admin'
+    isPainelPath(rawFrom) && !rawFrom.includes('//') ? rawFrom : paths.painel
 
   const mutation = useMutation({
     mutationFn: () => faquizApi.login(email, password),
@@ -79,6 +80,15 @@ export function LoginPage() {
             >
               {mutation.isPending ? 'Entrando…' : 'Entrar'}
             </Button>
+            <p className="text-center text-sm text-zinc-400">
+              Não tem conta?{' '}
+              <Link
+                to={paths.register}
+                className="text-emerald-400 hover:underline"
+              >
+                Criar conta
+              </Link>
+            </p>
           </form>
         </CardContent>
       </Card>

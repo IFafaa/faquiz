@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import type { QuizSummary } from '@/shared/types/api'
 import { Badge } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
@@ -44,7 +45,7 @@ export function QuizTable({ quizzes, onDelete, deletePending }: Props) {
             <tr
               key={q.id}
               className="cursor-pointer bg-zinc-950/40 transition-colors hover:bg-zinc-900/60"
-              onClick={() => void navigate(`/admin/quizzes/${q.id}`)}
+              onClick={() => void navigate(paths.painelQuiz(q.id))}
             >
               <td className="px-4 py-3 font-medium text-zinc-200">
                 {q.title}

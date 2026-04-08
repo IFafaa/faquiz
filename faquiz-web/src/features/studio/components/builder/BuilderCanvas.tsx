@@ -21,9 +21,9 @@ import {
   flowToSavePayload,
   getLayoutedElements,
   treeToFlow,
-} from '@/features/admin/components/builder/flow-utils'
-import { QuestionFlowNode } from '@/features/admin/components/builder/QuestionFlowNode'
-import type { QuestionNodeData } from '@/features/admin/components/builder/types'
+} from '@/features/studio/components/builder/flow-utils'
+import { QuestionFlowNode } from '@/features/studio/components/builder/QuestionFlowNode'
+import type { QuestionNodeData } from '@/features/studio/components/builder/types'
 import { Button } from '@/shared/ui/Button'
 import { Spinner } from '@/shared/ui/Spinner'
 import { BuilderSidebar } from './BuilderSidebar'

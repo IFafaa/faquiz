@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import { faquizApi } from '@/app/api'
 import { Badge } from '@/shared/ui/Badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card'
@@ -58,7 +59,7 @@ export function SessionDetailPage() {
         <h1 className="font-display text-2xl font-bold text-zinc-50">
           Sessão não encontrada
         </h1>
-        <Link to="/admin/quizzes" className="text-sm text-brand-300 underline">
+        <Link to={paths.painelQuizzes} className="text-sm text-brand-300 underline">
           Voltar aos quizzes
         </Link>
       </div>
@@ -77,7 +78,7 @@ export function SessionDetailPage() {
           <p className="mt-1 font-mono text-xs text-zinc-500">{session.id}</p>
         </div>
         <Link
-          to={`/admin/quizzes/${session.quizId}/responses`}
+          to={paths.painelQuizTab(session.quizId, 'responses')}
           className="text-sm text-brand-300 hover:underline"
         >
           ← Lista de sessões do quiz

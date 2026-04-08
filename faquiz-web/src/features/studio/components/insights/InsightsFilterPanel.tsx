@@ -2,7 +2,7 @@ import type { InsightsFormState } from './insights-filter.types'
 import { Button } from '@/shared/ui/Button'
 import { Card, CardContent } from '@/shared/ui/Card'
 import { cn } from '@/shared/utils/cn'
-import { InsightsDateRangeField } from '@/features/admin/components/InsightsDateRangeField'
+import { InsightsDateRangeField } from '@/features/studio/components/InsightsDateRangeField'
 
 interface QuestionNode {
   id: string

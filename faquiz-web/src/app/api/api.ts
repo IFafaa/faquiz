@@ -39,6 +39,11 @@ export type SaveQuizTreeBody = {
 
 export interface IFaquizApi {
   login(email: string, password: string): Promise<LoginResponse>
+  register(body: {
+    email: string
+    password: string
+    name: string
+  }): Promise<LoginResponse>
   listQuizzes(): Promise<QuizSummary[]>
   getQuiz(id: string): Promise<QuizSummary>
   createQuiz(body: {
@@ -121,7 +126,7 @@ export class FaquizApi implements IFaquizApi {
       (err) => {
         if (axios.isAxiosError(err) && err.response?.status === 401) {
           const url = err.config?.url ?? ''
-          if (!url.includes('/auth/login')) {
+          if (!url.includes('/auth/login') && !url.includes('/auth/register')) {
             useAuthStore.getState().clearAuth()
           }
         }
@@ -135,6 +140,14 @@ export class FaquizApi implements IFaquizApi {
       email,
       password,
     })
+    return data
+  }
+
+  async register(body: { email: string; password: string; name: string }) {
+    const { data } = await this.client.post<LoginResponse>(
+      '/auth/register',
+      body,
+    )
     return data
   }
 

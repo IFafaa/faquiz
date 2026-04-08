@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import { faquizApi } from '@/app/api'
 import type { QuizSummary } from '@/shared/types/api'
 import { Button } from '@/shared/ui/Button'
@@ -9,8 +10,8 @@ import { richTextIsEmpty } from '@/shared/utils/richText'
 import {
   CreateQuizModal,
   type CreateQuizData,
-} from '@/features/admin/components/quiz-list/CreateQuizModal'
-import { QuizTable } from '@/features/admin/components/quiz-list/QuizTable'
+} from '@/features/studio/components/quiz-list/CreateQuizModal'
+import { QuizTable } from '@/features/studio/components/quiz-list/QuizTable'
 
 export function QuizListPage() {
   const queryClient = useQueryClient()
@@ -36,7 +37,7 @@ export function QuizListPage() {
     onSuccess: (quiz) => {
       void queryClient.invalidateQueries({ queryKey: ['quizzes'] })
       setModalOpen(false)
-      void navigate(`/admin/quizzes/${quiz.id}`)
+      void navigate(paths.painelQuiz(quiz.id))
     },
   })
 

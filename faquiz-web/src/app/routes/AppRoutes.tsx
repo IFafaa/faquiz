@@ -1,17 +1,18 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { QuizDetailLayout } from '@/features/admin/components/layout/QuizDetailLayout'
-import { AdminLayout } from '@/features/admin/components/layout/AdminLayout'
-import { ProtectedRoute } from '@/features/admin/components/layout/ProtectedRoute'
+import { QuizDetailLayout } from '@/features/studio/components/layout/QuizDetailLayout'
+import { ProtectedRoute } from '@/features/studio/components/layout/ProtectedRoute'
+import { StudioLayout } from '@/features/studio/components/layout/StudioLayout'
 import { PublicLayout } from '@/features/quiz/components/layout/PublicLayout'
-import { DashboardPage } from '@/features/admin/pages/DashboardPage'
-import { LoginPage } from '@/features/admin/pages/LoginPage'
-import { QuizBuilderPage } from '@/features/admin/pages/QuizBuilderPage'
-import { QuizListPage } from '@/features/admin/pages/QuizListPage'
-import { QuizInsightsPage } from '@/features/admin/pages/QuizInsightsPage'
-import { QuizConfigPage } from '@/features/admin/pages/QuizConfigPage'
-import { QuizSettingsPage } from '@/features/admin/pages/QuizSettingsPage'
-import { ResponsesPage } from '@/features/admin/pages/ResponsesPage'
-import { SessionDetailPage } from '@/features/admin/pages/SessionDetailPage'
+import { DashboardPage } from '@/features/studio/pages/DashboardPage'
+import { LoginPage } from '@/features/studio/pages/LoginPage'
+import { RegisterPage } from '@/features/studio/pages/RegisterPage'
+import { QuizBuilderPage } from '@/features/studio/pages/QuizBuilderPage'
+import { QuizListPage } from '@/features/studio/pages/QuizListPage'
+import { QuizInsightsPage } from '@/features/studio/pages/QuizInsightsPage'
+import { QuizConfigPage } from '@/features/studio/pages/QuizConfigPage'
+import { QuizSettingsPage } from '@/features/studio/pages/QuizSettingsPage'
+import { ResponsesPage } from '@/features/studio/pages/ResponsesPage'
+import { SessionDetailPage } from '@/features/studio/pages/SessionDetailPage'
 import { HomePage } from '@/features/quiz/pages/HomePage'
 import { QuizCompletePage } from '@/features/quiz/pages/QuizCompletePage'
 import { QuizPlayPage } from '@/features/quiz/pages/QuizPlayPage'
@@ -27,10 +28,11 @@ export function AppRoutes() {
         <Route path="quiz/:id/complete" element={<QuizCompletePage />} />
       </Route>
 
-      <Route path="admin/login" element={<LoginPage />} />
+      <Route path="entrar" element={<LoginPage />} />
+      <Route path="cadastro" element={<RegisterPage />} />
 
       <Route element={<ProtectedRoute />}>
-        <Route path="admin" element={<AdminLayout />}>
+        <Route path="painel" element={<StudioLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="quizzes" element={<QuizListPage />} />
           <Route path="quizzes/:id" element={<QuizDetailLayout />}>
@@ -41,9 +43,15 @@ export function AppRoutes() {
             <Route path="build" element={<QuizBuilderPage />} />
             <Route path="insights" element={<QuizInsightsPage />} />
           </Route>
-          <Route path="sessions/:id" element={<SessionDetailPage />} />
+          <Route path="sessoes/:id" element={<SessionDetailPage />} />
         </Route>
       </Route>
+
+      {/* URLs antigas (antes da renomeação do painel) */}
+      <Route path="admin/login" element={<Navigate to="/entrar" replace />} />
+      <Route path="admin/register" element={<Navigate to="/cadastro" replace />} />
+      <Route path="admin" element={<Navigate to="/painel" replace />} />
+      <Route path="admin/*" element={<Navigate to="/painel" replace />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

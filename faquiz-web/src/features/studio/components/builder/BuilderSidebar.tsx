@@ -6,8 +6,8 @@ import type { QuestionNodeData } from './types'
 import {
   useSidebarResize,
   SIDEBAR_CHEVRON_THRESHOLD,
-} from '@/features/admin/hooks/useSidebarResize'
-import { useMinWidthMd } from '@/features/admin/hooks/useMinWidthMd'
+} from '@/features/studio/hooks/useSidebarResize'
+import { useMinWidthMd } from '@/features/studio/hooks/useMinWidthMd'
 
 interface Props {
   quizTitle: string | undefined

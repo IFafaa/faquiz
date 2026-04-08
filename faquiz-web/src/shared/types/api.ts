@@ -28,7 +28,7 @@ export interface QuizSummary {
   collectEmail: boolean
   collectPhone: boolean
   rootNodeId: string | null
-  adminId: string
+  userId: string
   createdAt: string
   updatedAt: string
 }

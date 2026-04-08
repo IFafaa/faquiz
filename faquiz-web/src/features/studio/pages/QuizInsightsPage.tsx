@@ -4,15 +4,15 @@ import { useParams } from 'react-router-dom'
 import { faquizApi } from '@/app/api'
 import type { ResponseFilters } from '@/shared/types/api'
 import { Spinner } from '@/shared/ui/Spinner'
-import { InsightsFilterPanel } from '@/features/admin/components/insights/InsightsFilterPanel'
+import { InsightsFilterPanel } from '@/features/studio/components/insights/InsightsFilterPanel'
 import {
   emptyForm,
   type InsightsFormState,
-} from '@/features/admin/components/insights/insights-filter.types'
-import { InsightsOverviewCards } from '@/features/admin/components/insights/InsightsOverviewCards'
-import { InsightsCompareSection } from '@/features/admin/components/insights/InsightsCompareSection'
-import { QuestionDistributionGrid } from '@/features/admin/components/insights/QuestionDistributionGrid'
-import { formToFilters } from '@/features/admin/utils/insights-filters'
+} from '@/features/studio/components/insights/insights-filter.types'
+import { InsightsOverviewCards } from '@/features/studio/components/insights/InsightsOverviewCards'
+import { InsightsCompareSection } from '@/features/studio/components/insights/InsightsCompareSection'
+import { QuestionDistributionGrid } from '@/features/studio/components/insights/QuestionDistributionGrid'
+import { formToFilters } from '@/features/studio/utils/insights-filters'
 
 export function QuizInsightsPage() {
   const { id = '' } = useParams<{ id: string }>()

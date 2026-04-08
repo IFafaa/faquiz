@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import { useAuthStore } from '@/app/store/authStore'
 
 export function ProtectedRoute() {
@@ -7,7 +8,11 @@ export function ProtectedRoute() {
 
   if (!token) {
     return (
-      <Navigate to="/admin/login" replace state={{ from: location.pathname }} />
+      <Navigate
+        to={paths.login}
+        replace
+        state={{ from: location.pathname }}
+      />
     )
   }
 

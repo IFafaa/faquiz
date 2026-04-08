@@ -1,6 +1,6 @@
 import { ReactFlowProvider } from '@xyflow/react'
 import { useParams } from 'react-router-dom'
-import { BuilderCanvas } from '@/features/admin/components/builder/BuilderCanvas'
+import { BuilderCanvas } from '@/features/studio/components/builder/BuilderCanvas'
 
 export function QuizBuilderPage() {
   const { id } = useParams<{ id: string }>()
