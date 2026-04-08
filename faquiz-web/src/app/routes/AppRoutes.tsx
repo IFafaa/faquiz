@@ -47,11 +47,11 @@ export function AppRoutes() {
         </Route>
       </Route>
 
-      {/* URLs antigas (antes da renomeação do painel) */}
-      <Route path="admin/login" element={<Navigate to="/entrar" replace />} />
-      <Route path="admin/register" element={<Navigate to="/cadastro" replace />} />
-      <Route path="admin" element={<Navigate to="/painel" replace />} />
-      <Route path="admin/*" element={<Navigate to="/painel" replace />} />
+      {/* Compat: rotas legadas → entrar, cadastro, painel */}
+      <Route path="legacy/login" element={<Navigate to="/entrar" replace />} />
+      <Route path="legacy/register" element={<Navigate to="/cadastro" replace />} />
+      <Route path="legacy" element={<Navigate to="/painel" replace />} />
+      <Route path="legacy/*" element={<Navigate to="/painel" replace />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
