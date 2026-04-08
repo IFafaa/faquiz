@@ -19,6 +19,10 @@ export interface LoginResponse {
   accessToken: string
 }
 
+export interface MessageResponse {
+  message: string
+}
+
 export interface QuizSummary {
   id: string
   title: string

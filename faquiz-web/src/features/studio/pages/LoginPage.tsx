@@ -10,6 +10,25 @@ import { Input } from '@/shared/ui/Input'
 import { paths, isPainelPath } from '@/app/routes/paths'
 import { useAuthStore } from '@/app/store/authStore'
 
+function loginErrorMessage(err: unknown): string {
+  if (!isAxiosError(err) || err.response == null) {
+    return 'Não foi possível entrar. Tente novamente.'
+  }
+  const { status, data } = err.response
+  const apiMsg =
+    data && typeof data === 'object' && 'message' in data
+      ? String((data as { message: string }).message)
+      : null
+  if (status === 401) return 'Credenciais inválidas'
+  if (status === 403) {
+    return (
+      apiMsg ??
+      'Confirme seu e-mail antes de entrar. Verifique a caixa de entrada ou reenvie o link na página de confirmação.'
+    )
+  }
+  return apiMsg ?? 'Não foi possível entrar. Tente novamente.'
+}
+
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -67,10 +86,7 @@ export function LoginPage() {
             />
             {mutation.isError ? (
               <p className="text-sm text-red-400">
-                {isAxiosError(mutation.error) &&
-                mutation.error.response?.status === 401
-                  ? 'Credenciais inválidas'
-                  : 'Não foi possível entrar. Tente novamente.'}
+                {loginErrorMessage(mutation.error)}
               </p>
             ) : null}
             <Button
@@ -80,6 +96,14 @@ export function LoginPage() {
             >
               {mutation.isPending ? 'Entrando…' : 'Entrar'}
             </Button>
+            <p className="text-center text-sm text-zinc-400">
+              <Link
+                to={paths.forgotPassword}
+                className="text-zinc-400 underline-offset-2 hover:text-emerald-400 hover:underline"
+              >
+                Esqueci minha senha
+              </Link>
+            </p>
             <p className="text-center text-sm text-zinc-400">
               Não tem conta?{' '}
               <Link

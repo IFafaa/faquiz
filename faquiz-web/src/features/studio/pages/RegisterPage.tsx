@@ -2,13 +2,12 @@ import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import type { FormEvent } from 'react'
 import { useMemo, useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { faquizApi } from '@/app/api'
 import { Button } from '@/shared/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card'
 import { Input } from '@/shared/ui/Input'
-import { paths, isPainelPath } from '@/app/routes/paths'
-import { useAuthStore } from '@/app/store/authStore'
+import { paths } from '@/app/routes/paths'
 import { cn } from '@/shared/utils/cn'
 import {
   getPasswordChecks,
@@ -20,34 +19,32 @@ const STRENGTH_LABELS = ['', 'Fraca', 'Regular', 'Boa', 'Muito boa', 'Forte']
 
 export function RegisterPage() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const setToken = useAuthStore((s) => s.setToken)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-
-  const rawFrom =
-    (location.state as { from?: string } | null)?.from ?? paths.painel
-  const from =
-    isPainelPath(rawFrom) && !rawFrom.includes('//') ? rawFrom : paths.painel
 
   const checks = useMemo(() => getPasswordChecks(password), [password])
   const score = useMemo(() => passwordStrengthScore(password), [password])
   const passwordOk = useMemo(() => isStrongPassword(password), [password])
+  const passwordsMatch =
+    confirmPassword.length > 0 && password === confirmPassword
 
   const mutation = useMutation({
     mutationFn: () =>
       faquizApi.register({ email, password, name: name.trim() }),
-    onSuccess: (data) => {
-      setToken(data.accessToken)
-      void navigate(from, { replace: true })
+    onSuccess: (_data) => {
+      void navigate(paths.registerPending, {
+        replace: true,
+        state: { email: email.trim().toLowerCase() },
+      })
     },
   })
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!passwordOk) return
+    if (!passwordOk || !passwordsMatch) return
     mutation.mutate()
   }
 
@@ -181,6 +178,19 @@ export function RegisterPage() {
                 ))}
               </ul>
             </div>
+            <Input
+              label="Confirmar senha"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            {confirmPassword.length > 0 && !passwordsMatch ? (
+              <p className="text-sm text-amber-400" role="alert">
+                As senhas não coincidem.
+              </p>
+            ) : null}
             {mutation.isError ? (
               <p className="text-sm text-red-400">
                 {isAxiosError(mutation.error) &&
@@ -195,7 +205,7 @@ export function RegisterPage() {
             <Button
               type="submit"
               className="w-full"
-              disabled={mutation.isPending || !passwordOk}
+              disabled={mutation.isPending || !passwordOk || !passwordsMatch}
             >
               {mutation.isPending ? 'Criando conta…' : 'Criar conta'}
             </Button>

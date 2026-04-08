@@ -4,6 +4,7 @@ import type {
   AggregatesResponse,
   AnalyticsResponse,
   LoginResponse,
+  MessageResponse,
   PublishedQuizCard,
   PublicQuizPayload,
   QuestionType,
@@ -43,7 +44,11 @@ export interface IFaquizApi {
     email: string
     password: string
     name: string
-  }): Promise<LoginResponse>
+  }): Promise<MessageResponse>
+  verifyEmail(token: string): Promise<MessageResponse>
+  resendVerification(email: string): Promise<MessageResponse>
+  forgotPassword(email: string): Promise<MessageResponse>
+  resetPassword(token: string, password: string): Promise<MessageResponse>
   listQuizzes(): Promise<QuizSummary[]>
   getQuiz(id: string): Promise<QuizSummary>
   createQuiz(body: {
@@ -126,7 +131,14 @@ export class FaquizApi implements IFaquizApi {
       (err) => {
         if (axios.isAxiosError(err) && err.response?.status === 401) {
           const url = err.config?.url ?? ''
-          if (!url.includes('/auth/login') && !url.includes('/auth/register')) {
+          const isPublicAuth =
+            url.includes('/auth/login') ||
+            url.includes('/auth/register') ||
+            url.includes('/auth/verify-email') ||
+            url.includes('/auth/resend-verification') ||
+            url.includes('/auth/forgot-password') ||
+            url.includes('/auth/reset-password')
+          if (!isPublicAuth) {
             useAuthStore.getState().clearAuth()
           }
         }
@@ -144,9 +156,41 @@ export class FaquizApi implements IFaquizApi {
   }
 
   async register(body: { email: string; password: string; name: string }) {
-    const { data } = await this.client.post<LoginResponse>(
+    const { data } = await this.client.post<MessageResponse>(
       '/auth/register',
       body,
+    )
+    return data
+  }
+
+  async verifyEmail(token: string) {
+    const { data } = await this.client.post<MessageResponse>(
+      '/auth/verify-email',
+      { token },
+    )
+    return data
+  }
+
+  async resendVerification(email: string) {
+    const { data } = await this.client.post<MessageResponse>(
+      '/auth/resend-verification',
+      { email },
+    )
+    return data
+  }
+
+  async forgotPassword(email: string) {
+    const { data } = await this.client.post<MessageResponse>(
+      '/auth/forgot-password',
+      { email },
+    )
+    return data
+  }
+
+  async resetPassword(token: string, password: string) {
+    const { data } = await this.client.post<MessageResponse>(
+      '/auth/reset-password',
+      { token, password },
     )
     return data
   }

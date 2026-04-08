@@ -3,6 +3,10 @@ export const paths = {
   home: '/',
   login: '/entrar',
   register: '/cadastro',
+  registerPending: '/cadastro/pendente',
+  verifyEmail: '/verificar-email',
+  forgotPassword: '/recuperar-senha',
+  resetPassword: '/redefinir-senha',
   /** Prefixo da área logada */
   painel: '/painel',
   painelQuizzes: '/painel/quizzes',

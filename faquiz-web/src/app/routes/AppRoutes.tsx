@@ -4,8 +4,12 @@ import { ProtectedRoute } from '@/features/studio/components/layout/ProtectedRou
 import { StudioLayout } from '@/features/studio/components/layout/StudioLayout'
 import { PublicLayout } from '@/features/quiz/components/layout/PublicLayout'
 import { DashboardPage } from '@/features/studio/pages/DashboardPage'
+import { ForgotPasswordPage } from '@/features/studio/pages/ForgotPasswordPage'
 import { LoginPage } from '@/features/studio/pages/LoginPage'
 import { RegisterPage } from '@/features/studio/pages/RegisterPage'
+import { RegisterPendingPage } from '@/features/studio/pages/RegisterPendingPage'
+import { ResetPasswordPage } from '@/features/studio/pages/ResetPasswordPage'
+import { VerifyEmailPage } from '@/features/studio/pages/VerifyEmailPage'
 import { QuizBuilderPage } from '@/features/studio/pages/QuizBuilderPage'
 import { QuizListPage } from '@/features/studio/pages/QuizListPage'
 import { QuizInsightsPage } from '@/features/studio/pages/QuizInsightsPage'
@@ -30,6 +34,10 @@ export function AppRoutes() {
 
       <Route path="entrar" element={<LoginPage />} />
       <Route path="cadastro" element={<RegisterPage />} />
+      <Route path="cadastro/pendente" element={<RegisterPendingPage />} />
+      <Route path="verificar-email" element={<VerifyEmailPage />} />
+      <Route path="recuperar-senha" element={<ForgotPasswordPage />} />
+      <Route path="redefinir-senha" element={<ResetPasswordPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="painel" element={<StudioLayout />}>
