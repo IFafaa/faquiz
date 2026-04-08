@@ -32,7 +32,8 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION:-7d}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
       PORT: "3333"
-      ADMIN_SEED_PASSWORD: ${ADMIN_SEED_PASSWORD:-}
+      # Primeira subida em produção: defina USER_SEED_PASSWORD.
+      USER_SEED_PASSWORD: ${USER_SEED_PASSWORD:-}
     restart: unless-stopped
 
   web:

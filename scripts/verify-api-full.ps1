@@ -1,10 +1,11 @@
 # Automatiza: Postgres (Docker) -> migrate -> seed -> build -> API (node) -> npm run verify:api
 # Uso (na raiz do repo faquiz): powershell -ExecutionPolicy Bypass -File scripts/verify-api-full.ps1
 # Com Postgres ja local: powershell -File scripts/verify-api-full.ps1 -SkipDocker
+# Define USER_SEED_PASSWORD para o prisma seed (parametro -UserSeedPassword; padrao demo123).
 
 param(
     [switch]$SkipDocker,
-    [string]$AdminSeedPassword = "admin123"
+    [string]$UserSeedPassword = "demo123"
 )
 
 $ErrorActionPreference = "Stop"
@@ -57,7 +58,7 @@ Write-Host ">> prisma migrate deploy"
 npx prisma migrate deploy
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-$env:ADMIN_SEED_PASSWORD = $AdminSeedPassword
+$env:USER_SEED_PASSWORD = $UserSeedPassword
 Write-Host ">> prisma seed"
 npm run prisma:seed
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
