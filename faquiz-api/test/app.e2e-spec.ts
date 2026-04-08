@@ -4,11 +4,6 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 
-/**
- * Testes de integração reais (Prisma + Postgres).
- * Rode: `E2E_INTEGRATION=true npm run test:e2e`
- * Requisitos: DATABASE_URL válido, migrações aplicadas, seed opcional.
- */
 const run = process.env.E2E_INTEGRATION === 'true';
 const describeE2e = run ? describe : describe.skip;
 

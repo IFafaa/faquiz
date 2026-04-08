@@ -1,8 +1,3 @@
-/**
- * Verificação HTTP contra uma API já em execução.
- * Uso: defina BASE_URL (default http://127.0.0.1:3333), suba o Postgres, migre, seed e `npm run start`.
- * Opcional: ADMIN_EMAIL, ADMIN_PASSWORD (default admin@faquiz.com + ADMIN_SEED_PASSWORD ou admin123).
- */
 const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:3333';
 const API = `${BASE.replace(/\/$/, '')}/api`;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@faquiz.com';

@@ -1,17 +1,3 @@
-/**
- * Cria ≥5 quizzes temáticos via API (JWT) e preenche 500 ou 1000 sessões
- * completas por quiz diretamente no PostgreSQL (Prisma), com respostas variadas.
- *
- * Variáveis de ambiente:
- * - API_BASE_URL (default: http://localhost:3333/api)
- * - DATABASE_URL (obrigatório para inserção em massa)
- * - ADMIN_EMAIL (default: admin@faquiz.com)
- * - ADMIN_PASSWORD (default: admin123 em dev — use o real em produção)
- * - SESSIONS_PER_QUIZ (default: 500; use 1000 se quiser mais volume)
- * - PRISMA_BATCH (default: 40) — sessões criadas em paralelo por lote
- *
- * Uso: npx tsx scripts/bulk-demo-quizzes.ts
- */
 import 'dotenv/config';
 import { randomUUID } from 'node:crypto';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -341,7 +327,6 @@ function buildLinearTree(bp: QuizBlueprint): {
   };
 }
 
-/** Gerador pseudoaleatório determinístico opcional (varia respostas entre execuções). */
 function mulberry32(seed: number) {
   return function next() {
     let t = (seed += 0x6d2b79f5);
