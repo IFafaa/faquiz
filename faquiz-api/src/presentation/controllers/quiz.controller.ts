@@ -10,29 +10,23 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
+import { GetQuizAnalyticsUseCase } from '../../application/use-cases/analytics/get-quiz-analytics.use-case.js';
+import { ListQuizSessionsUseCase } from '../../application/use-cases/analytics/list-quiz-sessions.use-case.js';
+import { CreateQuizUseCase } from '../../application/use-cases/quiz/create-quiz.use-case.js';
+import { DeleteQuizUseCase } from '../../application/use-cases/quiz/delete-quiz.use-case.js';
 import { GetPublicQuizUseCase } from '../../application/use-cases/quiz/get-public-quiz.use-case.js';
+import { GetQuizTreeUseCase } from '../../application/use-cases/quiz/get-quiz-tree.use-case.js';
+import { GetQuizUseCase } from '../../application/use-cases/quiz/get-quiz.use-case.js';
+import { GetShareUseCase } from '../../application/use-cases/quiz/get-share.use-case.js';
 import { ListPublishedQuizzesUseCase } from '../../application/use-cases/quiz/list-published-quizzes.use-case.js';
-import {
-  CreateQuizUseCase,
-  DeleteQuizUseCase,
-  GetQuizUseCase,
-  ListQuizzesUseCase,
-  UpdateQuizUseCase,
-} from '../../application/use-cases/quiz/quiz-crud.use-cases.js';
-import {
-  GetQuizTreeUseCase,
-  SaveQuizTreeUseCase,
-} from '../../application/use-cases/quiz/quiz-tree.use-cases.js';
-import {
-  GetQuizAnalyticsUseCase,
-  ListQuizSessionsUseCase,
-} from '../../application/use-cases/analytics/quiz-analytics.use-cases.js';
-import { GetShareUseCase } from '../../application/use-cases/share/get-share.use-case.js';
+import { ListQuizzesUseCase } from '../../application/use-cases/quiz/list-quizzes.use-case.js';
+import { SaveQuizTreeUseCase } from '../../application/use-cases/quiz/save-quiz-tree.use-case.js';
 import { StartSessionUseCase } from '../../application/use-cases/session/start-session.use-case.js';
+import { UpdateQuizUseCase } from '../../application/use-cases/quiz/update-quiz.use-case.js';
 import type { JwtPayloadUser } from '../../infrastructure/auth/jwt.strategy.js';
 import { JwtAuthGuard } from '../../infrastructure/auth/jwt-auth.guard.js';
-import type { AnswerOptionEntity } from '../../domain/entities/answer-option.entity.js';
-import type { QuestionNodeEntity } from '../../domain/entities/question-node.entity.js';
+import type { AnswerOption } from '../../domain/entities/answer-option.entity.js';
+import type { QuestionNode } from '../../domain/entities/question-node.entity.js';
 import {
   CreateQuizDto,
   SaveQuizTreeDto,
@@ -73,7 +67,7 @@ export class QuizController {
   ) {}
 
   private toPublicQuestion(
-    node: QuestionNodeEntity & { answerOptions: AnswerOptionEntity[] },
+    node: QuestionNode & { answerOptions: AnswerOption[] },
   ): PublicQuestion {
     return {
       id: node.id,

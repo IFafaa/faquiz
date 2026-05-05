@@ -29,15 +29,15 @@ export class GetResponseAggregatesUseCase {
 
   async execute(
     quizId: string,
-    adminId: string,
+    userId: string,
     filters?: ResponseFiltersInput | null,
   ): Promise<AggregatesResult> {
-    const quiz = await this.quizzes.findByIdAndAdmin(quizId, adminId);
+    const quiz = await this.quizzes.findByIdAndUser(quizId, userId);
     if (!quiz) {
       throw new NotFoundError('Quiz', quizId);
     }
 
-    const where = buildQuizSessionWhere(quizId, adminId, filters ?? undefined);
+    const where = buildQuizSessionWhere(quizId, userId, filters ?? undefined);
 
     const sessions = await this.prisma.quizSession.findMany({
       where,

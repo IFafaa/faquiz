@@ -3,12 +3,12 @@ import type { ResponseFiltersInput } from '../types/response-filters.js';
 
 export function buildQuizSessionWhere(
   quizId: string,
-  adminId: string,
+  userId: string,
   filters?: ResponseFiltersInput | null,
 ): Prisma.QuizSessionWhereInput {
   const base: Prisma.QuizSessionWhereInput = {
     quizId,
-    quiz: { id: quizId, adminId },
+    quiz: { id: quizId, userId },
   };
 
   if (!filters) {

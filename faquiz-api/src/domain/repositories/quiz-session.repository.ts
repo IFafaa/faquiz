@@ -1,45 +1,35 @@
-import type { QuizSessionEntity } from '../entities/quiz-session.entity.js';
-import type { SessionAnswerEntity } from '../entities/session-answer.entity.js';
+import type { QuizSession } from '../entities/quiz-session.entity.js';
+import type { SessionAnswer } from '../entities/session-answer.entity.js';
 
 export const QUIZ_SESSION_REPOSITORY = Symbol('QUIZ_SESSION_REPOSITORY');
 
 export interface IQuizSessionRepository {
-  create(data: {
-    quizId: string;
-    respondentName: string;
-    respondentEmail: string;
-    respondentPhone: string;
-  }): Promise<QuizSessionEntity>;
-  findById(id: string): Promise<QuizSessionEntity | null>;
+  persist(session: QuizSession): Promise<QuizSession>;
+  persistMany(sessions: QuizSession[]): Promise<QuizSession[]>;
+  findById(id: string): Promise<QuizSession | null>;
   findByIdAndQuizId(
     sessionId: string,
     quizId: string,
-  ): Promise<QuizSessionEntity | null>;
-  updatePathAndStatus(
-    sessionId: string,
-    pathTaken: string,
-    status: QuizSessionEntity['status'],
-    completedAt: Date | null,
-  ): Promise<void>;
+  ): Promise<QuizSession | null>;
   addAnswer(data: {
     sessionId: string;
     questionNodeId: string;
     answerOptionId: string | null;
     answerValue: string;
-  }): Promise<SessionAnswerEntity>;
-  listAnswersForSession(sessionId: string): Promise<SessionAnswerEntity[]>;
-  removeLastAnswer(sessionId: string): Promise<SessionAnswerEntity | null>;
-  listByQuizForAdmin(
+  }): Promise<SessionAnswer>;
+  listAnswersForSession(sessionId: string): Promise<SessionAnswer[]>;
+  removeLastAnswer(sessionId: string): Promise<SessionAnswer | null>;
+  listByQuizForUser(
     quizId: string,
-    adminId: string,
-  ): Promise<QuizSessionEntity[]>;
-  findDetailForAdmin(
+    userId: string,
+  ): Promise<QuizSession[]>;
+  findDetailForUser(
     sessionId: string,
     quizId: string,
-    adminId: string,
+    userId: string,
   ): Promise<{
-    session: QuizSessionEntity;
-    answers: SessionAnswerEntity[];
+    session: QuizSession;
+    answers: SessionAnswer[];
   } | null>;
   countByQuiz(quizId: string): Promise<number>;
   countCompletedByQuiz(quizId: string): Promise<number>;

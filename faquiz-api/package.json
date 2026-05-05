@@ -1,6 +1,9 @@
 {
   "name": "faquiz-api",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=20.19.0 || ^22.12.0 || >=24.0.0"
+  },
   "description": "",
   "author": "",
   "private": true,
@@ -17,14 +20,20 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config ./test/jest-e2e.json",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "tsx prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts",
+    "demo:bulk-quizzes": "tsx scripts/bulk-demo-quizzes.ts",
+    "verify:api": "tsx scripts/verify-api.ts",
+    "verify:api:full": "powershell -ExecutionPolicy Bypass -File ../scripts/verify-api-full.ps1"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "overrides": {
+    "lodash": "4.18.1"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -42,6 +51,7 @@
     "dotenv": "^17.4.0",
     "exceljs": "^4.4.0",
     "helmet": "^8.1.0",
+    "nodemailer": "^8.0.5",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.20.0",
@@ -62,6 +72,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
+    "@types/nodemailer": "^8.0.0",
     "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.20.0",
     "@types/qrcode": "^1.5.6",
@@ -92,6 +103,9 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

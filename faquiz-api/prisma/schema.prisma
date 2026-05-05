@@ -8,11 +8,17 @@ datasource db {
   provider = "postgresql"
 }
 
-model Admin {
+model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
   name      String
+  /// Quando preenchido, o e-mail foi confirmado (novos usuários ficam até verificarem).
+  emailVerifiedAt DateTime?
+  emailVerificationToken String? @unique
+  emailVerificationExpires DateTime?
+  passwordResetToken String? @unique
+  passwordResetExpires DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   quizzes   Quiz[]
@@ -23,19 +29,18 @@ model Quiz {
   title         String
   description   String         @default("")
   isPublished   Boolean        @default(false)
-  /** Coletar nome antes do quiz (definido só na criação). */
   collectName   Boolean        @default(false)
   collectEmail  Boolean        @default(false)
   collectPhone  Boolean        @default(false)
   rootNodeId    String?
-  adminId       String
-  admin         Admin          @relation(fields: [adminId], references: [id])
+  userId        String
+  user          User           @relation(fields: [userId], references: [id])
   questionNodes QuestionNode[]
   sessions      QuizSession[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
-  @@index([adminId])
+  @@index([userId])
 }
 
 model QuestionNode {

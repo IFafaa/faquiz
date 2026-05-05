@@ -3,26 +3,24 @@ import type {
   IQuizQueryRepository,
   QuizTreeSnapshot,
 } from '../../../domain/repositories/quiz-query.repository.js';
-import type { AnswerOptionEntity } from '../../../domain/entities/answer-option.entity.js';
-import type { QuestionNodeEntity } from '../../../domain/entities/question-node.entity.js';
-import type { QuizEntity } from '../../../domain/entities/quiz.entity.js';
+import type { AnswerOption } from '../../../domain/entities/answer-option.entity.js';
+import type { QuestionNode } from '../../../domain/entities/question-node.entity.js';
+import type { Quiz } from '../../../domain/entities/quiz.entity.js';
 import { PrismaService } from '../prisma.service.js';
-import {
-  mapAnswerOption,
-  mapQuestionNode,
-  mapQuiz,
-} from '../mappers/entity-mappers.js';
+import { AnswerOptionMapper } from '../mappers/answer-option.mapper.js';
+import { QuestionNodeMapper } from '../mappers/question-node.mapper.js';
+import { QuizMapper } from '../mappers/quiz.mapper.js';
 
 @Injectable()
 export class PrismaQuizQueryRepository implements IQuizQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findTreeForAdmin(
+  async findTreeForUser(
     quizId: string,
-    adminId: string,
+    userId: string,
   ): Promise<QuizTreeSnapshot | null> {
     const quiz = await this.prisma.quiz.findFirst({
-      where: { id: quizId, adminId },
+      where: { id: quizId, userId },
     });
     if (!quiz) return null;
 
@@ -33,18 +31,18 @@ export class PrismaQuizQueryRepository implements IQuizQueryRepository {
     });
 
     return {
-      quiz: mapQuiz(quiz),
+      quiz: QuizMapper.toDomain(quiz),
       nodes: nodes.map((n) => ({
-        ...mapQuestionNode(n),
-        answerOptions: n.answerOptions.map(mapAnswerOption),
+        ...QuestionNodeMapper.toDomain(n),
+        answerOptions: n.answerOptions.map((o) => AnswerOptionMapper.toDomain(o)),
       })),
     };
   }
 
   async findPublishedWithRootNode(quizId: string): Promise<{
-    quiz: QuizEntity;
+    quiz: Quiz;
     rootNode:
-      | (QuestionNodeEntity & { answerOptions: AnswerOptionEntity[] })
+      | (QuestionNode & { answerOptions: AnswerOption[] })
       | null;
   } | null> {
     const quiz = await this.prisma.quiz.findFirst({
@@ -53,7 +51,7 @@ export class PrismaQuizQueryRepository implements IQuizQueryRepository {
     if (!quiz) return null;
 
     if (!quiz.rootNodeId) {
-      return { quiz: mapQuiz(quiz), rootNode: null };
+      return { quiz: QuizMapper.toDomain(quiz), rootNode: null };
     }
 
     const root = await this.prisma.questionNode.findFirst({
@@ -61,14 +59,16 @@ export class PrismaQuizQueryRepository implements IQuizQueryRepository {
       include: { answerOptions: { orderBy: { order: 'asc' } } },
     });
     if (!root) {
-      return { quiz: mapQuiz(quiz), rootNode: null };
+      return { quiz: QuizMapper.toDomain(quiz), rootNode: null };
     }
 
     return {
-      quiz: mapQuiz(quiz),
+      quiz: QuizMapper.toDomain(quiz),
       rootNode: {
-        ...mapQuestionNode(root),
-        answerOptions: root.answerOptions.map(mapAnswerOption),
+        ...QuestionNodeMapper.toDomain(root),
+        answerOptions: root.answerOptions.map((o) =>
+          AnswerOptionMapper.toDomain(o),
+        ),
       },
     };
   }
@@ -80,8 +80,10 @@ export class PrismaQuizQueryRepository implements IQuizQueryRepository {
     });
     if (!node) return null;
     return {
-      ...mapQuestionNode(node),
-      answerOptions: node.answerOptions.map(mapAnswerOption),
+      ...QuestionNodeMapper.toDomain(node),
+      answerOptions: node.answerOptions.map((o) =>
+        AnswerOptionMapper.toDomain(o),
+      ),
     };
   }
 

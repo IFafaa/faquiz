@@ -9,24 +9,8 @@ import {
   QUIZ_SESSION_REPOSITORY,
   type IQuizSessionRepository,
 } from '../../../domain/repositories/quiz-session.repository.js';
-
-function toPublicQuestion(
-  node: Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>,
-) {
-  if (!node) return null;
-  return {
-    id: node.id,
-    title: node.title,
-    description: node.description,
-    questionType: node.questionType,
-    answerOptions: node.answerOptions.map((o) => ({
-      id: o.id,
-      label: o.label,
-      value: o.value,
-      order: o.order,
-    })),
-  };
-}
+import { QuizSession } from '../../../domain/entities/quiz-session.entity.js';
+import { toPublicQuestion } from './to-public-question.js';
 
 @Injectable()
 export class StartSessionUseCase {
@@ -77,12 +61,13 @@ export class StartSessionUseCase {
       throw new ValidationError('Telefone é obrigatório para este quiz.');
     }
 
-    const session = await this.sessions.create({
+    const draft = QuizSession.createDraft({
       quizId,
       respondentName: name,
       respondentEmail: email,
       respondentPhone: phone,
     });
+    const session = await this.sessions.persist(draft);
     const question = await this.queries.findQuestionWithOptions(
       quizId,
       data.quiz.rootNodeId,

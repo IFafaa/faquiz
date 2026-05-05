@@ -1,0 +1,66 @@
+@import 'react-day-picker/style.css';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-50: oklch(0.97 0.025 305);
+  --color-brand-100: oklch(0.93 0.055 305);
+  --color-brand-200: oklch(0.86 0.12 305);
+  --color-brand-300: oklch(0.78 0.16 305);
+  --color-brand-400: oklch(0.68 0.21 305);
+  --color-brand-500: oklch(0.477 0.228 305);
+  --color-brand-600: oklch(0.42 0.23 305);
+  --color-brand-700: oklch(0.36 0.2 305);
+  --color-brand-800: oklch(0.3 0.15 305);
+  --color-brand-900: oklch(0.28 0.12 305);
+  --color-brand-950: oklch(0.16 0.08 305);
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  body {
+    @apply bg-zinc-950 text-zinc-100 min-h-screen font-sans;
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  [role='link']:not([aria-disabled='true']),
+  a[href]:not([aria-disabled='true']),
+  input[type='checkbox']:not(:disabled),
+  input[type='radio']:not(:disabled),
+  input[type='submit']:not(:disabled),
+  input[type='button']:not(:disabled),
+  input[type='file']:not(:disabled),
+  select:not(:disabled),
+  summary {
+    cursor: pointer;
+  }
+  label:has(input[type='checkbox']),
+  label:has(input[type='radio']) {
+    cursor: pointer;
+  }
+}
+
+.insights-day-picker.rdp-root {
+  --rdp-accent-color: oklch(0.477 0.228 305);
+  --rdp-accent-background-color: oklch(0.28 0.12 305);
+  --rdp-range_middle-color: oklch(0.92 0 0);
+  color: oklch(0.88 0 0);
+}
+
+.insights-day-picker.rdp-root button:not(:disabled),
+.insights-day-picker.rdp-root [role='gridcell'] button {
+  cursor: pointer;
+}
+
+.rich-text-editor .ProseMirror p.is-editor-empty:first-child::before {
+  color: oklch(0.5 0 0);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

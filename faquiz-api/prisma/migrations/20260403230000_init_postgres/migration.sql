@@ -1,7 +1,5 @@
--- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "public";
 
--- CreateTable
 CREATE TABLE "Admin" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -13,7 +11,6 @@ CREATE TABLE "Admin" (
     CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "Quiz" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
@@ -27,7 +24,6 @@ CREATE TABLE "Quiz" (
     CONSTRAINT "Quiz_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "QuestionNode" (
     "id" TEXT NOT NULL,
     "quizId" TEXT NOT NULL,
@@ -42,7 +38,6 @@ CREATE TABLE "QuestionNode" (
     CONSTRAINT "QuestionNode_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "AnswerOption" (
     "id" TEXT NOT NULL,
     "questionNodeId" TEXT NOT NULL,
@@ -56,7 +51,6 @@ CREATE TABLE "AnswerOption" (
     CONSTRAINT "AnswerOption_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "QuizSession" (
     "id" TEXT NOT NULL,
     "quizId" TEXT NOT NULL,
@@ -69,7 +63,6 @@ CREATE TABLE "QuizSession" (
     CONSTRAINT "QuizSession_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
 CREATE TABLE "SessionAnswer" (
     "id" TEXT NOT NULL,
     "sessionId" TEXT NOT NULL,
@@ -81,53 +74,36 @@ CREATE TABLE "SessionAnswer" (
     CONSTRAINT "SessionAnswer_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
 CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
 
--- CreateIndex
 CREATE INDEX "Quiz_adminId_idx" ON "Quiz"("adminId");
 
--- CreateIndex
 CREATE INDEX "QuestionNode_quizId_idx" ON "QuestionNode"("quizId");
 
--- CreateIndex
 CREATE INDEX "AnswerOption_questionNodeId_idx" ON "AnswerOption"("questionNodeId");
 
--- CreateIndex
 CREATE INDEX "AnswerOption_nextQuestionNodeId_idx" ON "AnswerOption"("nextQuestionNodeId");
 
--- CreateIndex
 CREATE INDEX "QuizSession_quizId_idx" ON "QuizSession"("quizId");
 
--- CreateIndex
 CREATE INDEX "QuizSession_status_idx" ON "QuizSession"("status");
 
--- CreateIndex
 CREATE INDEX "SessionAnswer_sessionId_idx" ON "SessionAnswer"("sessionId");
 
--- CreateIndex
 CREATE INDEX "SessionAnswer_questionNodeId_idx" ON "SessionAnswer"("questionNodeId");
 
--- AddForeignKey
 ALTER TABLE "Quiz" ADD CONSTRAINT "Quiz_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "QuestionNode" ADD CONSTRAINT "QuestionNode_quizId_fkey" FOREIGN KEY ("quizId") REFERENCES "Quiz"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "AnswerOption" ADD CONSTRAINT "AnswerOption_questionNodeId_fkey" FOREIGN KEY ("questionNodeId") REFERENCES "QuestionNode"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "AnswerOption" ADD CONSTRAINT "AnswerOption_nextQuestionNodeId_fkey" FOREIGN KEY ("nextQuestionNodeId") REFERENCES "QuestionNode"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "QuizSession" ADD CONSTRAINT "QuizSession_quizId_fkey" FOREIGN KEY ("quizId") REFERENCES "Quiz"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "SessionAnswer" ADD CONSTRAINT "SessionAnswer_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "QuizSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "SessionAnswer" ADD CONSTRAINT "SessionAnswer_questionNodeId_fkey" FOREIGN KEY ("questionNodeId") REFERENCES "QuestionNode"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
--- AddForeignKey
 ALTER TABLE "SessionAnswer" ADD CONSTRAINT "SessionAnswer_answerOptionId_fkey" FOREIGN KEY ("answerOptionId") REFERENCES "AnswerOption"("id") ON DELETE SET NULL ON UPDATE CASCADE;

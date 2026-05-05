@@ -15,24 +15,8 @@ import {
   QUIZ_SESSION_REPOSITORY,
   type IQuizSessionRepository,
 } from '../../../domain/repositories/quiz-session.repository.js';
-
-function toPublicQuestion(
-  node: Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>,
-) {
-  if (!node) return null;
-  return {
-    id: node.id,
-    title: node.title,
-    description: node.description,
-    questionType: node.questionType,
-    answerOptions: node.answerOptions.map((o) => ({
-      id: o.id,
-      label: o.label,
-      value: o.value,
-      order: o.order,
-    })),
-  };
-}
+import type { SessionAnswer } from '../../../domain/entities/session-answer.entity.js';
+import { toPublicQuestion } from './to-public-question.js';
 
 @Injectable()
 export class SubmitAnswerUseCase {
@@ -127,12 +111,12 @@ export class SubmitAnswerUseCase {
     const nextNodeId = this.computeNextNodeId(question, answerOptionId);
 
     if (nextNodeId === null) {
-      await this.sessions.updatePathAndStatus(
-        sessionId,
-        JSON.stringify(path),
-        SessionStatus.COMPLETED,
-        new Date(),
-      );
+      session.updateProgress({
+        pathTaken: JSON.stringify(path),
+        status: SessionStatus.COMPLETED,
+        completedAt: new Date(),
+      });
+      await this.sessions.persist(session);
       return {
         completed: true,
         question: null,
@@ -142,12 +126,12 @@ export class SubmitAnswerUseCase {
       };
     }
 
-    await this.sessions.updatePathAndStatus(
-      sessionId,
-      JSON.stringify(path),
-      SessionStatus.IN_PROGRESS,
-      null,
-    );
+    session.updateProgress({
+      pathTaken: JSON.stringify(path),
+      status: SessionStatus.IN_PROGRESS,
+      completedAt: null,
+    });
+    await this.sessions.persist(session);
 
     const nextQuestion = await this.queries.findQuestionWithOptions(
       session.quizId,
@@ -171,7 +155,7 @@ export class SubmitAnswerUseCase {
   private async resolveCurrentQuestionId(
     rootNodeId: string,
     quizId: string,
-    answers: import('../../../domain/entities/session-answer.entity.js').SessionAnswerEntity[],
+    answers: SessionAnswer[],
   ): Promise<string | null> {
     let nodeId: string | null = rootNodeId;
     for (const ans of answers) {
@@ -191,7 +175,7 @@ export class SubmitAnswerUseCase {
     node: NonNullable<
       Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>
     >,
-    ans: import('../../../domain/entities/session-answer.entity.js').SessionAnswerEntity,
+    ans: SessionAnswer,
   ): string | null {
     if (node.questionType === QuestionType.MULTIPLE_CHOICE) {
       if (!ans.answerOptionId) return null;

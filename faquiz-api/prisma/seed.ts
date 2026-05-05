@@ -198,34 +198,39 @@ async function main() {
   }
 
   const isProd = process.env.NODE_ENV === 'production';
-  const adminSeedPassword = process.env.ADMIN_SEED_PASSWORD;
-  if (isProd && !adminSeedPassword) {
+  const userSeedPassword =
+    process.env.USER_SEED_PASSWORD ?? process.env.ADMIN_SEED_PASSWORD;
+  if (isProd && !userSeedPassword) {
     console.warn(
-      'Seed ignorado em produção: defina ADMIN_SEED_PASSWORD (segredo forte) para criar o admin e o quiz na primeira execução.',
+      'Seed ignorado em produção: defina USER_SEED_PASSWORD (segredo forte) para criar o usuário seed e o quiz na primeira execução.',
     );
     return;
   }
 
-  if (!adminSeedPassword) {
+  if (!userSeedPassword) {
     throw new Error(
-      'ADMIN_SEED_PASSWORD não configurado. Defina a variável de ambiente para criar o admin inicial.',
+      'USER_SEED_PASSWORD não configurado. Defina a variável de ambiente para criar o usuário seed inicial.',
     );
   }
-  const plainPassword = adminSeedPassword;
+  const plainPassword = userSeedPassword;
   const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
-  const admin = await prisma.admin.upsert({
-    where: { email: 'admin@faquiz.com' },
-    update: {},
+  const seedEmail = 'demo@faquiz.com';
+  const user = await prisma.user.upsert({
+    where: { email: seedEmail },
+    update: {
+      emailVerifiedAt: new Date(),
+    } as never,
     create: {
-      email: 'admin@faquiz.com',
+      email: seedEmail,
       password: hashedPassword,
-      name: 'Admin',
-    },
+      name: 'Usuário demo',
+      emailVerifiedAt: new Date(),
+    } as never,
   });
 
   await prisma.quiz.deleteMany({
-    where: { title: QUIZ_TITLE, adminId: admin.id },
+    where: { title: QUIZ_TITLE, userId: user.id },
   });
 
   const quiz = await prisma.quiz.create({
@@ -237,7 +242,7 @@ async function main() {
       collectName: false,
       collectEmail: false,
       collectPhone: false,
-      adminId: admin.id,
+      userId: user.id,
     },
   });
 
@@ -649,9 +654,17 @@ async function main() {
 
   console.log('Seed OK.');
   if (isProd) {
-    console.log('Admin criado:', admin.email, '(senha definida por ADMIN_SEED_PASSWORD)');
+    console.log(
+      'Usuário seed:',
+      user.email,
+      '(senha definida por USER_SEED_PASSWORD ou ADMIN_SEED_PASSWORD)',
+    );
   } else {
-    console.log('Admin:', admin.email, '(senha seed local: admin123)');
+    console.log(
+      'Usuário seed:',
+      user.email,
+      '(senha: valor de USER_SEED_PASSWORD / ADMIN_SEED_PASSWORD; padrão local nos scripts: demo123)',
+    );
   }
   console.log('Quiz título:', QUIZ_TITLE);
   console.log('Quiz ID (use na URL pública):', quiz.id);

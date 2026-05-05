@@ -10,24 +10,7 @@ import {
   QUIZ_SESSION_REPOSITORY,
   type IQuizSessionRepository,
 } from '../../../domain/repositories/quiz-session.repository.js';
-
-function toPublicQuestion(
-  node: Awaited<ReturnType<IQuizQueryRepository['findQuestionWithOptions']>>,
-) {
-  if (!node) return null;
-  return {
-    id: node.id,
-    title: node.title,
-    description: node.description,
-    questionType: node.questionType,
-    answerOptions: node.answerOptions.map((o) => ({
-      id: o.id,
-      label: o.label,
-      value: o.value,
-      order: o.order,
-    })),
-  };
-}
+import { toPublicQuestion } from './to-public-question.js';
 
 @Injectable()
 export class UndoLastAnswerUseCase {
@@ -62,12 +45,12 @@ export class UndoLastAnswerUseCase {
       path.pop();
     }
 
-    await this.sessions.updatePathAndStatus(
-      sessionId,
-      JSON.stringify(path),
-      SessionStatus.IN_PROGRESS,
-      null,
-    );
+    session.updateProgress({
+      pathTaken: JSON.stringify(path),
+      status: SessionStatus.IN_PROGRESS,
+      completedAt: null,
+    });
+    await this.sessions.persist(session);
 
     const question = await this.queries.findQuestionWithOptions(
       session.quizId,
