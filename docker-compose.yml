@@ -21,7 +21,7 @@ services:
       context: ./faquiz-api
       dockerfile: Dockerfile
     ports:
-      - "${API_PORT:-3333}:3333"
+      - "127.0.0.1:${API_PORT:-3333}:3333"
     depends_on:
       db:
         condition: service_healthy
@@ -48,17 +48,10 @@ services:
       args:
         VITE_API_URL: /api
     ports:
-      - "8080:80"
+      - "127.0.0.1:${WEB_PORT:-8080}:80"
     depends_on:
       - api
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=faquiz_default"
-      - "traefik.http.routers.faquiz.rule=Host(`faquiz.com.br`) || Host(`www.faquiz.com.br`)"
-      - "traefik.http.routers.faquiz.entrypoints=websecure"
-      - "traefik.http.routers.faquiz.tls.certresolver=letsencrypt"
-      - "traefik.http.services.faquiz.loadbalancer.server.port=80"
 
 volumes:
   faquiz-pgdata:
