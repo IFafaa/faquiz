@@ -1,4 +1,9 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios, {
+  type AxiosError,
+  type AxiosInstance,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from 'axios'
 import { useAuthStore } from '@/app/store/authStore'
 import type {
   AggregatesResponse,
@@ -97,13 +102,20 @@ export interface IFaquizApi {
 const baseURL =
   import.meta.env.VITE_API_URL ?? 'http://localhost:3333/api'
 
-const trustedOrigin = new URL(baseURL).origin
+function toAbsoluteBaseURL(url: string): string {
+  if (url.startsWith('/')) {
+    return new URL(url, window.location.origin).toString()
+  }
+  return url
+}
+
+const trustedOrigin = new URL(toAbsoluteBaseURL(baseURL)).origin
 
 function isTrustedUrl(url: string | undefined): boolean {
   if (!url) return true
   if (url.startsWith('/')) return true
   try {
-    return new URL(url, baseURL).origin === trustedOrigin
+    return new URL(url, toAbsoluteBaseURL(baseURL)).origin === trustedOrigin
   } catch {
     return false
   }
@@ -118,7 +130,7 @@ export class FaquizApi implements IFaquizApi {
       headers: { 'Content-Type': 'application/json' },
     })
 
-    this.client.interceptors.request.use((config) => {
+    this.client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       const token = useAuthStore.getState().token
       if (token && isTrustedUrl(config.url)) {
         config.headers.Authorization = `Bearer ${token}`
@@ -127,8 +139,8 @@ export class FaquizApi implements IFaquizApi {
     })
 
     this.client.interceptors.response.use(
-      (res) => res,
-      (err) => {
+      (res: AxiosResponse) => res,
+      (err: AxiosError) => {
         if (axios.isAxiosError(err) && err.response?.status === 401) {
           const url = err.config?.url ?? ''
           const isPublicAuth =
