@@ -1,4 +1,33 @@
 services:
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - web
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - letsencrypt:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot:latest
+    environment:
+      CERTBOT_EMAIL: ${CERTBOT_EMAIL:-}
+      CERTBOT_DOMAINS: ${CERTBOT_DOMAINS:-faquiz.com.br,www.faquiz.com.br}
+      NGINX_CONTAINER_NAME: ${NGINX_CONTAINER_NAME:-faquiz-nginx-1}
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/certbot-entrypoint.sh:/certbot-entrypoint.sh:ro
+    entrypoint: ["/bin/sh", "/certbot-entrypoint.sh"]
+    restart: unless-stopped
+
   db:
     image: postgres:16-alpine
     ports:
@@ -20,8 +49,8 @@ services:
     build:
       context: ./faquiz-api
       dockerfile: Dockerfile
-    ports:
-      - "127.0.0.1:${API_PORT:-3333}:3333"
+    expose:
+      - "3333"
     depends_on:
       db:
         condition: service_healthy
@@ -47,11 +76,13 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: /api
-    ports:
-      - "127.0.0.1:${WEB_PORT:-8080}:80"
+    expose:
+      - "80"
     depends_on:
       - api
     restart: unless-stopped
 
 volumes:
   faquiz-pgdata:
+  letsencrypt:
+  certbot-webroot:
