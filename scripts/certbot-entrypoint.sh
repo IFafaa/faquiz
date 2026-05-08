@@ -7,7 +7,7 @@ if [ -z "${CERTBOT_EMAIL:-}" ]; then
 fi
 
 DOMAINS="${CERTBOT_DOMAINS:-faquiz.com.br,www.faquiz.com.br}"
-PRIMARY_DOMAIN="$(printf '%s' "$DOMAINS" | awk -F',' '{print $1}')"
+PRIMARY_DOMAIN="${DOMAINS%%,*}"
 LIVE_DIR="/etc/letsencrypt/live/${PRIMARY_DOMAIN}"
 
 domain_args=""
@@ -20,6 +20,15 @@ for d in $DOMAINS; do
   fi
 done
 IFS="$OLD_IFS"
+
+reload_nginx_best_effort() {
+  # Recarrega o nginx (melhor esforço). Se não houver docker cli, não falha.
+  if command -v docker >/dev/null 2>&1; then
+    docker kill -s HUP "$NGINX_CONTAINER_NAME" >/dev/null 2>&1 || true
+  else
+    echo "docker CLI não disponível no container certbot; pulei reload do nginx."
+  fi
+}
 
 issue_cert_if_missing() {
   if [ -d "$LIVE_DIR" ] && [ -f "$LIVE_DIR/fullchain.pem" ] && [ -f "$LIVE_DIR/privkey.pem" ]; then
@@ -39,14 +48,14 @@ issue_cert_if_missing() {
     $domain_args
 
   echo "Recarregando nginx ($NGINX_CONTAINER_NAME) após emissão inicial"
-  docker kill -s HUP "$NGINX_CONTAINER_NAME" >/dev/null 2>&1 || true
+  reload_nginx_best_effort
 }
 
 renew_forever() {
   while :; do
     echo "Renovando certificados (se necessário)..."
     certbot renew --webroot -w /var/www/certbot --quiet || true
-    docker kill -s HUP "$NGINX_CONTAINER_NAME" >/dev/null 2>&1 || true
+    reload_nginx_best_effort
     sleep 12h
   done
 }
