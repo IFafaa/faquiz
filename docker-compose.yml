@@ -1,7 +1,18 @@
 services:
+  cert-init:
+    image: alpine:3.20
+    environment:
+      CERTBOT_DOMAINS: ${CERTBOT_DOMAINS:-faquiz.com.br,www.faquiz.com.br}
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - ./scripts/init-self-signed-cert.sh:/init-self-signed-cert.sh:ro
+    entrypoint: ["/bin/sh", "/init-self-signed-cert.sh"]
+    restart: "no"
+
   nginx:
     image: nginx:1.27-alpine
     depends_on:
+      - cert-init
       - web
       - api
     ports:

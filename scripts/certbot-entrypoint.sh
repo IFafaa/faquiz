@@ -42,17 +42,27 @@ issue_cert_if_missing() {
   fi
 
   echo "Emitindo certificado inicial para: $DOMAINS"
-  certbot certonly \
+  if certbot certonly \
     --webroot -w /var/www/certbot \
     --email "$CERTBOT_EMAIL" --agree-tos --no-eff-email \
-    $domain_args
+    $domain_args; then
+    echo "Certificado emitido com sucesso."
+    echo "Recarregando nginx ($NGINX_CONTAINER_NAME) após emissão inicial"
+    reload_nginx_best_effort
+    return 0
+  fi
 
-  echo "Recarregando nginx ($NGINX_CONTAINER_NAME) após emissão inicial"
-  reload_nginx_best_effort
+  echo "Falha ao emitir certificado inicial. Vou tentar novamente mais tarde (container continua rodando)."
+  return 1
 }
 
 renew_forever() {
   while :; do
+    # Tenta emitir cert inicial caso ainda não exista.
+    if ! [ -f "$LIVE_DIR/fullchain.pem" ] || ! [ -f "$LIVE_DIR/privkey.pem" ]; then
+      issue_cert_if_missing || true
+    fi
+
     echo "Renovando certificados (se necessário)..."
     certbot renew --webroot -w /var/www/certbot --quiet || true
     reload_nginx_best_effort
@@ -60,6 +70,6 @@ renew_forever() {
   done
 }
 
-issue_cert_if_missing
+issue_cert_if_missing || true
 renew_forever
 
